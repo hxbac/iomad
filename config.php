@@ -18,7 +18,7 @@ $CFG->dboptions = array (
   'dbcollation' => 'utf8mb4_0900_ai_ci',
 );
 
-$CFG->wwwroot   = 'http://lms_iomad.test';
+$CFG->wwwroot   = 'http://lms311.test';
 $CFG->dataroot  = 'D:\\workspace\\PHP\\laragon\\www\\moodledata';
 $CFG->admin     = 'admin';
 

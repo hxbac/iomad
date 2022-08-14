@@ -1,0 +1,97 @@
+{{!
+This file is part of Moodle - https://moodle.org/
+
+Moodle is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Moodle is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Moodle. If not, see
+<http: //www.gnu.org/licenses />.
+}}
+{{!
+@template plugintype_pluginname/template_name
+
+Template purpose and description.
+
+Classes required for JS:
+* none
+
+Data attributes required for JS:
+* none
+
+Context variables required for this template:
+* none
+
+Example context (json):
+{
+}
+}}
+<style>
+    table.lms_custom_table td {
+        height: 100%;
+        vertical-align: middle;
+    }
+</style>
+
+{{#checksendrecord}}
+<p style="font-size: 24px; font-weight: bold; text-align: center;">Nộp báo cáo</p>
+<table class="table table-striped lms_custom_table">
+    <thead>
+        <tr>
+            <th scope="col">Tên danh mục</th>
+            <th scope="col">Báo cáo chưa gửi</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#categorysend}}
+        <tr>
+            <td>{{ parentname }}{{ name }}</td>
+            <td>{{ solanconlai }}</td>
+            <td><a href="{{{ url }}}">Xem chi tiết</a></td>
+        </tr>
+        {{/categorysend}}
+    </tbody>
+</table>
+<br>
+<br>
+{{/checksendrecord}}
+
+{{#checkmanagerrecord}}
+<p style="font-size: 24px; font-weight: bold; text-align: center;">Quản lý báo cáo</p>
+<table class="table table-striped lms_custom_table">
+    <thead>
+        <tr>
+            <th scope="col">Tên danh mục</th>
+            <th scope="col">Báo cáo chưa duyệt</th>
+            <th scope="col" colspan="2"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#categorymanager}}
+        <tr>
+            <td>{{ parentname }}{{ name }}</td>
+            <td>{{ solanconlai }}</td>
+            <td><a href="{{{ url }}}">Xem chi tiết</a></td>
+            <td><a href="{{{ urlthongke }}}">Thống kê</a></td>
+        </tr>
+        {{/categorymanager}}
+    </tbody>
+</table>
+<br>
+<br>
+{{/checkmanagerrecord}}
+
+{{^checksendrecord}}
+{{^categorymanager}}
+<p style="text-align: center; font-size: 24px; font-weight: bold;">Không có danh mục nào trong phần quản lý. Liên hệ
+    quản trị viên để thêm danh mục.</p>
+{{/categorymanager}}
+{{/checksendrecord}}

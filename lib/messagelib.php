@@ -337,7 +337,6 @@ function message_send(\core\message\message $eventdata) {
             }
         }
     }
-
     // Store unread message just in case we get a fatal error any time later.
     $tabledata->id = $DB->insert_record($table, $tabledata);
     $eventdata->savedmessageid = $tabledata->id;

@@ -1,0 +1,153 @@
+{{!
+This file is part of Moodle - https://moodle.org/
+
+Moodle is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Moodle is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Moodle. If not, see
+<http: //www.gnu.org/licenses />.
+}}
+{{!
+@template plugintype_pluginname/template_name
+
+Template purpose and description.
+
+Classes required for JS:
+* none
+
+Data attributes required for JS:
+* none
+
+Context variables required for this template:
+* none
+
+Example context (json):
+{
+}
+}}
+<style>
+    table.lms_custom_table td {
+        height: 100%;
+        vertical-align: middle;
+    }
+
+    .lms_gadt_totruong_td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .lms_gadt_totruong_td .form-group {
+        margin-bottom: 0;
+    }
+
+    @media only screen and (max-width: 1200px) {
+        .lms_gadt_totruong_td {
+            display: block;
+        }
+
+        .lms_gadt_totruong_td .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .lms_gadt_totruong_td button {
+            margin-right: 1rem;
+        }
+    }
+</style>
+{{#breadcrumbobj}}
+<div style="margin-bottom: 20px;"><a href="{{{ urlgiaoandientu }}}">Giáo án điện tử / </a>{{ parentname }}<b>{{ name }}</b></div>
+{{/breadcrumbobj}}
+<a href="{{urltaotuan}}" class="btn btn-primary">Tạo tuần mới</a>
+<br>
+<br>
+<div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{ weekname }}
+        <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+        {{#listweek}}
+        <li><a href="{{{id}}}">{{ weekname }}</a></li>
+        {{/listweek}}
+    </ul>
+</div>
+<br>
+<br>
+<table class="table table-hover lms_custom_table">
+    <thead>
+        <tr>
+            <th scope="col">Tên giáo viên</th>
+            <th scope="col">Môn học</th>
+            <th scope="col">Thời gian gửi</th>
+            <th scope="col">Lịch sử</th>
+            <th scope="col" colspan="3">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#datarenderteachers}}
+        <tr>
+            <td>{{ name }}</td>
+            <td>{{ coursename }}</td>
+            <td>
+                {{#timecreated}}
+                {{#userdate}} {{timecreated}}, {{#str}} strftimedate, core_langconfig {{/str}} {{/userdate}}
+                {{/timecreated}}
+            </td>
+            <td><a href="{{{ urlhistory }}}">Xem</a></td>
+            <td>{{{ urldownloadfile }}}</td>
+            <td class="lms_gadt_totruong_td">
+                {{#timecreated}}
+                {{#feedback}}
+                <form action="{{ urlbrowsefile }}" method="POST">
+                    <div class="form-group">
+                        <input type="text" name="feedback" class="form-control" id="exampleInputEmail1"
+                            placeholder="Phản hồi.">
+                        <input type="hidden" name="status" value="" class="form-control">
+                    </div>
+                </form>
+                <button class="btn btn-primary">Duyệt</button>
+                <button class="btn btn-secondary">Hủy</button>
+                {{/feedback}}
+                {{^feedback}}
+                Đã duyệt
+                {{/feedback}}
+                {{/timecreated}}
+            </td>
+        </tr>
+        {{/datarenderteachers}}
+    </tbody>
+</table>
+{{^datarenderteachers}}
+<p style="text-align: center; font-size: 22px;">Chưa có bản ghi tuần để hiển thị. <a href="{{urltaotuan}}">Tạo tuần!</a>
+</p>
+{{/datarenderteachers}}
+
+<script>
+    const submitBtns = document.querySelectorAll('.lms_gadt_totruong_td .btn')
+
+    submitBtns.forEach((btn) => {
+        btn.onclick = function () {
+            const tdParent = this.closest('td.lms_gadt_totruong_td')
+            if(tdParent) {
+                const inputStatus = tdParent.querySelector('input[name=status]')
+                if(this.classList.contains('btn-primary')) {
+                    inputStatus.value = 0
+                }
+                if(this.classList.contains('btn-secondary')) {
+                    inputStatus.value = 1
+                }
+
+                if (inputStatus.value == 0 || inputStatus.value == 1) {
+                    tdParent.querySelector('form').submit()
+                }
+            }
+        }
+    })
+</script>

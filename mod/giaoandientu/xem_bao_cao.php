@@ -1,0 +1,78 @@
+<?php 
+require_once('../../config.php');
+require_once('./functions.php');
+
+$categoryid = required_param('categoryid', PARAM_INT);
+
+if (!checkTeacherAccess($categoryid)) {
+    print_error('accessdenied', 'admin');
+}
+
+$context = context_system::instance();
+$PAGE->set_context($context);
+$PAGE->set_url('/mod/giaoandientu/xem_bao_cao.php', [
+    'categoryid' => $categoryid
+]);
+$PAGE->set_title('Báo cáo giảng dạy');
+$PAGE->set_heading('Nộp báo cáo giảng dạy');
+echo $OUTPUT->header();
+
+$weeksofcategory = $DB->get_records('lms_gadt_weeks', [
+    'categoryid' => $categoryid,
+], 'timecreated DESC');
+
+$breadcrumbobj = (object) [];
+$breadcrumbobj->parentname = '';
+$category = $DB->get_record('course_categories', [
+    'id' => $categoryid
+]);
+getParentNameCategory($category->parent, $breadcrumbobj->parentname);
+$breadcrumbobj->name = $category->name;
+$breadcrumbobj->urlgiaoandientu = new moodle_url('/mod/giaoandientu');
+
+$datarender = [];
+
+foreach ($weeksofcategory as $weekofcategory) {
+    $storerecords = $DB->get_records('lms_gadt_storereport', [
+        'weekid' => $weekofcategory->id,
+        'userid' => $USER->id,
+    ]);
+    foreach ($storerecords as $storerecord) {
+        if ($storerecord->status != -1) {
+            $renderitem = (object) [];
+            $renderitem->weekname = $weekofcategory->weekname;
+            $renderitem->urlhistory = new moodle_url('/mod/giaoandientu/lich_su.php', [
+                'weekid' => $weekofcategory->id,
+                'courseid' => $storerecord->courseid,
+                'userid' => $USER->id
+            ]);
+            $renderitem->description = $weekofcategory->description;
+            $renderitem->startdate = $weekofcategory->startdate;
+            $renderitem->enddate = $weekofcategory->enddate;
+            $renderitem->course = $DB->get_record('course', [
+                'id' => $storerecord->courseid
+            ])->fullname;
+            if ($storerecord->status != 0) {
+                $renderitem->urlsendfile = false;
+                if ($storerecord->feedback == null) {
+                    $renderitem->messagestatus = 'Chờ duyệt';
+                } else {
+                    $renderitem->messagestatus = 'Đã duyệt';
+                }
+            } else {
+                $renderitem->messagestatus = '';
+                $renderitem->urlsendfile = new moodle_url('/mod/giaoandientu/gui_file.php', [
+                    'id' => $storerecord->id
+                ]);
+            }
+            array_push($datarender, $renderitem);
+        }
+    }
+}
+
+echo $OUTPUT->render_from_template('mod_giaoandientu/giaovien', [
+    'weeks' => $datarender,
+    'breadcrumbobj' => $breadcrumbobj
+]);
+
+echo $OUTPUT->footer();

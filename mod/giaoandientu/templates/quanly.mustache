@@ -1,0 +1,118 @@
+{{!
+This file is part of Moodle - https://moodle.org/
+
+Moodle is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Moodle is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Moodle. If not, see
+<http: //www.gnu.org/licenses />.
+}}
+{{!
+@template plugintype_pluginname/template_name
+
+Template purpose and description.
+
+Classes required for JS:
+* none
+
+Data attributes required for JS:
+* none
+
+Context variables required for this template:
+* none
+
+Example context (json):
+{
+}
+}}
+
+<style>
+    input[type="checkbox"].togglecustom {
+        opacity: 0;
+        position: absolute;
+        left: -9000px;
+        top: -9000px;
+    }
+
+    input[type="checkbox"].togglecustom+label {
+        position: relative;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    input[type="checkbox"].togglecustom+label::before {
+        content: "";
+        width: 2em;
+        height: 1em;
+        background-color: hsl(0, 80%, 90%);
+        border-radius: 1em;
+        margin-right: .25em;
+        transition: background-color 200ms ease-in-out;
+    }
+
+    input[type="checkbox"].togglecustom+label::after {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        content: "\2715";
+        font-size: .5em;
+        height: .9em;
+        left: .2em;
+        width: 1.8em;
+        height: 1.8em;
+        background-color: hsl(0, 80%, 60%);
+        color: white;
+        border-radius: 1em;
+        transition: background-color 200ms ease-in-out, transform 200ms ease-in-out;
+    }
+
+    input[type="checkbox"].togglecustom:focus+label::before {}
+
+    input[type="checkbox"].togglecustom:checked+label::before {
+        background-color: hsl(100, 70%, 90%);
+    }
+
+    input[type="checkbox"].togglecustom:checked+label::after {
+        content: "\2713";
+        transform: translateX(100%);
+        background-color: hsl(100, 70%, 60%);
+    }
+
+    table.lms_custom_table td {
+        height: 100%;
+        vertical-align: middle;
+    }
+</style>
+<h4 style="text-align: center;">Trường: <b>{{schoolname}}</b></h4>
+<br>
+<table class="table lms_custom_table">
+    <thead>
+        <tr>
+            <th scope="col" style="width: 80%; padding-left: 40px;">Tên danh mục</th>
+            <th scope="col" style="display: flex; justify-content: center; align-items: center;">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#categories}}
+        <tr>
+            <td style="width: 80%; transform: translateX({{ valuetransform }}px);">{{ name }}</td>
+            <td style="display: flex; justify-content: center; align-items: center;">
+                <a href="{{ urlhandlemanager }}">
+                    <input type="checkbox" id="check{{ id }}" class="togglecustom" {{#checked}} checked {{/checked}}>
+                    <label for="check{{ id }}" style="margin-bottom: 0; pointer-events: none;"></label>
+                </a>
+            </td>
+        </tr>
+        {{/categories}}
+    </tbody>
+</table>
