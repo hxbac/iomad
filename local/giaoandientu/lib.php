@@ -12,7 +12,7 @@
  * @param array $options additional options affecting the file serving
  * @return bool false if the file not found, just send the file otherwise and do not return anything
  */
-function giaoandientu_pluginfile(
+function local_giaoandientu_pluginfile(
     $course,
     $cm,
     $context,
@@ -58,7 +58,7 @@ function giaoandientu_pluginfile(
 
     $relativepath = implode('/', $args);
 
-    $fullpath = "/{$context->id}/mod_giaoandientu/$filearea/$itemid/$relativepath";
+    $fullpath = "/{$context->id}/local_giaoandientu/$filearea/$itemid/$relativepath";
 
     $fs = get_file_storage();
     if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
@@ -74,6 +74,5 @@ function giaoandientu_pluginfile(
     //     return false;
     // }
     // We can now send the file back to the browser - in this case with a cache lifetime of 1 day and no filtering.
-    
     send_stored_file($file, 0, 0, $forcedownload, $options);
 }

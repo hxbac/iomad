@@ -6,7 +6,7 @@ $categoryid = required_param('categoryid', PARAM_INT);
 
 $context = context_system::instance();
 $PAGE->set_context($context);
-$PAGE->set_url('/mod/giaoandientu/quan_ly.php', [
+$PAGE->set_url('/local/giaoandientu/quan_ly.php', [
     'categoryid' => $categoryid
 ]);
 $PAGE->set_title('Báo cáo giảng dạy');
@@ -25,7 +25,7 @@ $schoolname = [...$category][0]->name;
 getCategoriesRenderManager($datarendercategories, $category);
 array_shift($datarendercategories);
 
-echo $OUTPUT->render_from_template('mod_giaoandientu/quanly', [
+echo $OUTPUT->render_from_template('local_giaoandientu/quanly', [
     'categories' => $datarendercategories,
     'schoolname' => $schoolname
 ]);

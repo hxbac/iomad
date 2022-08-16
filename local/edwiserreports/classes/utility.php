@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . "/completion/classes/progress.php");
 require_once($CFG->dirroot . "/cohort/lib.php");
-require_once($CFG->libdir."/csvlib.class.php");
+require_once($CFG->libdir . "/csvlib.class.php");
 require_once($CFG->dirroot . "/local/edwiserreports/classes/blocks/activecoursesblock.php");
 require_once($CFG->dirroot . "/local/edwiserreports/classes/blocks/certificatesblock.php");
 require_once($CFG->dirroot . "/local/edwiserreports/classes/blocks/liveusersblock.php");
@@ -54,13 +54,15 @@ use context_system;
 /**
  * Utilty class to add all utility function to perform in the eLucid report plugin.
  */
-class utility {
+class utility
+{
     /**
      * Get active users data for active users blocks
      * @param  Object $data Data Object
      * @return Array        Active users data
      */
-    public static function get_active_users_data($data) {
+    public static function get_active_users_data($data)
+    {
         global $CFG;
 
         // Require block file.
@@ -75,7 +77,8 @@ class utility {
      * @param  Object $data Consist of filters
      * @return Array        Course Progress array
      */
-    public static function get_course_progress_data($data) {
+    public static function get_course_progress_data($data)
+    {
         global $CFG;
 
         require_once($CFG->dirroot . '/local/edwiserreports/classes/blocks/courseprogressblock.php');
@@ -94,7 +97,8 @@ class utility {
      *
      * @return Array
      */
-    public static function get_active_courses_data() {
+    public static function get_active_courses_data()
+    {
         global $CFG;
 
         require_once($CFG->dirroot . '/local/edwiserreports/classes/blocks/activecoursesblock.php');
@@ -109,7 +113,8 @@ class utility {
      * @param  Object $data Filter data
      * @return Array
      */
-    public static function get_certificates_data($data) {
+    public static function get_certificates_data($data)
+    {
         global $CFG;
         require_once($CFG->dirroot . '/local/edwiserreports/classes/blocks/certificatesblock.php');
 
@@ -126,7 +131,8 @@ class utility {
      *
      * @return Array
      */
-    public static function get_liveusers_data() {
+    public static function get_liveusers_data()
+    {
         global $CFG;
         require_once($CFG->dirroot . '/local/edwiserreports/classes/blocks/liveusersblock.php');
 
@@ -139,7 +145,8 @@ class utility {
      *
      * @return Array
      */
-    public static function get_siteaccess_data() {
+    public static function get_siteaccess_data()
+    {
         global $CFG;
         require_once($CFG->dirroot . '/local/edwiserreports/classes/blocks/liveusersblock.php');
 
@@ -153,7 +160,8 @@ class utility {
      * @param  Object $data Filter data
      * @return Array
      */
-    public static function get_todaysactivity_data($data) {
+    public static function get_todaysactivity_data($data)
+    {
         global $CFG;
         require_once($CFG->dirroot . '/local/edwiserreports/classes/blocks/todaysactivityblock.php');
 
@@ -167,7 +175,8 @@ class utility {
      * @param  Object $cohortid Cohort id
      * @return Array
      */
-    public static function get_courseengage_data($cohortid) {
+    public static function get_courseengage_data($cohortid)
+    {
         return \local_edwiserreports\courseengageblock::get_data($cohortid);
     }
 
@@ -177,7 +186,8 @@ class utility {
      * @param  Object $data Filter data
      * @return Array
      */
-    public static function get_inactiveusers_data($data) {
+    public static function get_inactiveusers_data($data)
+    {
         global $CFG;
         require_once($CFG->dirroot . '/local/edwiserreports/classes/blocks/inactiveusersblock.php');
 
@@ -190,7 +200,8 @@ class utility {
      * @param  String $data Data to get Course Completion detail
      * @return Object
      */
-    public static function get_completion_data($data) {
+    public static function get_completion_data($data)
+    {
         if ($data->cohortid) {
             $cohortid = $data->cohortid;
         } else {
@@ -205,7 +216,8 @@ class utility {
      * @param  Object $data Data object
      * @return Object
      */
-    public static function get_courseanalytics_data($data) {
+    public static function get_courseanalytics_data($data)
+    {
         if (isset($data->cohortid)) {
             $cohortid = $data->cohortid;
         } else {
@@ -218,11 +230,54 @@ class utility {
      * @param  Bool  $all Get course with no enrolment as well
      * @return Array      Array of courses
      */
-    public static function get_courses($all = false) {
-        global $DB;
+    public static function get_courses($all = false)
+    {
+        global $DB, $USER, $CFG;
 
         // Get records for courses.
         $courses = $DB->get_records('course', array(), '', '*');
+
+        $schools = $DB->get_records('course_categories', [
+            'parent' => 0
+        ]);
+        $schools = array_filter([...$schools], function ($school) {
+            global $DB, $USER;
+            $roleprincipal = $DB->get_record('role', [
+                'shortname' => 'hieutruong'
+            ]);
+            $context = \context_coursecat::instance($school->id);
+            $principals = get_role_users($roleprincipal->id, $context);
+            foreach ($principals as $principal) {
+                if ($USER->id == $principal->id) {
+                    return true;
+                }
+            }
+            return false;
+        });
+        if (count($schools) != 0) {
+            $listcategoryofschools = [];
+            foreach ($schools as $school) {
+                $sql = "SELECT * FROM `". $CFG->prefix ."course_categories` WHERE `path` LIKE '/". $school->id ."/%' ORDER BY `path`";
+                $childcategories = $DB->get_records_sql($sql);
+                foreach ($childcategories as $item) {
+                    array_push($listcategoryofschools, $item->id);
+                }
+            }
+            $conditionString = implode(',', $listcategoryofschools);
+            $sqlcourses = "SELECT `c`.*, `cc`.`path` as `pathcategory` FROM `". $CFG->prefix ."course` `c` LEFT JOIN `". $CFG->prefix ."course_categories` `cc` ON `c`.category = `cc`.`id` WHERE `c`.`category` IN (". $conditionString .") ORDER BY `path` ASC LIMIT 0, 1000";
+            $courses = $DB->get_records_sql($sqlcourses);
+            foreach ($courses as $course) {
+                $listcategoryid = explode('/', $course->pathcategory);
+                array_shift($listcategoryid);
+                $categoryname = '';
+                foreach ($listcategoryid as $categoryid) {
+                    $categoryname .= ($DB->get_record('course_categories', [
+                        'id' => $categoryid
+                    ])->name) . ' / ';
+                }
+                $course->fullname = $categoryname . $course->fullname;
+            }
+        }
         foreach (array_keys($courses) as $courseid) {
             $enrolledstudents = self::get_enrolled_students($courseid);
             if ($courseid == 1 || empty($enrolledstudents)) {
@@ -236,7 +291,8 @@ class utility {
      * Generate Learning Program Filter for course progress block
      * @return String HTML form with select and search box
      */
-    public static function get_lps() {
+    public static function get_lps()
+    {
         global $DB;
         $fields = "DISTINCT(lp.id) as id, lp.name as fullname, lp.shortname,
                 lp.programid, lp.visible, lp.selfenrolment, lp.description,
@@ -244,7 +300,7 @@ class utility {
                 lp.coursesequenceenable, lp.timecreated, lp.timemodified,
                 lp.timestart, lp.timeend";
 
-        $sql = "SELECT ".$fields."
+        $sql = "SELECT " . $fields . "
                 FROM {wdm_learning_program} lp
                 JOIN {wdm_learning_program_enrol} lpen
                 ON lp.id = lpen.learningprogramid";
@@ -271,7 +327,8 @@ class utility {
      * Get All Course Completion
      * @return Array Course completions records
      */
-    public static function get_course_completions() {
+    public static function get_course_completions()
+    {
         global $DB;
 
         $sql = "SELECT CONCAT(CONCAT(mc.userid, '-'), m.course),
@@ -297,7 +354,8 @@ class utility {
      * @param  Int   $courseid Course Id
      * @return Array           Array of course completion
      */
-    public static function get_course_completion($courseid) {
+    public static function get_course_completion($courseid)
+    {
         global $DB;
 
         // Return course completion from report completion table.
@@ -311,7 +369,8 @@ class utility {
      * @param  Integer $userid User Id
      * @return Array           Array of completion information
      */
-    public static function get_course_completion_info($course = false, $userid = false) {
+    public static function get_course_completion_info($course = false, $userid = false)
+    {
         global $COURSE, $USER;
         if (!$course) {
             $course = $COURSE;
@@ -367,7 +426,8 @@ class utility {
      * @param  Integer $userid   User Id
      * @return Integer           Completion Time
      */
-    public static function get_time_completion($courseid = false, $userid = false) {
+    public static function get_time_completion($courseid = false, $userid = false)
+    {
         global $COURSE, $DB, $USER;
 
         if (!$courseid) {
@@ -399,7 +459,8 @@ class utility {
      * @param  Integer $userid   User Id
      * @return Object            Grade Report
      */
-    public static function get_grades($courseid = false, $userid = false) {
+    public static function get_grades($courseid = false, $userid = false)
+    {
         global $COURSE, $DB, $USER;
 
         if (!$userid) {
@@ -430,7 +491,8 @@ class utility {
      * @param  Integer $cohortid Cohort id
      * @return Array             Array of Users ID who visited the course
      */
-    public static function get_course_visites($courseid, $cohortid) {
+    public static function get_course_visites($courseid, $cohortid)
+    {
         global $DB;
 
         $params = array(
@@ -469,7 +531,8 @@ class utility {
      * @param  Int    $cohortid Cohort id
      * @return Array            Array of Users ID who have completed a activity
      */
-    public static function users_completed_a_module($course, $users, $cohortid) {
+    public static function users_completed_a_module($course, $users, $cohortid)
+    {
         $records = array();
 
         foreach ($users as $user) {
@@ -497,7 +560,8 @@ class utility {
      * @param  Int    $cohortid Cohort id
      * @return Array            Array of Users ID who have completed half activities
      */
-    public static function users_completed_half_modules($course, $users, $cohortid) {
+    public static function users_completed_half_modules($course, $users, $cohortid)
+    {
         global $DB;
 
         $records = array();
@@ -542,7 +606,8 @@ class utility {
      * @param  Int    $cohortid Cohort id
      * @return Array            Array of Users ID who have completed all activities
      */
-    public static function users_completed_all_module($course, $users, $cohortid) {
+    public static function users_completed_all_module($course, $users, $cohortid)
+    {
         $records = array();
         foreach ($users as $user) {
             /* If cohort filter is there then get only users from cohort */
@@ -568,11 +633,13 @@ class utility {
      * @param  String  $userid   User ID
      * @return Integer           Count of visits by this users
      */
-    public static function get_visits_by_users($courseid, $userid) {
+    public static function get_visits_by_users($courseid, $userid)
+    {
         global $DB;
 
         $table = "logstore_standard_log";
-        $records = $DB->get_records($table,
+        $records = $DB->get_records(
+            $table,
             array(
                 "action" => "viewed",
                 "courseid" => $courseid,
@@ -589,7 +656,8 @@ class utility {
      * @param  Object $data Mail data
      * @return Object       Response
      */
-    public static function get_scheduled_emails($data) {
+    public static function get_scheduled_emails($data)
+    {
         $response = new stdClass();
         $response->error = false;
 
@@ -618,7 +686,8 @@ class utility {
      * @param  Array $params Parameters
      * @return Array         Emails
      */
-    public static function local_edwiserreports_get_schedule_emaillist($params) {
+    public static function local_edwiserreports_get_schedule_emaillist($params)
+    {
         global $DB;
 
         $emails = array();
@@ -656,7 +725,8 @@ class utility {
      * @param  Object $data Data for email
      * @return Object       Response
      */
-    public static function get_scheduled_email_details($data) {
+    public static function get_scheduled_email_details($data)
+    {
         global $DB;
 
         $params = array(
@@ -695,7 +765,8 @@ class utility {
      * Delete Shceduled emails
      * @param  [object] $data paramters to delete scheduled emails
      */
-    public static function delete_scheduled_email($data) {
+    public static function delete_scheduled_email($data)
+    {
         global $DB;
 
         // Get data from table.
@@ -738,7 +809,8 @@ class utility {
      * @param  Object $data paramters to delete scheduled emails
      * @return Object
      */
-    public static function change_scheduled_email_status($data) {
+    public static function change_scheduled_email_status($data)
+    {
         global $DB;
 
         // Get data from table.
@@ -792,15 +864,16 @@ class utility {
      * @param  Object $filter Filter parameter
      * @return Object
      */
-    public static function get_customreport_selectors($filter) {
+    public static function get_customreport_selectors($filter)
+    {
         global $DB;
 
-        switch($filter->type) {
-            case 'lps' :
+        switch ($filter->type) {
+            case 'lps':
                 $selectors = self::get_customreport_lp_selectors();;
                 break;
-            case 'courses' :
-            default :
+            case 'courses':
+            default:
                 $selectors = self::get_customreport_course_selectors();
         }
 
@@ -814,7 +887,8 @@ class utility {
      * Get custom selectors for lps
      * @return Array Learning program array
      */
-    private static function get_customreport_lp_selectors() {
+    private static function get_customreport_lp_selectors()
+    {
         global $DB;
 
         // Get all learning programs.
@@ -828,16 +902,22 @@ class utility {
             $res->shortname = $lp['shortname'];
 
             // Prepare selector checkbox to select courses.
-            $res->select = html_writer::start_tag('span',
-                array("class" => "checkbox-custom"));
-            $res->select .= html_writer::tag('input', '',
+            $res->select = html_writer::start_tag(
+                'span',
+                array("class" => "checkbox-custom")
+            );
+            $res->select .= html_writer::tag(
+                'input',
+                '',
                 array(
                     "type" => "checkbox",
                     "name" => "customReportSelect-" . $lp['id'],
                     "data-id" => $lp['id']
                 )
             );
-            $res->select .= html_writer::tag('label', '',
+            $res->select .= html_writer::tag(
+                'label',
+                '',
                 array(
                     "class" => "selectorCheckbox-" . $lp['id'],
                     "for" => "customReportSelect-" . $lp['id']
@@ -879,7 +959,8 @@ class utility {
      * Get custom course selectors
      * @return Array Courses Array
      */
-    private static function get_customreport_course_selectors() {
+    private static function get_customreport_course_selectors()
+    {
         // Get all courses.
         $courses = self::get_courses();
 
@@ -897,16 +978,22 @@ class utility {
             $res->shortname = $course->shortname;
 
             // Prepare selector checkbox to select courses.
-            $res->select = html_writer::start_tag('span',
-                array("class" => "checkbox-custom"));
-            $res->select .= html_writer::tag('input', '',
+            $res->select = html_writer::start_tag(
+                'span',
+                array("class" => "checkbox-custom")
+            );
+            $res->select .= html_writer::tag(
+                'input',
+                '',
                 array(
                     "type" => "checkbox",
                     "name" => "customReportSelect-" . $course->id,
                     "data-id" => $course->id
                 )
             );
-            $res->select .= html_writer::tag('label', '',
+            $res->select .= html_writer::tag(
+                'label',
+                '',
                 array(
                     "class" => "selectorCheckbox-" . $course->id,
                     "for" => "customReportSelect-" . $course->id
@@ -941,7 +1028,8 @@ class utility {
      * @param  Integer        $userid   User Id
      * @return stdClass|false           enrolment information
      */
-    public static function get_course_enrolment_info($courseid, $userid) {
+    public static function get_course_enrolment_info($courseid, $userid)
+    {
         global $DB;
         $sql = "SELECT ue.*, e.enrol FROM {user_enrolments} ue
             JOIN {enrol} e ON e.id = ue.enrolid
@@ -953,15 +1041,16 @@ class utility {
      * @param  Array $lpids lp ids
      * @return Array        Courses
      */
-    public static function get_lp_courses($lpids) {
+    public static function get_lp_courses($lpids)
+    {
         global $DB;
         if (in_array(0, $lpids) || empty($lpids)) {
             return self::get_courses();
         }
         list($insql, $inparams) = $DB->get_in_or_equal($lpids, SQL_PARAMS_NAMED, 'param', true);
-        $sql = 'SELECT courses FROM {wdm_learning_program} WHERE id '.$insql;
+        $sql = 'SELECT courses FROM {wdm_learning_program} WHERE id ' . $insql;
         $lpcourses = array_values($DB->get_records_sql($sql, $inparams));
-        $catids = array_map(function($o) {
+        $catids = array_map(function ($o) {
             return $o->courses;
         }, $lpcourses);
         $coursesarr = array();
@@ -985,7 +1074,8 @@ class utility {
      * @param  Int   $lpid Lp Id
      * @return Array       Array of users
      */
-    public static function get_lp_students($lpid) {
+    public static function get_lp_students($lpid)
+    {
         global $DB;
 
         // Prepare parameters.
@@ -1008,7 +1098,8 @@ class utility {
      * @param  Array $cohortids Cohort Ids
      * @return Array            Users array
      */
-    public static function get_cohort_users($cohortids) {
+    public static function get_cohort_users($cohortids)
+    {
         global $DB;
 
         if (in_array(0, $cohortids)) {
@@ -1047,7 +1138,8 @@ class utility {
      * Get all available modules for reports
      * @return Array Modules array
      */
-    public static function get_available_reports_modules () {
+    public static function get_available_reports_modules()
+    {
         global $DB;
         $availablemod = array(
             'quiz'
@@ -1064,7 +1156,8 @@ class utility {
      * Get all available modules for reports
      * @return Array Modules array
      */
-    public static function get_reports_block() {
+    public static function get_reports_block()
+    {
         global $DB;
         $defaultreports = $DB->get_records('edwreports_blocks');
         $customreports = $DB->get_records('edwreports_custom_reports', array('enabledesktop' => 1));
@@ -1091,7 +1184,8 @@ class utility {
      * @param  Object $data Data
      * @return Array
      */
-    public static function set_block_preferences($data) {
+    public static function set_block_preferences($data)
+    {
         // Get all blocks.
         $blocks = self::get_reports_block();
 
@@ -1134,7 +1228,8 @@ class utility {
      * Rearrage block with preferences.
      * @param Array $blocks Blocks
      */
-    public static function rearrange_block_with_preferences(&$blocks) {
+    public static function rearrange_block_with_preferences(&$blocks)
+    {
         $newblocks = array();
         foreach ($blocks as $block) {
             $pref = self::get_reportsblock_preferences($block);
@@ -1154,7 +1249,8 @@ class utility {
      * @param  Object|Bool $context  Context
      * @return Array                 Array of users
      */
-    public static function get_enrolled_students($courseid, $context = false) {
+    public static function get_enrolled_students($courseid, $context = false)
+    {
         if (!$context) {
             // Get default course context.
             $context = context_course::instance($courseid);
@@ -1168,7 +1264,8 @@ class utility {
      * Get reports blocks detailed by it name
      * @param String $blockname Block Name
      */
-    public static function get_reportsblock_by_name($blockname) {
+    public static function get_reportsblock_by_name($blockname)
+    {
         global $DB;
 
         $block = new stdClass();
@@ -1185,7 +1282,8 @@ class utility {
      * Get custom report block
      * @param String $blockname Block Name
      */
-    public static function get_custom_report_block($blockname) {
+    public static function get_custom_report_block($blockname)
+    {
         global $DB;
         $customreports = $DB->get_records('edwreports_custom_reports', array('enabledesktop' => 1), '', 'id');
 
@@ -1211,7 +1309,8 @@ class utility {
      * Get reports blocks detailed by it name
      * @param String $block Block
      */
-    public static function get_reportsblock_preferences($block) {
+    public static function get_reportsblock_preferences($block)
+    {
         $prefname = 'pref_' . $block->classname;
         if ($block->classname == 'customreportsblock') {
             $prefname .= '-' . $block->id;
@@ -1245,7 +1344,8 @@ class utility {
     /**
      * Allow users preferences to save remotly
      */
-    public static function allow_update_userpreferences_remotly() {
+    public static function allow_update_userpreferences_remotly()
+    {
         global $USER;
 
         $blocks = self::get_reports_block();
@@ -1259,7 +1359,8 @@ class utility {
      * @param  Object $block Block Data
      * @return Array
      */
-    public static function get_blocks_capability($block) {
+    public static function get_blocks_capability($block)
+    {
         $context = context_system::instance();
 
         $capabilitychoices = array();
@@ -1284,7 +1385,8 @@ class utility {
      * @param  Object $data Block Data
      * @return Array
      */
-    public static function set_block_capability($data) {
+    public static function set_block_capability($data)
+    {
         global $DB;
 
         $context = context_system::instance();
@@ -1294,10 +1396,10 @@ class utility {
         unset($data->capabilities);
 
         $permissionconst = array(
-             'inherit' => CAP_INHERIT,
-             'allow' => CAP_ALLOW,
-             'prevent' => CAP_PREVENT,
-             'prohibit' => CAP_PROHIBIT
+            'inherit' => CAP_INHERIT,
+            'allow' => CAP_ALLOW,
+            'prevent' => CAP_PREVENT,
+            'prohibit' => CAP_PROHIBIT
         );
 
         $config = array();
@@ -1339,7 +1441,8 @@ class utility {
      * @param  Object $data Block Data
      * @return Array
      */
-    public static function toggle_hide_block($data) {
+    public static function toggle_hide_block($data)
+    {
         $blockname = $data->blockname;
         $hidden = $data->hidden;
 
@@ -1370,14 +1473,15 @@ class utility {
      * @param  String $blockname  Block name
      * @return Int
      */
-    public static function get_rolecap_from_context($capcontext, $role, $blockname) {
+    public static function get_rolecap_from_context($capcontext, $role, $blockname)
+    {
         global $CFG;
 
         if (strpos($blockname, 'customreportsblock') !== false) {
             $params = explode('-', $blockname);
             $classname = isset($params[0]) ? $params[0] : '';
             $blockid = isset($params[1]) ? $params[1] : '';
-            $configstr = get_config('local_edwiserreports', str_replace('block', 'roleallow' , $blockname));
+            $configstr = get_config('local_edwiserreports', str_replace('block', 'roleallow', $blockname));
             if ($configstr) {
                 $config = explode(',', $configstr);
                 $rolecap = in_array($role->id, $config) ? CAP_ALLOW : CAP_INHERIT;

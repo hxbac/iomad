@@ -10,7 +10,7 @@ if (!checkTeacherAccess($categoryid)) {
 
 $context = context_system::instance();
 $PAGE->set_context($context);
-$PAGE->set_url('/mod/giaoandientu/xem_bao_cao.php', [
+$PAGE->set_url('/local/giaoandientu/xem_bao_cao.php', [
     'categoryid' => $categoryid
 ]);
 $PAGE->set_title('Báo cáo giảng dạy');
@@ -28,7 +28,7 @@ $category = $DB->get_record('course_categories', [
 ]);
 getParentNameCategory($category->parent, $breadcrumbobj->parentname);
 $breadcrumbobj->name = $category->name;
-$breadcrumbobj->urlgiaoandientu = new moodle_url('/mod/giaoandientu');
+$breadcrumbobj->urlgiaoandientu = new moodle_url('/local/giaoandientu');
 
 $datarender = [];
 
@@ -41,7 +41,7 @@ foreach ($weeksofcategory as $weekofcategory) {
         if ($storerecord->status != -1) {
             $renderitem = (object) [];
             $renderitem->weekname = $weekofcategory->weekname;
-            $renderitem->urlhistory = new moodle_url('/mod/giaoandientu/lich_su.php', [
+            $renderitem->urlhistory = new moodle_url('/local/giaoandientu/lich_su.php', [
                 'weekid' => $weekofcategory->id,
                 'courseid' => $storerecord->courseid,
                 'userid' => $USER->id
@@ -61,7 +61,7 @@ foreach ($weeksofcategory as $weekofcategory) {
                 }
             } else {
                 $renderitem->messagestatus = '';
-                $renderitem->urlsendfile = new moodle_url('/mod/giaoandientu/gui_file.php', [
+                $renderitem->urlsendfile = new moodle_url('/local/giaoandientu/gui_file.php', [
                     'id' => $storerecord->id
                 ]);
             }
@@ -70,7 +70,7 @@ foreach ($weeksofcategory as $weekofcategory) {
     }
 }
 
-echo $OUTPUT->render_from_template('mod_giaoandientu/giaovien', [
+echo $OUTPUT->render_from_template('local_giaoandientu/giaovien', [
     'weeks' => $datarender,
     'breadcrumbobj' => $breadcrumbobj
 ]);

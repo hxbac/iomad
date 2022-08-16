@@ -1,7 +1,7 @@
 <?php
 require_once('../../config.php');
 require_once('./functions.php');
-require_once($CFG->dirroot . '/mod/giaoandientu/classes/form_send_file.php');
+require_once($CFG->dirroot . '/local/giaoandientu/classes/form_send_file.php');
 
 $id = required_param('id', PARAM_INT);
 
@@ -25,7 +25,7 @@ if ($result->startdate > $now || $result->enddate < $now) {
 
 $context = context_system::instance();
 $PAGE->set_context($context);
-$PAGE->set_url('/mod/giaoandientu/gui_file.php');
+$PAGE->set_url('/local/giaoandientu/gui_file.php');
 $PAGE->set_title('Báo cáo giảng dạy');
 $PAGE->set_heading('Nộp báo cáo giảng dạy');
 echo $OUTPUT->header();
@@ -40,7 +40,7 @@ if ($mform->is_cancelled()) {
     $itemid = (int)(date("Ymd") . rand(1,999));
     
     if ($draftitemid) {
-        file_save_draft_area_files($draftitemid, $context->id, 'mod_giaoandientu', 'giaovien',
+        file_save_draft_area_files($draftitemid, $context->id, 'local_giaoandientu', 'giaovien',
         $itemid, array('subdirs' => 0, 'maxbytes' => $maxbytes, 'maxfiles' => 1));
     }
 
@@ -62,7 +62,7 @@ if ($mform->is_cancelled()) {
     // ])->name;
     $categoryname = '';
     getParentNameCategory($categoryid, $categoryname);
-    $messageurl = new moodle_url('/mod/giaoandientu/view.php', [
+    $messageurl = new moodle_url('/local/giaoandientu/view.php', [
         'categoryid' => $result->categoryid,
         'weekid' => $result->weekid
     ]);
@@ -73,7 +73,7 @@ if ($mform->is_cancelled()) {
         sendMessageGadt($manager->id, 'Giáo viên nộp báo cáo', $message, $messagehtml, $messageurl);
     }
     
-    $returnurl = new moodle_url('/mod/giaoandientu/xem_bao_cao.php', [
+    $returnurl = new moodle_url('/local/giaoandientu/xem_bao_cao.php', [
         'categoryid' => $result->categoryid
     ]);
     redirect($returnurl);

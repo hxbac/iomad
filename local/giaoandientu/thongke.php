@@ -10,7 +10,7 @@ if (!checkManagerAccess($categoryid)) {
 
 $context = context_system::instance();
 $PAGE->set_context($context);
-$PAGE->set_url('/mod/giaoandientu/thongke.php', [
+$PAGE->set_url('/local/giaoandientu/thongke.php', [
     'categoryid' => $categoryid
 ]);
 $PAGE->set_title('Báo cáo giảng dạy');
@@ -24,7 +24,7 @@ $category = $DB->get_record('course_categories', [
 ]);
 getParentNameCategory($category->parent, $breadcrumbobj->parentname);
 $breadcrumbobj->name = $category->name;
-$breadcrumbobj->urlgiaoandientu = new moodle_url('/mod/giaoandientu');
+$breadcrumbobj->urlgiaoandientu = new moodle_url('/local/giaoandientu');
 
 $sql = "SELECT `w`.id, `w`.weekname, COUNT(*) AS `solanchuagui`  FROM `" . $CFG->prefix . "lms_gadt_storereport` `sr` JOIN `" . $CFG->prefix . "lms_gadt_weeks` `w` ON `w`.id = `sr`.weekid WHERE status = 0 AND `w`.categoryid = ". $categoryid ." GROUP BY `w`.id, `w`.weekname";
 $weeks = $DB->get_records_sql($sql);
@@ -38,7 +38,7 @@ foreach ($weeks as $week) {
     $week->data = [...$courses];
 }
 
-echo $OUTPUT->render_from_template('mod_giaoandientu/thongke', [
+echo $OUTPUT->render_from_template('local_giaoandientu/thongke', [
     'weeks' => [...$weeks],
     'breadcrumbobj' => $breadcrumbobj
 ]);

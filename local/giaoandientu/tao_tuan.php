@@ -1,7 +1,7 @@
 <?php 
 require_once("../../config.php");
 require_once("./functions.php");
-require_once($CFG->dirroot . '/mod/giaoandientu/classes/form_create_week.php');
+require_once($CFG->dirroot . '/local/giaoandientu/classes/form_create_week.php');
 
 $categoryid = required_param('categoryid', PARAM_INT);
 
@@ -11,13 +11,13 @@ if (!checkManagerAccess($categoryid)) {
 
 $context = context_system::instance();
 $PAGE->set_context($context);
-$PAGE->set_url('/mod/giaoandientu/tao_tuan.php');
+$PAGE->set_url('/local/giaoandientu/tao_tuan.php');
 $PAGE->set_title('Báo cáo giảng dạy');
 $PAGE->set_heading('Tạo tuần báo cáo');
 echo $OUTPUT->header();
 
 
-$returnurl = new moodle_url('/mod/giaoandientu/view.php', [
+$returnurl = new moodle_url('/local/giaoandientu/view.php', [
     'categoryid' => $categoryid
 ]);
 
@@ -35,7 +35,7 @@ if ($mform->is_cancelled()) {
     $categoryname = $DB->get_record('course_categories', [
         'id' => $categoryid
     ])->name;
-    $messageurl = new moodle_url('/mod/giaoandientu/xem_bao_cao.php', [
+    $messageurl = new moodle_url('/local/giaoandientu/xem_bao_cao.php', [
         'categoryid' => $fromform->categoryid
     ]);
     $message = 'Tổ trưởng đã tạo báo cáo mới.';

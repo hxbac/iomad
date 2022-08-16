@@ -37,7 +37,7 @@ $week = $DB->get_record('lms_gadt_weeks', [
 $weekname = $week->weekname;
 $categoryname = '';
 getParentNameCategory($week->categoryid, $categoryname);
-$messageurl = new moodle_url('/mod/giaoandientu/lich_su.php', [
+$messageurl = new moodle_url('/local/giaoandientu/lich_su.php', [
     'weekid' => $storefilerecord->weekid,
     'courseid' => $storefilerecord->courseid,
     'userid' => $storefilerecord->userid
@@ -46,7 +46,7 @@ $message = 'Tổ trưởng đã duyệt báo cáo.';
 $messagehtml = "<p>Tổ trưởng ". $USER->firstname ." ". $USER->lastname ." đã duyệt báo cáo của bạn cho ". $weekname ." thuộc danh mục: ". $categoryname .".<br>Trạng thái: ". $messagestatus ." <br>Click <a href='". $messageurl ."' style='text-decoration: underline;'>tại đây</a> để xem chi tiết./</p>";
 sendMessageGadt($storefilerecord->userid, 'Duyệt báo cáo', $message, $messagehtml, $messageurl);
 
-$returnurl = new moodle_url('/mod/giaoandientu/view.php', [
+$returnurl = new moodle_url('/local/giaoandientu/view.php', [
     'categoryid' => $categoryid
 ]);
 redirect($returnurl);

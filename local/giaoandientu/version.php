@@ -26,4 +26,4 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->version   = 2011062802;       // The current module version (Date: YYYYMMDDXX)
 $plugin->requires  = 2011062802;    // Requires this Moodle version
-$plugin->component = 'mod_giaoandientu'; // Full name of the plugin (used for diagnostics)
+$plugin->component = 'local_giaoandientu'; // Full name of the plugin (used for diagnostics)

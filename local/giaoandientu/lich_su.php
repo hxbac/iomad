@@ -16,7 +16,7 @@ if (!checkAccess($categoryid, $userid)) {
 
 $context = context_system::instance();
 $PAGE->set_context($context);
-$PAGE->set_url('/mod/giaoandientu/lich_su.php', [
+$PAGE->set_url('/local/giaoandientu/lich_su.php', [
     'weekid' => $weekid,
     'courseid' => $courseid,
     'userid' => $userid
@@ -49,12 +49,12 @@ $breadcrumbobj->categorycurr = $DB->get_record('course_categories', [
     'id' => $weekrecord->categoryid
 ])->name;
 $breadcrumbobj->name = $teacher->firstname . ' ' . $teacher->lastname;
-$breadcrumbobj->urlgiaoandientu = new moodle_url('/mod/giaoandientu/');
+$breadcrumbobj->urlgiaoandientu = new moodle_url('/local/giaoandientu/');
 $breadcrumbobj->course = $coursename;
 
 foreach ($storerecords as $item) {
     $fs = get_file_storage();
-    $files = $fs->get_area_files($item->contextid, 'mod_giaoandientu', 'giaovien', $item->itemid, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
+    $files = $fs->get_area_files($item->contextid, 'local_giaoandientu', 'giaovien', $item->itemid, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
     foreach ($files as $file) {
         $filename = $file->get_filename();
         $item->urldownload = moodle_url::make_pluginfile_url(
@@ -83,7 +83,7 @@ foreach ($storerecords as $item) {
     }
 }
 
-echo $OUTPUT->render_from_template('mod_giaoandientu/lichsu', [
+echo $OUTPUT->render_from_template('local_giaoandientu/lichsu', [
     'storerecords' => [...$storerecords],
     'breadcrumbobj' => $breadcrumbobj,
     'weekname' => $weekname,

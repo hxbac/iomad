@@ -6,7 +6,7 @@ require_login();
 
 $context = context_system::instance();
 $PAGE->set_context($context);
-$PAGE->set_url('/mod/giaoandientu/index.php');
+$PAGE->set_url('/local/giaoandientu/index.php');
 $PAGE->set_title('Báo cáo giảng dạy');
 $PAGE->set_heading('Quản lý báo cáo giảng dạy');
 echo $OUTPUT->header();
@@ -34,7 +34,7 @@ foreach ($categoriesSendFilter as $categoryrecord) {
         'id' => $categoryrecord->categoryid
     ]);
     $categoryrecord->name = $categoryinfo->name;
-    $categoryrecord->url = new moodle_url('/mod/giaoandientu/xem_bao_cao.php', [
+    $categoryrecord->url = new moodle_url('/local/giaoandientu/xem_bao_cao.php', [
         'categoryid' => $categoryrecord->categoryid
     ]);
     $sqlq = "SELECT COUNT(*) as `solanconlai` FROM `".$CFG->prefix."lms_gadt_storereport` `sr` JOIN `".$CFG->prefix."lms_gadt_weeks` `w` ON `sr`.weekid = `w`.id  WHERE `status` = 0 AND `sr`.`userid` = " . $USER->id . " AND `categoryid` = " . $categoryrecord->categoryid;
@@ -63,10 +63,10 @@ foreach ($categoriesManagerFilter as $categoryrecord) {
         'id' => $categoryrecord->categoryid
     ]);
     $categoryrecord->name = $categoryinfo->name;
-    $categoryrecord->url = new moodle_url('/mod/giaoandientu/view.php', [
+    $categoryrecord->url = new moodle_url('/local/giaoandientu/view.php', [
         'categoryid' => $categoryrecord->categoryid
     ]);
-    $categoryrecord->urlthongke = new moodle_url('/mod/giaoandientu/thongke.php', [
+    $categoryrecord->urlthongke = new moodle_url('/local/giaoandientu/thongke.php', [
         'categoryid' => $categoryrecord->categoryid
     ]);
     $sqlq = "SELECT COUNT(*) as `solanconlai` FROM `".$CFG->prefix."lms_gadt_storereport` `sr` JOIN `".$CFG->prefix."lms_gadt_weeks` `w` ON `sr`.weekid = `w`.id  WHERE `status` = 1 AND `feedback` is null AND `categoryid` = " . $categoryrecord->categoryid;
@@ -76,7 +76,7 @@ foreach ($categoriesManagerFilter as $categoryrecord) {
     getParentNameCategory($categoryinfo->parent, $categoryrecord->parentname);
 }
 
-echo $OUTPUT->render_from_template('mod_giaoandientu/index', [
+echo $OUTPUT->render_from_template('local_giaoandientu/index', [
     'categorysend' => [...$categoriesSendFilter],
     'checksendrecord' => $checksendrecord,
     'categorymanager' => [...$categoriesManagerFilter],

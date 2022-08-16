@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
 
-    'mod/giaoandientu:view' => array(
+    'local/giaoandientu:view' => array(
         'riskbitmask' => RISK_XSS,
 
         'captype' => 'write',

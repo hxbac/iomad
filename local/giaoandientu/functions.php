@@ -15,7 +15,7 @@ function getCategoriesRenderManager(&$datarendercategories, $categories) {
         } else {
             $category->checked = true;
         }
-        $category->urlhandlemanager = new moodle_url('/mod/giaoandientu/handle_manager.php', [
+        $category->urlhandlemanager = new moodle_url('/local/giaoandientu/handle_manager.php', [
             'categoryid' => $category->id
         ]);
         $splitpath = explode('/', $category->path);
@@ -125,6 +125,36 @@ function checkPrincipal($categoryid) {
     return false;
 }
 
+function checkPrincipalAccessChild($categoryid) {
+    global $USER;
+    require_login();
+    
+    $school = getSchoolByChildCategoryid($categoryid);
+    $principals = getPrincipals($school->id);
+    foreach ($principals as $principal) {
+        if ($principal->id == $USER->id) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function getSchoolByChildCategoryid($categoryid) {
+    global $DB;
+
+    $category = $DB->get_record('course_categories', [
+        'id' => $categoryid
+    ]);
+    $categoryparent = $DB->get_record('course_categories', [
+        'id' => $category->parent
+    ]);
+    if ($categoryparent->parent != 0) {
+        return getSchoolByChildCategoryid($categoryparent->id);
+    } else {
+        return $categoryparent;
+    }
+}
+
 function sendMessageGadt($usertoid, $action, $message, $messagehtml, $url) {
     global $DB;
     $eventdata = new \core\message\message();
@@ -141,7 +171,7 @@ function sendMessageGadt($usertoid, $action, $message, $messagehtml, $url) {
     $eventdata->smallmessage     = $action;
 
     $eventdata->name            = 'giaoandientu_notification';
-    $eventdata->component       = 'mod_giaoandientu';
+    $eventdata->component       = 'local_giaoandientu';
     $eventdata->notification    = 1;
     $eventdata->contexturl      = $url->out(false);
     $eventdata->contexturlname  = 'Xem chi tiết';
@@ -150,7 +180,7 @@ function sendMessageGadt($usertoid, $action, $message, $messagehtml, $url) {
     $userpicture = new user_picture($eventdata->userto);
     $userpicture->size = 1; // Use f1 size.
     $userpicture->includetoken = $eventdata->userto->id; // Generate an out-of-session token for the user receiving the message.
-    $customdata['notificationiconurl'] = (new moodle_url('/mod/giaoandientu/pix/icon.svg'))->out(false);
+    $customdata['notificationiconurl'] = (new moodle_url('/local/giaoandientu/pix/icon.svg'))->out(false);
     $eventdata->customdata = $customdata;
     message_send($eventdata);
 }
