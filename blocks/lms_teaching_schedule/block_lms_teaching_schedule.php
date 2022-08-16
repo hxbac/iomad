@@ -56,7 +56,7 @@ class block_lms_teaching_schedule extends block_base
         $schoolsOfPrincipal = block_lms_teaching_schedule::getSchoolsOfPrincipal();
         $this->content->text = "<div>Quản lý hoạt động danh mục</div>";
         foreach ($schoolsOfPrincipal as $school) {
-            $urlmanager = new moodle_url('/mod/giaoandientu/quan_ly.php', [
+            $urlmanager = new moodle_url('/local/giaoandientu/quan_ly.php', [
                 'categoryid' => $school->id
             ]);
             $this->content->text = "<a href='".$urlmanager."'>". $school->name ."</a>";
@@ -69,7 +69,7 @@ class block_lms_teaching_schedule extends block_base
         } else {
             $this->content->text .= "<p class='text-center'>Có " . $storerecordofuser->solanconlai . " nhiệm vụ chưa hoàn thành!</p>";
         }
-        $urlgadt = new moodle_url('/mod/giaoandientu');
+        $urlgadt = new moodle_url('/local/giaoandientu');
         $this->content->text .= "<a href='" . $urlgadt . "'>Đi tới trang quản lý giáo án</a>";
         
 
