@@ -47,7 +47,7 @@ class customreportsblock extends block_base {
      * @return object         Response object
      */
     public function get_data($params = false) {
-        global $DB;
+        global $DB, $CFG, $USER;
 
         $fields = $params->fields;
         $courses = $params->courses;
@@ -79,8 +79,25 @@ class customreportsblock extends block_base {
             $params = array_merge($params, $uparams);
         }
 
+        // $schools = $DB->get_records('course_categories', [
+        //     'parent' => 0
+        // ]);
+        // $schools = array_filter([...$schools], function ($school) {
+        //     global $DB, $USER;
+        //     $roleprincipal = $DB->get_record('role', [
+        //         'shortname' => 'hieutruong'
+        //     ]);
+        //     $context = \context_coursecat::instance($school->id);
+        //     $principals = get_role_users($roleprincipal->id, $context);
+        //     foreach ($principals as $principal) {
+        //         if ($USER->id == $principal->id) {
+        //             return true;
+        //         }
+        //     }
+        //     return false;
+        // });
         // Main query to execute the custom query reports.
-        $sql = 'SELECT '.$customfields.'
+        $sql = 'SELECT '.$customfields.', `ctg`.`path` AS `pathcategory`
                 FROM {user} u
                 JOIN {role_assignments} ra ON ra.userid = u.id
                 JOIN {role} r ON r.id = ra.roleid
@@ -95,10 +112,42 @@ class customreportsblock extends block_base {
                 AND r.archetype = \'student\'
                 AND u.deleted = 0';
 
+        // if (count($schools) != 0) {
+        //     $listcategoryofschools = [];
+        //     foreach ($schools as $school) {
+        //         $sql = "SELECT * FROM `". $CFG->prefix ."course_categories` WHERE `path` LIKE '/". $school->id ."/%' ORDER BY `path`";
+        //         $childcategories = $DB->get_records_sql($sql);
+        //         foreach ($childcategories as $item) {
+        //             array_push($listcategoryofschools, $item->id);
+        //         }
+        //     }
+
+        //     $conditionString = implode(',', $listcategoryofschools);
+        //     $sql = 'SELECT '.$customfields.', `ctg`.`path` AS `pathcategory`
+        //             FROM {user} u
+        //             JOIN {role_assignments} ra ON ra.userid = u.id
+        //             JOIN {role} r ON r.id = ra.roleid
+        //             JOIN {context} ct ON ct.id = ra.contextid
+        //             JOIN {course} c ON c.id = ct.instanceid
+        //             JOIN {edwreports_course_progress} ec ON ec.courseid = c.id AND ec.userid = u.id AND c.id '.$coursedb.'
+        //             JOIN {course_categories} ctg ON ctg.id = c.category
+        //             JOIN {course_format_options} cfo ON c.id = cfo.courseid
+        //             JOIN {enrol} e ON c.id = e.courseid AND e.status = 0
+        //             WHERE u.id '.$userdb.'
+        //             AND ct.contextlevel = '.CONTEXT_COURSE.'
+        //             AND r.archetype = \'student\'
+        //             AND u.deleted = 0
+        //             AND c.category IN ('. $conditionString .')';
+        // }
+
         $recordset = $DB->get_recordset_sql($sql, $params);
         $records = array();
-        while ($recordset->key()) {
-            $record = $recordset->current();
+        foreach ($recordset as $record) {
+            if ($record->coursename != null) {
+                $record->coursename = '<span style="position: absolute; visibility: hidden;">' . $record->pathcategory . '</span>' . $record->coursename;
+                unset($record->pathcategory);
+            }
+
             if (!empty($resultfunc)) {
                 foreach ($resultfunc as $id => $func) {
                     $record->$id = $func($record->$id);
@@ -108,8 +157,21 @@ class customreportsblock extends block_base {
             if (!in_array($record, $records)) {
                 $records[] = $record;
             }
-            $recordset->next();
+            
         }
+        // while ($recordset->key()) {
+        //     $record = $recordset->current();
+            // if (!empty($resultfunc)) {
+            //     foreach ($resultfunc as $id => $func) {
+            //         $record->$id = $func($record->$id);
+            //     }
+            // }
+
+            // if (!in_array($record, $records)) {
+            //     $records[] = $record;
+            // }
+            // $recordset->next();
+        // }
 
         $return = new stdClass();
         $return->columns = $columns;

@@ -1,128 +1,237 @@
 {{!
-    This file is part of Moodle - http://moodle.org/
+This file is part of Moodle - http://moodle.org/
 
-    Moodle is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Moodle is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    Moodle is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+Moodle is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-    Edwiser RemUI
-    @package   theme_remui
-    @copyright (c) 2020 WisdmLabs (https://wisdmlabs.com/)
-    @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+Edwiser RemUI
+@package theme_remui
+@copyright (c) 2020 WisdmLabs (https://wisdmlabs.com/)
+@license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 
 }}
 {{!
-    @template theme_remui/activity_navigation
+@template theme_remui/activity_navigation
 
-    Display the activity navigation for all activities in a course
+Display the activity navigation for all activities in a course
 
-    Context variables required for this template:
+Context variables required for this template:
 
-    Example context (json):
-    {
-    }
+Example context (json):
+{
+}
 }}
 <div id="wdm-edwiserreports" class="row m-0 d-none" data-editing="{{ editing }}">
     {{# blocks }}
-        <div class="{{{extraclasses}}} mb-5 edwiserReport-block {{# hiddenblock }} block-hidden {{/ hiddenblock}}">
-            <div id="{{id}}" data-sesskey="{{sesskey}}" data-blockname="{{name}}">
-                <div class="panel m-0">
-                    <div class="panel-header d-flex">
-                        <div class="panel-title px-0 col-10">
-                            <strong class="mb-1">
-                                {{{name}}}
-                                <a href="javascript:void(0)" data-title="{{info}}" class="small" data-toggle="tooltip" data-trigger="hover" data-placement="bottom">
-                                    <i class="fa fa-question-circle"></i>
-                                </a>
-                            </strong>
+    <div class="{{{extraclasses}}} mb-5 edwiserReport-block {{# hiddenblock }} block-hidden {{/ hiddenblock}}">
+        <div id="{{id}}" data-sesskey="{{sesskey}}" data-blockname="{{name}}">
+            <div class="panel m-0">
+                <div class="panel-header d-flex">
+                    <div class="panel-title px-0 col-10">
+                        <strong class="mb-1">
+                            {{{name}}}
+                            <a href="javascript:void(0)" data-title="{{info}}" class="small" data-toggle="tooltip"
+                                data-trigger="hover" data-placement="bottom">
+                                <i class="fa fa-question-circle"></i>
+                            </a>
+                        </strong>
 
-                            <div class="block-filters">{{{ filters }}}</div>
-                        </div>
-                        {{# editopt }}
-                        <div class="col-2 p-0">
-                            {{> local_edwiserreports/blocksettingdropdown }}
-                        </div>
-                        {{/ editopt }}
+                        <div class="block-filters">{{{ filters }}}</div>
                     </div>
-                    <div class="panel-body p-0">
-                        {{{ blockview }}}
-                        <div class="loader w-full text-center">
-                            {{# pix }} loader, local_edwiserreports{{/ pix }}
-                        </div>
-                        {{#iscustomblock}}
-                            <table class="table customreportdata w-full"></table>
-                        {{/iscustomblock}}
+                    {{# editopt }}
+                    <div class="col-2 p-0">
+                        {{> local_edwiserreports/blocksettingdropdown }}
                     </div>
-                    <div class="panel-footer row m-0">
-                        {{# morelink }}
-                            <div class="">
-                                <a href="{{{.}}}" class="btn btn-primary btn-sm">{{#str}} more, local_edwiserreports {{/str}}</a>
-                            </div>
-                        {{/ morelink }}
-                        {{# hasdownloadlink }}
-                            {{> local_edwiserreports/exportreports }}
-                        {{/ hasdownloadlink }}
+                    {{/ editopt }}
+                </div>
+                <div class="panel-body p-0">
+                    {{{ blockview }}}
+                    <div class="loader w-full text-center">
+                        {{# pix }} loader, local_edwiserreports{{/ pix }}
                     </div>
+                    {{#iscustomblock}}
+                    <table class="table customreportdata w-full"></table>
+                    {{/iscustomblock}}
+                </div>
+                <div class="panel-footer row m-0">
+                    {{# morelink }}
+                    <div class="">
+                        <a href="{{{.}}}" class="btn btn-primary btn-sm">{{#str}} more, local_edwiserreports
+                            {{/str}}</a>
+                    </div>
+                    {{/ morelink }}
+                    {{# hasdownloadlink }}
+                    {{> local_edwiserreports/exportreports }}
+                    {{/ hasdownloadlink }}
                 </div>
             </div>
         </div>
-        {{#iscustomblock}}
-            {{#js}}
-                require([
-                    'jquery',
-                    'core/ajax',
-                    'local_edwiserreports/customreportsblock'
-                ], function(
-                    $,
-                    ajax,
-                    customreportsblock
-                ) {
-                    var tableId = '#{{{id}}} table.customreportdata'
+    </div>
+    {{#iscustomblock}}
+    {{#js}}
+    require([
+    'jquery',
+    'core/ajax',
+    'local_edwiserreports/customreportsblock'
+    ], function(
+    $,
+    ajax,
+    customreportsblock
+    ) {
+    var tableId = '#{{{id}}} table.customreportdata'
 
-                    $(document).ready(function() {
-                        var getCustomReportsData = ajax.call([{
-                            methodname: 'local_edwiserreports_get_customreports_data',
-                            args: {
-                                params: JSON.stringify({{{params}}})
-                            }
-                        }]);
+    $(document).ready(function() {
+    var getCustomReportsData = ajax.call([{
+    methodname: 'local_edwiserreports_get_customreports_data',
+    args: {
+    params: JSON.stringify({{{params}}})
+    }
+    }]);
 
-                        getCustomReportsData[0].done(function(response) {
-                            if (response.success) {
-                                var data = JSON.parse(response.data);
-                                $(tableId).DataTable({
-                                    columns: data.columns,
-                                    data: data.reportsdata,
-                                    bInfo: false,
-                                    lengthChange: false,
-                                    language: { 
-                                        searchPlaceholder: "{{#str}}searchreports, local_edwiserreports{{/str}}",
-                                        emptyTable: "{{#str}}noresult, local_edwiserreports{{/str}}"
-                                    },
-                                    drawCallback: function() {
-                                        $('.dataTables_paginate > .pagination').addClass('pagination-sm pull-right');
-                                        $('.dataTables_filter').addClass('pagination-sm pull-right');
-                                    }
-                                });
-                            }
-                        });
-                    });
-                });
-            {{/js}}
-        {{/iscustomblock}}
+    getCustomReportsData[0].done(function(response) {
+    if (response.success) {
+    var data = JSON.parse(response.data);
+    $(tableId).DataTable({
+    columns: data.columns,
+    data: data.reportsdata,
+    bInfo: false,
+    lengthChange: false,
+    language: {
+    searchPlaceholder: "{{#str}}searchreports, local_edwiserreports{{/str}}",
+    emptyTable: "{{#str}}noresult, local_edwiserreports{{/str}}"
+    },
+    drawCallback: function() {
+    $('.dataTables_paginate > .pagination').addClass('pagination-sm pull-right');
+    $('.dataTables_filter').addClass('pagination-sm pull-right');
+    }
+    });
+    }
+    });
+    });
+    });
+    {{/js}}
+    {{/iscustomblock}}
     {{/ blocks }}
     {{# canmanagecustomreports }}
-        <div class="col-12">
-            <a href="{{customreportseditlink}}" class="btn btn-primary pull-right">
-                <i class="icon fa fa-plus fa-fw " aria-hidden="true"></i>
-                {{#str}} createcustomreports, local_edwiserreports {{/str}}
-            </a>
-        </div>
+    <div class="col-12">
+        <a href="{{customreportseditlink}}" class="btn btn-primary pull-right">
+            <i class="icon fa fa-plus fa-fw " aria-hidden="true"></i>
+            {{#str}} createcustomreports, local_edwiserreports {{/str}}
+        </a>
+    </div>
     {{/ canmanagecustomreports }}
 </div>
+
+
+<script>
+    const blocks = document.querySelectorAll('.edwiserReport-block')
+    blocks.forEach(block => {
+        const firstChild = block.firstElementChild
+        if (firstChild.nodeName == 'DIV' && firstChild.id.includes('customreportsblock')) {
+            const awaitDatatabeLoaded = setInterval(() => {
+                const divCustomWrapper = firstChild.querySelector('.panel .panel-body .dataTables_wrapper')
+                if (divCustomWrapper != null) {
+                    const domain = window.location.origin;
+                    const parentDivCustom = divCustomWrapper.firstElementChild
+                    const divCustom = parentDivCustom.firstElementChild
+                    const divNextDivParentCustom = divCustom.nextSibling
+                    const inputSearchDefault = divNextDivParentCustom.querySelector('input')
+                    const cssDivCustom = `display: flex;
+                                            align-items: center;
+                                            justify-content: space-around;`
+
+                    divCustom.style.cssText += cssDivCustom
+
+                    const yearSelector = document.createElement('select')
+                    yearSelector.setAttribute('class', 'form-control')
+                    yearSelector.style.cssText += `width: 45%`
+
+                    const semesterSelector = document.createElement('select')
+                    semesterSelector.setAttribute('class', 'form-control')
+                    semesterSelector.style.cssText += `width: 45%`
+
+                    divCustom.appendChild(yearSelector)
+                    divCustom.appendChild(semesterSelector)
+
+                    const inputSearchNew = document.createElement('input')
+                    inputSearchNew.setAttribute('type', 'text')
+                    inputSearchNew.setAttribute('class', 'form-control')
+                    inputSearchNew.setAttribute('placeholder', 'Tìm kiếm theo tên')
+                    inputSearchNew.style.cssText += `width: 45%`
+                    divNextDivParentCustom.appendChild(inputSearchNew)
+                    inputSearchDefault.style.cssText += `visibility: hidden;`
+                    fetch(domain + '/local/edwiserreports/lms_custom_api_get_year.php', {
+                        method: 'POST', // or 'PUT'
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify([]),
+                    })
+                        .then((response) => response.json())
+                        .then((dataRes) => {
+                            if (dataRes.message == 'success') {
+                                let yearHTML = '<option value="">Chọn năm</option>'
+                                dataRes.data.forEach(year => {
+                                    yearHTML += `<option value="${year.id}">${year.name}</option>`
+                                })
+                                yearSelector.innerHTML = yearHTML
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        })
+                    
+                    yearSelector.addEventListener('change', handleChangeYearSelector)
+                    let yearId = 0
+                    function handleChangeYearSelector() {
+                        yearId = Number(yearSelector.value)
+
+                        fetch(domain + '/local/edwiserreports/lms_custom_api_get_semester.php?yearId=' + yearId, {
+                            method: 'POST', // or 'PUT'
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify([]),
+                        })
+                            .then((response) => response.json())
+                            .then((dataRes) => {
+                                if (dataRes.message == 'success') {
+                                    let semesterHTML = '<option value="">Chọn kỳ</option>'
+                                    dataRes.data.forEach(semester => {
+                                        semesterHTML += `<option value="${semester.id}">${semester.name}</option>`
+                                    })
+                                    semesterSelector.innerHTML = semesterHTML
+                                }
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                            })
+                        triggerEventInputDefault()
+                    }
+
+                    function triggerEventInputDefault() {
+                        let yearString = yearSelector.value
+                        let semesterString = semesterSelector.value
+                        let searchString = inputSearchNew.value
+
+                        inputSearchDefault.value = yearString + ' ' + semesterString + ' ' + searchString
+                        inputSearchDefault.dispatchEvent(new Event('input', { bubbles: true }))
+                    }
+
+                    semesterSelector.addEventListener('change', triggerEventInputDefault)
+
+                    inputSearchNew.addEventListener('input', triggerEventInputDefault)
+
+                    clearInterval(awaitDatatabeLoaded)
+                }
+            }, 200)
+        }
+    })
+</script>
