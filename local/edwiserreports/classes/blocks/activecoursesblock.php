@@ -105,46 +105,54 @@ class activecoursesblock extends block_base {
 
         $courses = get_courses();
 
-        $schools = $DB->get_records('course_categories', [
-            'parent' => 0
-        ]);
-        $schools = array_filter([...$schools], function ($school) {
-            global $DB, $USER;
-            $roleprincipal = $DB->get_record('role', [
-                'shortname' => 'hieutruong'
-            ]);
-            $context = \context_coursecat::instance($school->id);
-            $principals = get_role_users($roleprincipal->id, $context);
-            foreach ($principals as $principal) {
-                if ($USER->id == $principal->id) {
-                    return true;
-                }
-            }
-            return false;
-        });
-        if (count($schools) != 0) {
-            $listcategoryofschools = [];
-            foreach ($schools as $school) {
-                $sql = "SELECT * FROM `". $CFG->prefix ."course_categories` WHERE `path` LIKE '/". $school->id ."/%' ORDER BY `path`";
-                $childcategories = $DB->get_records_sql($sql);
-                foreach ($childcategories as $item) {
-                    array_push($listcategoryofschools, $item->id);
-                }
-            }
-            $conditionString = implode(',', $listcategoryofschools);
-            $sqlcourses = "SELECT `c`.*, `cc`.`path` as `pathcategory` FROM `". $CFG->prefix ."course` `c` LEFT JOIN `". $CFG->prefix ."course_categories` `cc` ON `c`.category = `cc`.`id` WHERE `c`.`category` IN (". $conditionString .") ORDER BY `path` ASC LIMIT 0, 1000";
-            $courses = $DB->get_records_sql($sqlcourses);
-            foreach ($courses as $course) {
-                $listcategoryid = explode('/', $course->pathcategory);
-                array_shift($listcategoryid);
-                $categoryname = '';
-                foreach ($listcategoryid as $categoryid) {
-                    $categoryname .= ($DB->get_record('course_categories', [
-                        'id' => $categoryid
-                    ])->name) . ' / ';
-                }
-                $course->fullname = $categoryname . $course->fullname;
-            }
+        // $schools = $DB->get_records('course_categories', [
+        //     'parent' => 0
+        // ]);
+        // $schools = array_filter([...$schools], function ($school) {
+        //     global $DB, $USER;
+        //     $roleprincipal = $DB->get_record('role', [
+        //         'shortname' => 'hieutruong'
+        //     ]);
+        //     $context = \context_coursecat::instance($school->id);
+        //     $principals = get_role_users($roleprincipal->id, $context);
+        //     foreach ($principals as $principal) {
+        //         if ($USER->id == $principal->id) {
+        //             return true;
+        //         }
+        //     }
+        //     return false;
+        // });
+        // if (count($schools) != 0) {
+        //     $listcategoryofschools = [];
+        //     foreach ($schools as $school) {
+        //         $sql = "SELECT * FROM `". $CFG->prefix ."course_categories` WHERE `path` LIKE '/". $school->id ."/%' ORDER BY `path`";
+        //         $childcategories = $DB->get_records_sql($sql);
+        //         foreach ($childcategories as $item) {
+        //             array_push($listcategoryofschools, $item->id);
+        //         }
+        //     }
+        //     $conditionString = implode(',', $listcategoryofschools);
+        //     $sqlcourses = "SELECT `c`.*, `cc`.`path` as `pathcategory` FROM `". $CFG->prefix ."course` `c` LEFT JOIN `". $CFG->prefix ."course_categories` `cc` ON `c`.category = `cc`.`id` WHERE `c`.`category` IN (". $conditionString .") ORDER BY `path` ASC LIMIT 0, 1000";
+        //     $courses = $DB->get_records_sql($sqlcourses);
+        //     foreach ($courses as $course) {
+        //         $listcategoryid = explode('/', $course->pathcategory);
+        //         array_shift($listcategoryid);
+        //         $categoryname = '';
+        //         foreach ($listcategoryid as $categoryid) {
+        //             $categoryname .= ($DB->get_record('course_categories', [
+        //                 'id' => $categoryid
+        //             ])->name) . ' / ';
+        //         }
+        //         $course->fullname = $categoryname . $course->fullname;
+        //     }
+        // }
+
+        
+        $sqlcourses = "SELECT `c`.*, `cc`.`path` as `pathcategory` FROM `". $CFG->prefix ."course` `c` LEFT JOIN `". $CFG->prefix ."course_categories` `cc` ON `c`.category = `cc`.`id` LIMIT 0, 1000";
+        $courses = $DB->get_records_sql($sqlcourses);
+
+        foreach($courses as $course) {
+            $course->fullname = '<span style="position: absolute; visibility: hidden;">'. $course->pathcategory .' / </span>' . $course->fullname;
         }
 
         $count = 1;

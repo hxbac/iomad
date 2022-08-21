@@ -411,5 +411,76 @@ Example context (json):
 
             }, 500)
         }
+    
+        if (firstChild.nodeName == 'DIV' && firstChild.id == 'activecoursesblock') {
+            const awaitDatatableLoaded = setInterval(() => {
+                const divCustomWrapper = firstChild.querySelector('.panel .panel-body .dataTables_wrapper')
+                if (divCustomWrapper != null) {
+                    const inputDefault = divCustomWrapper.querySelector('.dataTables_filter input')
+                    inputDefault.style.cssText += 'display: none;'
+
+                    const divCustom = document.createElement('div')
+                    divCustom.setAttribute('class', 'row')
+                    divCustomWrapper.insertBefore(divCustom, divCustomWrapper.firstChild)
+
+                    // create year selector into div wrapper
+                    const yearSelector = document.createElement('select')
+                    yearSelector.setAttribute('class', 'form-control')
+                    yearSelector.style.cssText += `margin-bottom: 16px;`
+                    divCustom.appendChild(yearSelector)
+
+                    // create semester selector into div wrapper
+                    const semesterSelector = document.createElement('select')
+                    semesterSelector.setAttribute('class', 'form-control')
+                    semesterSelector.style.cssText += `margin-bottom: 16px;`
+                    divCustom.appendChild(semesterSelector)
+
+                    // create search input into div wrapper
+                    const inputSearchNew = document.createElement('input')
+                    inputSearchNew.setAttribute('class', 'form-control')
+                    inputSearchNew.setAttribute('placeholder', 'Tìm kiếm')
+                    divCustom.appendChild(inputSearchNew)
+
+                    fetchGetDataYear(domain, yearSelector)
+
+                    function handleYearSelect() {
+                        const awaitYearSelectLoaded = setInterval(function () {
+                            if (yearSelector.value) {
+                                fetchDataSemester(domain, semesterSelector, yearSelector.value)
+                                semesterSelector.dispatchEvent(new Event('change'))
+                                clearInterval(awaitYearSelectLoaded)
+                            }
+                        }, 200)
+                    }
+
+                    yearSelector.addEventListener('change', handleYearSelect)
+
+                    semesterSelector.addEventListener('change', function () {
+                        const awaitSemesterLoaded = setInterval(function () {
+                            if (semesterSelector.value) {
+                                handleChangeValue()
+                                clearInterval(awaitSemesterLoaded)
+                            }
+                        }, 200)
+                    })
+
+                    inputSearchNew.addEventListener('input', handleChangeValue)
+
+                    function handleChangeValue() {
+                        let yearValue = yearSelector.value ?? ''
+                        let semesterValue = semesterSelector.value ?? ''
+                        let searchValue = inputSearchNew.value ?? ''
+                        
+                        inputDefault.value = `${yearValue} ${semesterValue} ${searchValue}`
+                        inputDefault.dispatchEvent(new Event('input', { bubbles: true }))
+                    }
+
+                    // handleYearSelect()
+                    yearSelector.dispatchEvent(new Event('change', { bubbles: true }))
+
+                    clearInterval(awaitDatatableLoaded)
+                }
+            }, 500)
+        }
     })
 </script>
