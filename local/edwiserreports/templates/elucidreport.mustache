@@ -131,14 +131,137 @@ Example context (json):
 
 
 <script>
+
+    function fetchGetDataYear(domain, yearSelector) {
+        fetch(domain + '/local/edwiserreports/lms_custom_api_get_year.php', {
+            method: 'POST', // or 'PUT'
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify([]),
+        })
+            .then((response) => response.json())
+            .then((dataRes) => {
+                if (dataRes.message == 'success') {
+                    let yearHTML = ''
+                    let i = 0
+                    dataRes.data.forEach(year => {
+                        yearHTML += `<option value="${year.id}" ${i === 0 ? 'selected' : ''}">${year.name}</option>`
+                        i++
+                    })
+                    
+                    if (i === 0) {
+                        yearHTML = `<option value="0"}>Không có dữ liệu</option>`
+                    }
+
+                    yearSelector.innerHTML = yearHTML
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            })
+    }
+
+    function fetchDataSemester(domain, semesterSelector, yearId) {
+        fetch(domain + '/local/edwiserreports/lms_custom_api_get_semester.php?yearId=' + yearId, {
+            method: 'POST', // or 'PUT'
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify([]),
+        })
+            .then((response) => response.json())
+            .then((dataRes) => {
+                if (dataRes.message == 'success') {
+                    let semesterHTML = ''
+                    let i = 0
+                    dataRes.data.forEach(semester => {
+                        semesterHTML += `<option value="${semester.id}" ${i === 0 ? 'selected' : ''}>${semester.name}</option>`
+                        i++
+                    })
+                    
+                    if (i === 0) {
+                        semesterHTML = `<option value="0"}>Không có dữ liệu</option>`
+                    }
+
+                    semesterSelector.innerHTML = semesterHTML
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            })
+    }
+
+    function fetchDataSubjectManage(domain, subjectManageSelector, semesterId) {
+        fetch(domain + '/local/edwiserreports/lms_custom_api_get_subjectManage.php?semesterId=' + semesterId, {
+            method: 'POST', // or 'PUT'
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify([]),
+        })
+            .then((response) => response.json())
+            .then((dataRes) => {
+                if (dataRes.message == 'success') {
+                    let subjectManageHTML = ''
+                    let i = 0
+                    dataRes.data.forEach(subjectManage => {
+                        subjectManageHTML += `<option value="${subjectManage.id}" ${i === 0 ? 'selected' : ''}>${subjectManage.name}</option>`
+                        i++
+                    })
+                    if (i === 0) {
+                        subjectManageHTML = `<option value="0"}>Không có dữ liệu</option>`
+                    }
+                    subjectManageSelector.innerHTML = subjectManageHTML
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            })
+    }
+
+    function fetchDataSubject(domain, subjectSelector, subjectManageId) {
+        if (subjectManageId != 0) {
+            fetch(domain + '/local/edwiserreports/lms_custom_api_get_subject.php?subjectManageId=' + subjectManageId, {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify([]),
+            })
+                .then((response) => response.json())
+                .then((dataRes) => {
+                    if (dataRes.message == 'success') {
+                        let subjectHTML = ''
+                        let i = 0
+                        dataRes.data.forEach(subject => {
+                            subjectHTML += `<option value="${subject.id}" ${i === 0 ? 'selected' : ''}>${subject.name}</option>`
+                            i++
+                        })
+                        
+                        if (i === 0) {
+                            subjectHTML = `<option value="0"}>Không có dữ liệu</option>`
+                        }
+    
+                        subjectSelector.innerHTML = subjectHTML
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                })
+        } else {
+            subjectSelector.innerHTML = `<option value="0"}>Không có dữ liệu</option>`
+        }
+    }
+
+    const domain = window.location.origin;
     const blocks = document.querySelectorAll('.edwiserReport-block')
     blocks.forEach(block => {
         const firstChild = block.firstElementChild
         if (firstChild.nodeName == 'DIV' && firstChild.id.includes('customreportsblock')) {
-            const awaitDatatabeLoaded = setInterval(() => {
+            const awaitDatatableLoaded = setInterval(() => {
                 const divCustomWrapper = firstChild.querySelector('.panel .panel-body .dataTables_wrapper')
                 if (divCustomWrapper != null) {
-                    const domain = window.location.origin;
                     const parentDivCustom = divCustomWrapper.firstElementChild
                     const divCustom = parentDivCustom.firstElementChild
                     const divNextDivParentCustom = divCustom.nextSibling
@@ -167,52 +290,15 @@ Example context (json):
                     inputSearchNew.style.cssText += `width: 45%`
                     divNextDivParentCustom.appendChild(inputSearchNew)
                     inputSearchDefault.style.cssText += `visibility: hidden;`
-                    fetch(domain + '/local/edwiserreports/lms_custom_api_get_year.php', {
-                        method: 'POST', // or 'PUT'
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify([]),
-                    })
-                        .then((response) => response.json())
-                        .then((dataRes) => {
-                            if (dataRes.message == 'success') {
-                                let yearHTML = '<option value="">Chọn năm</option>'
-                                dataRes.data.forEach(year => {
-                                    yearHTML += `<option value="${year.id}">${year.name}</option>`
-                                })
-                                yearSelector.innerHTML = yearHTML
-                            }
-                        })
-                        .catch((error) => {
-                            console.error('Error:', error);
-                        })
-                    
+
+                    fetchGetDataYear(domain, yearSelector)
+
                     yearSelector.addEventListener('change', handleChangeYearSelector)
                     let yearId = 0
                     function handleChangeYearSelector() {
                         yearId = Number(yearSelector.value)
+                        fetchDataSemester(domain, semesterSelector, yearId)
 
-                        fetch(domain + '/local/edwiserreports/lms_custom_api_get_semester.php?yearId=' + yearId, {
-                            method: 'POST', // or 'PUT'
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify([]),
-                        })
-                            .then((response) => response.json())
-                            .then((dataRes) => {
-                                if (dataRes.message == 'success') {
-                                    let semesterHTML = '<option value="">Chọn kỳ</option>'
-                                    dataRes.data.forEach(semester => {
-                                        semesterHTML += `<option value="${semester.id}">${semester.name}</option>`
-                                    })
-                                    semesterSelector.innerHTML = semesterHTML
-                                }
-                            })
-                            .catch((error) => {
-                                console.error('Error:', error);
-                            })
                         triggerEventInputDefault()
                     }
 
@@ -229,9 +315,101 @@ Example context (json):
 
                     inputSearchNew.addEventListener('input', triggerEventInputDefault)
 
-                    clearInterval(awaitDatatabeLoaded)
+
+                    clearInterval(awaitDatatableLoaded)
                 }
-            }, 200)
+            }, 500)
+        }
+
+        if (firstChild.nodeName == 'DIV' && firstChild.id == 'courseprogressblock') {
+            const awaitCourseProgressLoaded = setInterval(function () {
+                const panelBody = firstChild.querySelector('.panel-body')
+                const divLoader = panelBody.querySelector('.loader.w-full.text-center')
+
+                if (divLoader.style.display === 'none') {
+                    const selectDefault = panelBody.querySelector('select#wdm-courseprogress-select')
+
+                    panelBody.childNodes.forEach(function (element) {
+                        if (element.nodeName == 'SPAN') {
+                            element.style.display = 'none'
+                        }
+                    })
+                    // create element div wrapper
+                    const divCustomWrapper = document.createElement('div')
+                    panelBody.insertBefore(divCustomWrapper, panelBody.firstChild)
+
+                    // create year selector into div wrapper
+                    const yearSelector = document.createElement('select')
+                    yearSelector.setAttribute('class', 'form-control')
+                    yearSelector.style.cssText += `margin-bottom: 16px;`
+                    divCustomWrapper.appendChild(yearSelector)
+
+                    // create semester selector into div wrapper
+                    const semesterSelector = document.createElement('select')
+                    semesterSelector.setAttribute('class', 'form-control')
+                    semesterSelector.style.cssText += `margin-bottom: 16px;`
+                    divCustomWrapper.appendChild(semesterSelector)
+
+                    // create subject manage selector into div wrapper
+                    const subjectManageSelector = document.createElement('select')
+                    subjectManageSelector.setAttribute('class', 'form-control')
+                    subjectManageSelector.style.cssText += `margin-bottom: 16px;`
+                    divCustomWrapper.appendChild(subjectManageSelector)
+
+                    // create subject selector into div wrapper
+                    const subjectSelector = document.createElement('select')
+                    subjectSelector.setAttribute('class', 'form-control')
+                    subjectSelector.style.cssText += `margin-bottom: 16px;`
+                    divCustomWrapper.appendChild(subjectSelector)
+
+                    fetchGetDataYear(domain, yearSelector)
+
+                    function handleChangeYear () {
+                        const awaitFetchYear = setInterval(function () {
+                            if (yearSelector.value) {
+                                fetchDataSemester(domain, semesterSelector, yearSelector.value)
+                                semesterSelector.dispatchEvent(new Event('change', { bubbles: true }))
+                                clearInterval(awaitFetchYear)
+                            }
+                        }, 200)
+                    }
+
+                    yearSelector.addEventListener('change', handleChangeYear)
+
+                    semesterSelector.addEventListener('change', function () {
+                        const awaitFetchSemester = setInterval(function () {
+                            if (semesterSelector.value) {
+                                fetchDataSubjectManage(domain, subjectManageSelector, semesterSelector.value)
+                                subjectManageSelector.dispatchEvent(new Event('change', { bubbles: true }))
+                                clearInterval(awaitFetchSemester)
+                            }
+                        }, 200)
+                    })
+
+                    subjectManageSelector.addEventListener('change', function () {
+                        const awaitFetchSubjectManage = setInterval(function () {
+                            if (subjectManageSelector.value) {
+                                fetchDataSubject(domain, subjectSelector, subjectManageSelector.value)
+                                subjectSelector.dispatchEvent(new Event('change', { bubbles: true }))
+                                clearInterval(awaitFetchSubjectManage)
+                            }
+                        }, 200)
+                    })
+
+                    subjectSelector.addEventListener('change', function () {
+                        const awaitFetchSubject = setInterval(function () {
+                            if (subjectSelector.value) {
+                                selectDefault.value = subjectSelector.value
+                                selectDefault.dispatchEvent(new Event('change', { bubbles: true }))
+                                clearInterval(awaitFetchSubject)
+                            }
+                        }, 200)
+                    })
+                    yearSelector.dispatchEvent(new Event('change'))
+                    clearInterval(awaitCourseProgressLoaded)
+                }
+
+            }, 500)
         }
     })
 </script>

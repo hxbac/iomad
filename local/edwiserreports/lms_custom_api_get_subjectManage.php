@@ -2,6 +2,8 @@
 
 require_once("../../config.php");
 
+$semesterId = required_param('semesterId', PARAM_INT);
+
 $principalrole = $DB->get_record('role', [
     'shortname' => 'hieutruong'
 ]);
@@ -19,21 +21,16 @@ if (!isloggedin() && (is_siteadmin() || !$isPrincipal)) {
     exit;
 }
 
-$schools = $DB->get_records('course_categories', [
-    'parent' => 0
+$subjectManages = $DB->get_records('course_categories', [
+    'parent' => $semesterId,
 ], 'id DESC');
 $data = [];
-foreach ($schools as $school) {
-    $years = $DB->get_records('course_categories', [
-        'parent' => $school->id
-    ]);
-    foreach ($years as $year) {
-        $result = [
-            'id' => $year->id,
-            'name' => $year->name,
-        ];
-        array_push($data, $result);
-    }
+foreach ($subjectManages as $item) {
+    $result = [
+        'id' => $item->id,
+        'name' => $item->name,
+    ];
+    array_push($data, $result);
 }
 
 $resData = [
