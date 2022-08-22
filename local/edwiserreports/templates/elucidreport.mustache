@@ -149,7 +149,7 @@ Example context (json):
                         yearHTML += `<option value="${year.id}" ${i === 0 ? 'selected' : ''}">${year.name}</option>`
                         i++
                     })
-                    
+
                     if (i === 0) {
                         yearHTML = `<option value="0"}>Không có dữ liệu</option>`
                     }
@@ -179,7 +179,7 @@ Example context (json):
                         semesterHTML += `<option value="${semester.id}" ${i === 0 ? 'selected' : ''}>${semester.name}</option>`
                         i++
                     })
-                    
+
                     if (i === 0) {
                         semesterHTML = `<option value="0"}>Không có dữ liệu</option>`
                     }
@@ -238,11 +238,11 @@ Example context (json):
                             subjectHTML += `<option value="${subject.id}" ${i === 0 ? 'selected' : ''}>${subject.name}</option>`
                             i++
                         })
-                        
+
                         if (i === 0) {
                             subjectHTML = `<option value="0"}>Không có dữ liệu</option>`
                         }
-    
+
                         subjectSelector.innerHTML = subjectHTML
                     }
                 })
@@ -298,22 +298,27 @@ Example context (json):
                     function handleChangeYearSelector() {
                         yearId = Number(yearSelector.value)
                         fetchDataSemester(domain, semesterSelector, yearId)
-
+                        semesterSelector.dispatchEvent(new Event('change', { bubbles: true }))
                         triggerEventInputDefault()
                     }
 
                     function triggerEventInputDefault() {
-                        let yearString = yearSelector.value
-                        let semesterString = semesterSelector.value
-                        let searchString = inputSearchNew.value
+                        const awaitFetchDataYear = setInterval(function () {
+                            if (yearSelector.value) {
+                                let yearString = yearSelector.value
+                                let semesterString = semesterSelector.value
+                                let searchString = inputSearchNew.value
+    
+                                inputSearchDefault.value = yearString + ' ' + semesterString + ' ' + searchString
+                                inputSearchDefault.dispatchEvent(new Event('input', { bubbles: true }))
 
-                        inputSearchDefault.value = yearString + ' ' + semesterString + ' ' + searchString
-                        inputSearchDefault.dispatchEvent(new Event('input', { bubbles: true }))
+                                clearInterval(awaitFetchDataYear)
+                            }
+                        }, 200)
                     }
-
                     semesterSelector.addEventListener('change', triggerEventInputDefault)
-
                     inputSearchNew.addEventListener('input', triggerEventInputDefault)
+                    handleChangeYearSelector()
 
 
                     clearInterval(awaitDatatableLoaded)
@@ -364,7 +369,7 @@ Example context (json):
 
                     fetchGetDataYear(domain, yearSelector)
 
-                    function handleChangeYear () {
+                    function handleChangeYear() {
                         const awaitFetchYear = setInterval(function () {
                             if (yearSelector.value) {
                                 fetchDataSemester(domain, semesterSelector, yearSelector.value)
@@ -411,7 +416,7 @@ Example context (json):
 
             }, 500)
         }
-    
+
         if (firstChild.nodeName == 'DIV' && firstChild.id == 'activecoursesblock') {
             const awaitDatatableLoaded = setInterval(() => {
                 const divCustomWrapper = firstChild.querySelector('.panel .panel-body .dataTables_wrapper')
@@ -470,7 +475,7 @@ Example context (json):
                         let yearValue = yearSelector.value ?? ''
                         let semesterValue = semesterSelector.value ?? ''
                         let searchValue = inputSearchNew.value ?? ''
-                        
+
                         inputDefault.value = `${yearValue} ${semesterValue} ${searchValue}`
                         inputDefault.dispatchEvent(new Event('input', { bubbles: true }))
                     }
