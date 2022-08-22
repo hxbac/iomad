@@ -97,6 +97,8 @@ class customreportsblock extends block_base {
         //     return false;
         // });
         // Main query to execute the custom query reports.
+        
+        
         $sql = 'SELECT '.$customfields.', `ctg`.`path` AS `pathcategory`
                 FROM {user} u
                 JOIN {role_assignments} ra ON ra.userid = u.id
@@ -142,12 +144,29 @@ class customreportsblock extends block_base {
 
         $recordset = $DB->get_recordset_sql($sql, $params);
         $records = array();
-        foreach ($recordset as $record) {
+        // foreach ($recordset as $record) {
+            // if ($record->coursename != null) {
+            //     $record->coursename = '<span style="position: absolute; visibility: hidden;">' . $record->pathcategory . '</span>' . $record->coursename;
+            //     unset($record->pathcategory);
+            // }
+
+        //     if (!empty($resultfunc)) {
+        //         foreach ($resultfunc as $id => $func) {
+        //             $record->$id = $func($record->$id);
+        //         }
+        //     }
+
+        //     if (!in_array($record, $records)) {
+        //         $records[] = $record;
+        //     }
+            
+        // }
+        while ($recordset->key()) {
+            $record = $recordset->current();
             if ($record->coursename != null) {
                 $record->coursename = '<span style="position: absolute; visibility: hidden;">' . $record->pathcategory . '</span>' . $record->coursename;
                 unset($record->pathcategory);
             }
-
             if (!empty($resultfunc)) {
                 foreach ($resultfunc as $id => $func) {
                     $record->$id = $func($record->$id);
@@ -157,21 +176,8 @@ class customreportsblock extends block_base {
             if (!in_array($record, $records)) {
                 $records[] = $record;
             }
-            
+            $recordset->next();
         }
-        // while ($recordset->key()) {
-        //     $record = $recordset->current();
-            // if (!empty($resultfunc)) {
-            //     foreach ($resultfunc as $id => $func) {
-            //         $record->$id = $func($record->$id);
-            //     }
-            // }
-
-            // if (!in_array($record, $records)) {
-            //     $records[] = $record;
-            // }
-            // $recordset->next();
-        // }
 
         $return = new stdClass();
         $return->columns = $columns;

@@ -296,10 +296,14 @@ Example context (json):
                     yearSelector.addEventListener('change', handleChangeYearSelector)
                     let yearId = 0
                     function handleChangeYearSelector() {
-                        yearId = Number(yearSelector.value)
-                        fetchDataSemester(domain, semesterSelector, yearId)
-                        semesterSelector.dispatchEvent(new Event('change', { bubbles: true }))
-                        triggerEventInputDefault()
+                        const awaitFetchYear = setInterval(function () {
+                            if (yearSelector.value) {
+                                yearId = Number(yearSelector.value)
+                                fetchDataSemester(domain, semesterSelector, yearId)
+                                semesterSelector.dispatchEvent(new Event('change', { bubbles: true }))
+                                clearInterval(awaitFetchYear)
+                            }
+                        }, 200)
                     }
 
                     function triggerEventInputDefault() {
