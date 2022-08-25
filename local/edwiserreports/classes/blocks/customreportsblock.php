@@ -99,7 +99,7 @@ class customreportsblock extends block_base {
         // Main query to execute the custom query reports.
         
         
-        $sql = 'SELECT '.$customfields.', `ctg`.`path` AS `pathcategory`
+        $sql = 'SELECT '.$customfields.', `ctg`.`path` AS `pathcategory`, c.id AS `courseid`
                 FROM {user} u
                 JOIN {role_assignments} ra ON ra.userid = u.id
                 JOIN {role} r ON r.id = ra.roleid
@@ -163,10 +163,14 @@ class customreportsblock extends block_base {
         // }
         while ($recordset->key()) {
             $record = $recordset->current();
+            $urlViewCourse = new moodle_url('/course/view.php', [
+                'id' => $record->courseid
+            ]);
             if ($record->coursename != null) {
-                $record->coursename = '<span style="position: absolute; visibility: hidden;">' . $record->pathcategory . '</span>' . $record->coursename;
-                unset($record->pathcategory);
+                $record->coursename = '<span style="position: absolute; visibility: hidden;">' . $record->pathcategory . '</span><a href="'. $urlViewCourse .'" target="_blank">' . $record->coursename .'</a>';
             }
+            unset($record->pathcategory);
+            unset($record->courseid);
             if (!empty($resultfunc)) {
                 foreach ($resultfunc as $id => $func) {
                     $record->$id = $func($record->$id);
