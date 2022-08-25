@@ -282,7 +282,7 @@ class utility
         // $courses = $DB->get_records_sql($sqlcourses);
 
         foreach (array_keys($courses) as $courseid) {
-            $courses[$courseid]->fullname = $courses[$courseid]->pathcategory. ' / ' .$courses[$courseid]->fullname;
+            // $courses[$courseid]->fullname = $courses[$courseid]->pathcategory. ' / ' .$courses[$courseid]->fullname;
             $enrolledstudents = self::get_enrolled_students($courseid);
             if ($courseid == 1 || empty($enrolledstudents)) {
                 unset($courses[$courseid]);
