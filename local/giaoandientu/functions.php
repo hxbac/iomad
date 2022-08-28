@@ -33,12 +33,12 @@ function getTeachersByCourseid($courseid) {
     return $teachers;
 }
 
-function getPrincipals($categoryid) {
+function getPrincipals() {
     global $DB;
     $role = $DB->get_record('role', [
         'shortname' => 'hieutruong'
     ]);
-    $context = context_coursecat::instance($categoryid);
+    $context = context_system::instance();
     $principals = get_role_users($role->id, $context);
     return $principals;
 }
@@ -113,10 +113,10 @@ function checkAccess($categoryid, $userid = null) {
     return false;
 }
 
-function checkPrincipal($categoryid) {
+function checkPrincipal() {
     global $USER;
     require_login();
-    $principals = getPrincipals($categoryid);
+    $principals = getPrincipals();
     foreach ($principals as $principal) {
         if ($principal->id == $USER->id) {
             return true;
@@ -158,7 +158,6 @@ function getSchoolByChildCategoryid($categoryid) {
 function sendMessageGadt($usertoid, $action, $message, $messagehtml, $url) {
     global $DB;
     $eventdata = new \core\message\message();
-    // $eventdata->courseid         = 2;
     $eventdata->modulename       = 'giaoandientu';
     $eventdata->userto         = $DB->get_record('user', [
         'id' => $usertoid

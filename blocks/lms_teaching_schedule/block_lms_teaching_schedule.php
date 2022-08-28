@@ -53,13 +53,9 @@ class block_lms_teaching_schedule extends block_base
         $this->content = new stdClass();
         $this->content->footer = '';
 
-        $schoolsOfPrincipal = block_lms_teaching_schedule::getSchoolsOfPrincipal();
-        $this->content->text = "<div>Quản lý hoạt động danh mục</div>";
-        foreach ($schoolsOfPrincipal as $school) {
-            $urlmanager = new moodle_url('/local/giaoandientu/quan_ly.php', [
-                'categoryid' => $school->id
-            ]);
-            $this->content->text = "<a href='".$urlmanager."'>". $school->name ."</a>";
+        if ($this->checkPrincipal()) {
+            $urlmanager = new moodle_url('/local/giaoandientu/quan_ly.php');
+            $this->content->text = "<a href='".$urlmanager."'>Quản lý hoạt động danh mục</a>";
         }
         
         $sqlq = "SELECT COUNT(*) as `solanconlai` FROM `".$CFG->prefix."lms_gadt_storereport` WHERE `status` = 0 AND `userid` = " . $USER->id;
@@ -78,47 +74,21 @@ class block_lms_teaching_schedule extends block_base
         return $this->content;
     }
 
-    public function getSchoolsOfPrincipal()
-    {
-        global $OUTPUT, $PAGE, $CFG, $USER, $DB;
-
-        $result = [];
-        $schools = block_lms_teaching_schedule::getAllSchools();
-        foreach ($schools as $school) {
-            foreach ($school->principals as $principal) {
-                if ($principal->id == $USER->id) {
-                    array_push($result, $school);
-                }
-            }
-        }
-        return $result;
-    }
-
-    public function getAllSchools() {
-        global $DB;
-        
-        $schools = $DB->get_records('course_categories', [
-            'parent' => 0
-        ]);
-        foreach ($schools as $school) {
-            $principals = block_lms_teaching_schedule::getPrincipals($school->id);
-            $school->principals = [];
-            foreach ($principals as $principal) {
-                array_push($school->principals, $principal);
-            }
-        }
-
-        return $schools;
-    }
-
-    function getPrincipals($categoryid) {
-        global $DB;
+    function checkPrincipal() {
+        global $DB, $USER;
         $role = $DB->get_record('role', [
             'shortname' => 'hieutruong'
         ]);
-        $context = context_coursecat::instance($categoryid);
+        $context = context_system::instance();
         $principals = get_role_users($role->id, $context);
-        return $principals;
+
+        foreach ($principals as $principal) {
+            if ($principal->id === $USER->id) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
