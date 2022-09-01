@@ -1,5 +1,111 @@
 /* Hide the first dropdown-divider if no filter option element is listed before it.
    This can happen for some subset configurations of the block_myoverview course filter. */
-.block_myoverview button#groupingdropdown + .dropdown-menu li:first-of-type.dropdown-divider:first-of-type {
+.block_myoverview button#groupingdropdown+.dropdown-menu li:first-of-type.dropdown-divider:first-of-type {
     display: none;
+}
+
+.my_course_content_list {
+    display: flex;
+    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
+}
+
+.mc_content_list {
+    padding: 14px !important;
+    display: flex;
+    flex-direction: column;
+    border-radius: 6px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+.mc_content_list > a {
+    /* flex: 1; */
+}
+
+.ccn_mc_content_header_actions {
+    display: none;
+}
+
+.ccn_mc_progress {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100%;
+}
+
+.ccn_mc_content_header_details {
+    width: 100%;
+}
+
+.mc_content_list .thumb {
+    margin-right: 0 !important;
+    width: 100% !important;
+    min-width: unset !important;
+    margin-bottom: 14px;
+    min-height: unset !important;
+    max-height: unset !important;
+    height: auto !important;
+}
+
+.ccn_mc_content_header_actions {
+    top: unset !important;
+    bottom: 15px;
+    right: 15px !important;
+}
+
+.my_course_content_list .mc_content_list .thumb img {
+    border-radius: 50% !important;
+}
+
+.ccn_mc_progress {
+    min-width: 100% !important;
+}
+
+.my_course_content_header {
+    border-bottom: unset !important;
+}
+
+.my_course_content .ccn-pagination {
+    border-top: unset !important;
+}
+
+.my_course_content_list h5.title {
+    color: #0359ad;
+}
+
+.my_course_content_list .mc_content_list .details .mc_content .subtitle {
+    display: none;
+}
+
+.ccn_mc_progress .small {
+    color: #58bd02;
+    text-align: center;
+}
+
+@media only screen and (max-width: 1199px) {
+    .my_course_content_list {
+        display: flex;
+        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-column-gap: 20px;
+        grid-row-gap: 20px;
+    }
+
+    .lms_block_myoverview_text_progress {
+        font-size: 12px;
+    }
+}
+
+@media only screen and (max-width: 720px) {
+    .my_course_content_list {
+        display: flex;
+        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-column-gap: 10px;
+        grid-row-gap: 10px;
+    }
 }

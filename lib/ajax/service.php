@@ -97,4 +97,65 @@ if ($cacherequest && !$haserror) {
     header('Accept-Ranges: none');
 }
 
+function getTeacherOfCourse($courseId) {
+    global $DB;
+    
+    $role = $DB->get_record('role', array('shortname' => 'editingteacher'));
+    $context = context_course::instance($courseId);
+    $teachers = get_role_users($role->id, $context);
+    foreach ($teachers as $teacher) {
+        return $teacher;
+    }
+}
+
+$lmsTypeRequest = optional_param('info', '', PARAM_TEXT);
+switch ($lmsTypeRequest) {
+    case 'core_course_get_enrolled_courses_by_timeline_classification':
+        foreach ($responses as $key => $value) {
+            foreach ($responses[$key] as $key1 => $value1) {
+                if ($key1 == 'data') {
+                    foreach ($responses[$key][$key1] as $key2 => $value2) {
+                        if ($key2 == 'courses') {
+                            foreach ($responses[$key][$key1][$key2] as $key3 => $value3) {
+                                $teacher = getTeacherOfCourse($responses[$key][$key1][$key2][$key3]['id']);
+                                if (isloggedin() && !isguestuser() && $teacher->picture > 0) {
+                                    $usercontext = context_user::instance($teacher->id, IGNORE_MISSING);
+                                    $courseimage = moodle_url::make_pluginfile_url($usercontext->id, 'user', 'icon', null, '/', "f3")
+                                    . '?rev=' . $teacher->picture;
+                                    foreach ($responses[$key][$key1][$key2][$key3] as $key4 => $val4) {
+                                        if ($key4 == 'courseimage') {
+                                            $responses[$key][$key1][$key2][$key3][$key4] = $courseimage;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        break;
+    case 'core_course_get_recent_courses':
+        foreach ($responses as $key => $value) {
+            foreach ($responses[$key] as $key1 => $value1) {
+                if ($key1 == 'data') {
+                    foreach ($responses[$key][$key1] as $key2 => $value2) {
+                        $teacher = getTeacherOfCourse($responses[$key][$key1][$key2]['id']);
+                        if (isloggedin() && !isguestuser() && $teacher->picture > 0) {
+                            $usercontext = context_user::instance($teacher->id, IGNORE_MISSING);
+                            $courseimage = moodle_url::make_pluginfile_url($usercontext->id, 'user', 'icon', null, '/', "f3")
+                            . '?rev=' . $teacher->picture;
+                            foreach ($responses[$key][$key1][$key2] as $key4 => $val4) {
+                                if ($key4 == 'courseimage') {
+                                    $responses[$key][$key1][$key2][$key4] = $courseimage;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        break;
+}
 echo json_encode($responses);

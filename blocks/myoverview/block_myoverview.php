@@ -46,6 +46,7 @@ class block_myoverview extends block_base {
      * @return stdClass contents of block
      */
     public function get_content() {
+        global $CFG;
         if (isset($this->content)) {
             return $this->content;
         }
@@ -61,7 +62,7 @@ class block_myoverview extends block_base {
         $this->content = new stdClass();
         $this->content->text = $renderer->render($renderable);
         $this->content->footer = '';
-
+        $this->page->requires->js( new moodle_url($CFG->wwwroot . '/blocks/myoverview/lms_javascript.js') );
         return $this->content;
     }
 
