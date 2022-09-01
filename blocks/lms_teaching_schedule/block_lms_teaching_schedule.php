@@ -70,7 +70,6 @@ class block_lms_teaching_schedule extends block_base
         
 
         // $this->content->text = $OUTPUT->render_from_template('block_lms_teaching_schedule/giaovien', []);
-        $PAGE->requires->js(new moodle_url($CFG->wwwroot . 'blocks/lms_teaching_schedule/tree.js'));
         return $this->content;
     }
 

@@ -45,7 +45,7 @@ const awaitBlockMyOverviewLoaded = setInterval(() => {
                 .then((dataRes) => {
                     if (dataRes.message == 'success') {
                         const teacher = dataRes.data
-                        if (teacher) {
+                        if (!Array.isArray(teacher) && Object.keys(teacher).length !== 0) {
                             elementNew.innerText = `${teacher.firstname} ${teacher.lastname}`
                         } else {
                             elementNew.innerText = `Chưa có giáo viên`
