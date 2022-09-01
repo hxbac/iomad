@@ -18,7 +18,7 @@ const awaitBlockMyOverviewLoaded = setInterval(() => {
             const elementNew = document.createElement('div')
             elementNew.setAttribute('class', 'ccn_mc_progress')
             elementNew.classList.add('lms_block_myoverview_text_progress')
-            elementNew.style.cssText = 'margin: 10px 0; font-size: 12px; color: rgb(197 11 11); text-align: center;'
+            elementNew.style.cssText = 'margin-top: 8px; font-size: 12px; color: rgb(197 11 11); text-align: center;'
             elementNew.innerText = 'Chưa có nội dung'
             element.appendChild(elementNew)
         }
@@ -32,7 +32,7 @@ const awaitBlockMyOverviewLoaded = setInterval(() => {
             
             const elementNew = document.createElement('div')
             elementNew.setAttribute('class', 'lms_info_teacher')
-            elementNew.style.cssText += 'font-size: 12px; text-align: center; margin-bottom: 10px; color: #58bd02;'
+            elementNew.style.cssText += 'font-size: 12px; text-align: center; margin-bottom: 8px; color: #58bd02;'
 
             fetch(lmsDomain + '/blocks/myoverview/lms_api_get_teacher_of_course.php?courseid=' + courseid, {
                 method: 'POST', // or 'PUT'

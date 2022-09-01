@@ -9,8 +9,8 @@
     flex-wrap: wrap;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    grid-column-gap: 20px;
-    grid-row-gap: 20px;
+    grid-column-gap: 15px;
+    grid-row-gap: 15px;
 }
 
 .mc_content_list {
@@ -30,8 +30,7 @@
 }
 
 .ccn_mc_progress {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    margin: 0 !important;
     width: 100%;
 }
 
@@ -43,7 +42,7 @@
     margin-right: 0 !important;
     width: 100% !important;
     min-width: unset !important;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
     min-height: unset !important;
     max-height: unset !important;
     height: auto !important;
@@ -89,8 +88,9 @@
 }
 
 .my_course_content_list h5.title {
-    font-size: 16px;
+    font-size: 16px !important;
     transition: 0.2s linear;
+    margin-bottom: 8px !important;
 }
 
 .my_course_content_list h5.title:hover {
@@ -103,8 +103,8 @@
         flex-wrap: wrap;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr;
-        grid-column-gap: 20px;
-        grid-row-gap: 20px;
+        grid-column-gap: 15px;
+        grid-row-gap: 15px;
     }
 
     .lms_block_myoverview_text_progress {
