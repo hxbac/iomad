@@ -54,7 +54,11 @@ Example context (json):
     <tbody>
         {{#storerecords}}
         <tr>
-            <td>{{#userdate}} {{timecreated}} {{/userdate}}</td>
+            <td>
+                {{#timecreated}}
+                {{#userdate}} {{timecreated}} {{/userdate}}
+                {{/timecreated}}
+            </td>
             <td>{{ feedback }}</td>
             <td>{{ message }}</td>
             <td>

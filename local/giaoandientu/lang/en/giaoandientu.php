@@ -23,6 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Giao an dien tu';
-$string['modulename'] = 'Giao an dien tu';
-$string['messageprovider:giaoandientu_notification'] = 'Giáo án điện tử notifications';
+$string['pluginname'] = 'Kế hoạch bài dạy';
+$string['modulename'] = 'Kế hoạch bài dạy';
+$string['messageprovider:giaoandientu_notification'] = 'Kế hoạch bài dạy notifications';

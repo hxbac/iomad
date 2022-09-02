@@ -33,7 +33,7 @@ class block_lms_teaching_schedule extends block_base
      */
     public function init()
     {
-        $this->title = "Giáo án điện tử";
+        $this->title = "Kế hoạch bài dạy";
     }
 
     /**
@@ -55,7 +55,7 @@ class block_lms_teaching_schedule extends block_base
 
         if ($this->checkPrincipal()) {
             $urlmanager = new moodle_url('/local/giaoandientu/quan_ly.php');
-            $this->content->text = "<a href='".$urlmanager."'>Quản lý hoạt động danh mục</a>";
+            $this->content->text = "<a href='".$urlmanager."'>Cấu hình</a>";
         }
         
         $sqlq = "SELECT COUNT(*) as `solanconlai` FROM `".$CFG->prefix."lms_gadt_storereport` WHERE `status` = 0 AND `userid` = " . $USER->id;
@@ -66,7 +66,7 @@ class block_lms_teaching_schedule extends block_base
             $this->content->text .= "<p class='text-center'>Có " . $storerecordofuser->solanconlai . " nhiệm vụ chưa hoàn thành!</p>";
         }
         $urlgadt = new moodle_url('/local/giaoandientu');
-        $this->content->text .= "<a href='" . $urlgadt . "'>Đi tới trang quản lý giáo án</a>";
+        $this->content->text .= "<a href='" . $urlgadt . "'>Đi tới trang Quản lý kế hoạch bài dạy</a>";
         
 
         // $this->content->text = $OUTPUT->render_from_template('block_lms_teaching_schedule/giaovien', []);
