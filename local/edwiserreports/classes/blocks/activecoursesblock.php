@@ -152,7 +152,7 @@ class activecoursesblock extends block_base {
         $courses = $DB->get_records_sql($sqlcourses);
 
         foreach($courses as $course) {
-            $urlcourse = new moodle_url('/course/view.php', [
+            $urlcourse = new \moodle_url('/course/view.php', [
             	'id' => $course->id
             ]);
             $course->fullname = '<span style="position: absolute; visibility: hidden;">'. $course->pathcategory .' / </span>' . '<a href="'. $urlcourse .'">'. $course->fullname .'</a>';

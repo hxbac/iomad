@@ -12,6 +12,22 @@ $PAGE->set_heading('Quản lý báo cáo giảng dạy');
 echo $OUTPUT->header();
 
 $categoriesActive = $DB->get_records('lms_gadt_subjects', [], 'categoryid DESC');
+
+$categoriesActive = array_filter([...$categoriesActive], function ($category) {
+    global $DB;
+    $categoryinfo = $DB->get_record('course_categories', [
+        'id' => $category->categoryid
+    ]);
+
+    if (!$categoryinfo->id) {
+        $DB->delete_records('lms_gadt_subjects', [
+            'id' => $category->id
+        ]);
+        return false;
+    }
+    return true;
+});
+
 $categoriesSendFilter = array_filter([...$categoriesActive], function ($category) {
     global $USER;
     $courses = get_courses($category->categoryid);
