@@ -64,6 +64,17 @@ foreach ($weeksofcategory as $weekofcategory) {
                 $renderitem->urlsendfile = new moodle_url('/local/giaoandientu/gui_file.php', [
                     'id' => $storerecord->id
                 ]);
+                $now = (new DateTime("now", core_date::get_server_timezone_object()))->getTimestamp();
+                if ($weekofcategory->startdate > $now) {
+                    $renderitem->messagestatus = 'Chưa bắt đầu';
+                    $renderitem->urlsendfile = false;
+                    $renderitem->disablerow = true;
+                }
+                if ($weekofcategory->enddate < $now) {
+                    $renderitem->messagestatus = 'Quá hạn';
+                    $renderitem->urlsendfile = false;
+                    $renderitem->disablerow = true;
+                }
             }
             array_push($datarender, $renderitem);
         }

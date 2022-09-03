@@ -55,7 +55,11 @@ Example context (json):
     </thead>
     <tbody>
         {{#weeks}}
-        <tr>
+        <tr 
+        {{#disablerow}}
+        style="background-color: rgba(0,0,0,.075);"
+        {{/disablerow}}
+        >
             <td>{{ weekname }}</td>
             <td>{{ course }}</td>
             <td>{{#userdate}} {{startdate}} {{/userdate}} - <br>{{#userdate}} {{enddate}} {{/userdate}}</td>
