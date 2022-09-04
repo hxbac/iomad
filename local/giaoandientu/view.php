@@ -29,6 +29,11 @@ $urlcreateweek = new moodle_url('/local/giaoandientu/tao_tuan.php', (array) [
     'categoryid' => $categoryid
 ]);
 
+$urlupdateweek = new moodle_url('/local/giaoandientu/tao_tuan.php', (array) [
+    'categoryid' => $categoryid,
+    'weekid' => $weekid
+]);
+
 $category = $DB->get_record('course_categories', [
     'id' => $categoryid
 ]);
@@ -109,6 +114,7 @@ $weekname = $DB->get_record('lms_gadt_weeks', [
 
 echo $OUTPUT->render_from_template('local_giaoandientu/totruong', [
     'urltaotuan' => $urlcreateweek,
+    'urlupdateweek' => $urlupdateweek,
     'listweek' => $listidweek,
     'datarenderteachers' => $datarenderteachers,
     'weekname' => $weekname,

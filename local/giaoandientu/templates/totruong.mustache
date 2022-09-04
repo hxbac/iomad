@@ -69,14 +69,19 @@ Example context (json):
 <a href="{{urltaotuan}}" class="btn btn-primary">Tạo tuần mới</a>
 <br>
 <br>
-<div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{ weekname }}
-        <span class="caret"></span></button>
-    <ul class="dropdown-menu">
-        {{#listweek}}
-        <li><a href="{{{id}}}">{{ weekname }}</a></li>
-        {{/listweek}}
-    </ul>
+<div style="display: flex;">
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{ weekname }}
+            <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+            {{#listweek}}
+            <li><a href="{{{id}}}">{{ weekname }}</a></li>
+            {{/listweek}}
+        </ul>
+    </div>
+
+    <a href="{{{urlupdateweek}}}" class="btn btn-warning" style="margin-left: 14px; padding: 0 20px; display: flex; align-items: center; justify-content: center;">Sửa đổi</a>
+    <a class="btn btn-danger" style="margin-left: 14px; padding: 0 20px; display: flex; align-items: center; justify-content: center; color: #fff;">Xóa</a>
 </div>
 <br>
 <br>
