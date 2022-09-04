@@ -8,7 +8,7 @@ $PAGE->set_url('/local/giaoandientu/quan_ly.php', [
     'categoryid' => $categoryid
 ]);
 $PAGE->set_title('Báo cáo giảng dạy');
-$PAGE->set_heading('Quản lý hoạt động danh mục');
+$PAGE->set_heading('Cấu hình');
 echo $OUTPUT->header();
 
 if (!checkPrincipal()) {

@@ -23,7 +23,7 @@ $PAGE->set_url('/local/giaoandientu/view.php', [
     'categoryid' => $categoryid
 ]);
 $PAGE->set_title('Báo cáo giảng dạy');
-$PAGE->set_heading('Duyệt báo cáo giảng dạy');
+$PAGE->set_heading('Duyệt kế hoạch bài dạy');
 echo $OUTPUT->header();
 $urlcreateweek = new moodle_url('/local/giaoandientu/tao_tuan.php', (array) [
     'categoryid' => $categoryid

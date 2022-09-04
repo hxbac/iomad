@@ -14,7 +14,7 @@ $PAGE->set_url('/local/giaoandientu/xem_bao_cao.php', [
     'categoryid' => $categoryid
 ]);
 $PAGE->set_title('Báo cáo giảng dạy');
-$PAGE->set_heading('Nộp báo cáo giảng dạy');
+$PAGE->set_heading('Nộp kế hoạch bài dạy');
 echo $OUTPUT->header();
 
 $weeksofcategory = $DB->get_records('lms_gadt_weeks', [

@@ -8,7 +8,7 @@ $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url('/local/giaoandientu/index.php');
 $PAGE->set_title('Báo cáo giảng dạy');
-$PAGE->set_heading('Quản lý báo cáo giảng dạy');
+$PAGE->set_heading('Quản lý kế hoạch giảng dạy');
 echo $OUTPUT->header();
 
 $categoriesActive = $DB->get_records('lms_gadt_subjects', [], 'categoryid DESC');

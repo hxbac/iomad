@@ -27,7 +27,7 @@ $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url('/local/giaoandientu/gui_file.php');
 $PAGE->set_title('Báo cáo giảng dạy');
-$PAGE->set_heading('Nộp báo cáo giảng dạy');
+$PAGE->set_heading('Nộp kế hoạch bài dạy');
 echo $OUTPUT->header();
 
 $mform = new form_send_file();
