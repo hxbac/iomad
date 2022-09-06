@@ -22,7 +22,9 @@ if ($weekid === -1) {
         'categoryid' => $categoryid
     ]);
     
-    $mform = new form_create_week();
+    $mform = new form_create_week(null, array(
+        'createweek' => true
+    ));
     
     if ($mform->is_cancelled()) {
         redirect($returnurl);
@@ -42,22 +44,46 @@ if ($weekid === -1) {
         $message = 'Tổ trưởng đã tạo báo cáo mới.';
         $messagehtml = "<p>Tổ trưởng đã tạo tuần mới cho danh mục: ". $categoryname .". <br>Click <a href='". $messageurl ."' style='text-decoration: underline;'>tại đây</a> để xem chi tiết./</p>";
     
-        foreach ($courses as $course) {
-            $teachers = getTeachersByCourseid($course->id);
+        foreach ($courses as $key => $value) {
+            $courses[$key]->shortname = explode('_', $value->shortname)[3];
+
+            $courses[$key]->teachers = (array)[];
+            $teachers = getTeachersByCourseid($value->id);
             foreach ($teachers as $teacher) {
+                array_push($courses[$key]->teachers, $teacher->id);
+            }
+        }
+
+        if ($fromform->merge_teacher == '1') {
+            $courses = array_reduce($courses, function ($prevValue, $curValue) {
+                foreach ($curValue->teachers as $key => $teacher) {
+                    foreach ($prevValue as $course) {
+                        if ($curValue->shortname === $course->shortname && in_array($teacher, $course->teachers)) {
+                            unset($curValue->teachers[$key]);
+                        }
+                    }
+                }
+                
+                array_push($prevValue, $curValue);
+                return $prevValue;
+            }, (array)[]);
+        }
+
+        foreach ($courses as $course) {
+            foreach ($course->teachers as $teacher) {
                 $datainsert = (object) [
                     'weekid' => $weekid,
-                    'courseid' => $course->id,
-                    'userid' => $teacher->id,
+                    'courseid' => (int)$course->id,
+                    'userid' => (int)$teacher,
                     'status' => 0
                 ];
                 $DB->insert_record('lms_gadt_storereport', $datainsert);
     
-                sendMessageGadt($teacher->id, 'Nộp báo cáo mới', $message, $messagehtml, $messageurl);
+                sendMessageGadt($teacher, 'Nộp báo cáo mới', $message, $messagehtml, $messageurl);
             }
         }
     
-        redirect($returnurl, 'Thêm tuần thành công. Trang sẽ chuyển hướng tới xem báo cáo!', 5);
+        redirect($returnurl, 'Thêm tuần thành công!', null, \core\output\notification::NOTIFY_SUCCESS);
     } else {
         $category = $DB->get_record('course_categories', [
             'id' => $categoryid
@@ -91,7 +117,7 @@ if ($weekid === -1) {
         $week->userid = $USER->id;
 
         $DB->update_record('lms_gadt_weeks', $week);
-        redirect($returnurl);
+        redirect($returnurl, 'Sửa tuần thành công!', null, \core\output\notification::NOTIFY_SUCCESS);
     } else {
         $mform->display();
     }
