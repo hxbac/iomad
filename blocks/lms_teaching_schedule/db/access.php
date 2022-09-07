@@ -23,15 +23,11 @@
  */
 
 $capabilities = [
-    'block/lms_teaching_schedule:sendreport' => [
+    'block/lms_teaching_schedule:view' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => [
-            'hieutruong' => CAP_ALLOW,
-            'truongbomon' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ],
-        'clonepermissionsfrom' => 'moodle/my:manageblocks'
+        'legacy' => array(
+            
+        ),
     ]
 ];

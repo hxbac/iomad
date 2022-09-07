@@ -53,6 +53,11 @@ class block_lms_teaching_schedule extends block_base
         $this->content = new stdClass();
         $this->content->footer = '';
 
+        if (!$this->canViewBlock()) {
+            return null;
+        }
+
+
         if ($this->checkPrincipal()) {
             $urlmanager = new moodle_url('/local/giaoandientu/quan_ly.php');
             $this->content->text = "<a href='".$urlmanager."'>Cấu hình</a>";
@@ -71,6 +76,37 @@ class block_lms_teaching_schedule extends block_base
 
         // $this->content->text = $OUTPUT->render_from_template('block_lms_teaching_schedule/giaovien', []);
         return $this->content;
+    }
+
+    function canViewBlock() {
+        global $DB, $USER;
+
+        if (is_siteadmin()) {
+            return true;
+        }
+
+        $roleid = $DB->get_field('role', 'id', ['shortname' => 'hieutruong']);
+        $isprincipal = $DB->record_exists('role_assignments', ['userid' => $USER->id, 'roleid' => $roleid]);
+        
+        if ($isprincipal) {
+            return true;
+        }
+
+        $roleid = $DB->get_field('role', 'id', ['shortname' => 'truongbomon']);
+        $isTBM = $DB->record_exists('role_assignments', ['userid' => $USER->id, 'roleid' => $roleid]);
+        
+        if ($isTBM) {
+            return true;
+        }
+
+        $roleid = $DB->get_field('role', 'id', ['shortname' => 'editingteacher']);
+        $isteacheranywhere = $DB->record_exists('role_assignments', ['userid' => $USER->id, 'roleid' => $roleid]);
+        
+        if ($isteacheranywhere) {
+            return true;
+        }
+
+        return false;
     }
 
     function checkPrincipal() {
