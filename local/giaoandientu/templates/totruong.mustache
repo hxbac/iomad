@@ -67,8 +67,11 @@ Example context (json):
 <div style="margin-bottom: 20px;"><a href="{{{ urlgiaoandientu }}}">Giáo án điện tử / </a>{{ parentname }}<b>{{ name }}</b></div>
 {{/breadcrumbobj}}
 <br>
-<div style="display: flex;">
+<div style="display: flex; margin-bottom: 14px;">
     <a href="{{urltaotuan}}" class="btn btn-primary" style="margin-right: 14px;">Tạo tuần mới</a>
+    <a href="{{urlautocreateweek}}" class="btn btn-primary" style="margin-right: 14px;">Tạo tuần nhanh</a>
+</div>
+<div style="display: flex;">
     <div class="dropdown">
         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{ weekname }}
             <span class="caret"></span></button>

@@ -38,6 +38,10 @@ $urldeleteweek = new moodle_url('/local/giaoandientu/xoa_tuan.php', (array) [
     'id' => $weekid
 ]);
 
+$urlautocreateweek = new moodle_url('/local/giaoandientu/tao_tuan_nhanh.php', (array) [
+    'categoryid' => $categoryid
+]);
+
 $category = $DB->get_record('course_categories', [
     'id' => $categoryid
 ]);
@@ -120,6 +124,7 @@ echo $OUTPUT->render_from_template('local_giaoandientu/totruong', [
     'urltaotuan' => $urlcreateweek,
     'urlupdateweek' => $urlupdateweek,
     'urldeleteweek' => $urldeleteweek,
+    'urlautocreateweek' => $urlautocreateweek,
     'listweek' => $listidweek,
     'datarenderteachers' => $datarenderteachers,
     'weekname' => $weekname,
