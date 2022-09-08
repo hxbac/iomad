@@ -12,10 +12,17 @@ if (!checkManagerAccess($categoryid)) {
 $weeks = $DB->get_records('lms_gadt_weeks', [
     'categoryid' => $categoryid
 ], 'id ASC');
-$weekiddefault = $weeks[count([...$weeks])]->id;
-$weekstemp = [...$weeks];
-$week = array_pop($weekstemp);
-$weekid = optional_param('weekid', $week->id, PARAM_INT);
+
+$currenttime = new DateTime("now", core_date::get_server_timezone_object());
+$nowtimestamp = $currenttime->getTimestamp();
+$sqlraw = 'SELECT * FROM `'. $CFG->prefix . 'lms_gadt_weeks` WHERE `categoryid` = '. $categoryid .' AND `startdate` < '. $nowtimestamp .' AND `enddate` > '. $nowtimestamp .' ORDER BY id ASC'; 
+$currWeek = $DB->get_record_sql($sqlraw);
+$currWeekid = $currWeek->id;
+if (!$currWeekid) {
+    $weekstemp = [...$weeks];
+    $currWeekid = (array_pop($weekstemp))->id;
+}
+$weekid = optional_param('weekid', $currWeekid ?? 30, PARAM_INT);
 
 $context = context_system::instance();
 $PAGE->set_context($context);
