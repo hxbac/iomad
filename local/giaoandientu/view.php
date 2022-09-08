@@ -127,9 +127,13 @@ foreach ($listteachersendfile as $recordstore) {
     }
 }
 
-$weekname = $DB->get_record('lms_gadt_weeks', [
+$week = $DB->get_record('lms_gadt_weeks', [
     'id' => $weekid
-])->weekname;
+]);
+
+$usercreate = $DB->get_record('user', [
+    'id' => $week->userid
+]);
 
 echo $OUTPUT->render_from_template('local_giaoandientu/totruong', [
     'urltaotuan' => $urlcreateweek,
@@ -139,8 +143,13 @@ echo $OUTPUT->render_from_template('local_giaoandientu/totruong', [
     'urlupdateteachersweek' => $urlupdateteachersweek,
     'listweek' => $listidweek,
     'datarenderteachers' => $datarenderteachers,
-    'weekname' => $weekname,
-    'breadcrumbobj' => $breadcrumbobj
+    'weekname' => $week->weekname,
+    'startdate' => $week->startdate,
+    'enddate' => $week->enddate,
+    'timecreated' => $week->timecreated,
+    'description' => $week->description,
+    'usercreate' => $usercreate->firstname. ' ' .$usercreate->lastname,
+    'breadcrumbobj' => $breadcrumbobj,
 ]);
 
 echo $OUTPUT->footer();

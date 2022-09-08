@@ -85,6 +85,7 @@ Example context (json):
     <a href="{{{urlupdateweek}}}" class="btn btn-warning" style="margin-left: 14px; padding: 0 20px; display: flex; align-items: center; justify-content: center;">Sửa đổi</a>
     <a class="btn btn-danger" style="margin-left: 14px; padding: 0 20px; display: flex; align-items: center; justify-content: center; color: #fff;" data-toggle="modal" data-target="#modalDeleteWeek">Xóa</a>
     <button class="btn btn-primary" style="margin-left: 14px;" data-toggle="modal" data-target="#modalUpdateTeacherWeek">Cập nhật giáo viên</button>
+    <button class="btn btn-primary" style="margin-left: 14px;" data-toggle="modal" data-target="#modalShowInfoWeek">Xem thông tin</button>
 </div>
 <br>
 <br>
@@ -171,6 +172,32 @@ Example context (json):
             </div>
             <div class="modal-footer">
                 <a href="{{urlupdateteachersweek}}" type="button" class="btn btn-secondary">Cập nhật</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalShowInfoWeek" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 520px !important; max-width: 100% !important; margin-top: 50px !important;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thông tin tuần</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Tên tuần: {{weekname}} <br>
+                Người tạo: {{usercreate}} <br>
+                Bắt đầu: {{#userdate}} {{startdate}} {{/userdate}} <br>
+                Kết thúc: {{#userdate}} {{enddate}} {{/userdate}} <br>
+                Ngày tạo: {{#userdate}} {{timecreated}} {{/userdate}} <br>
+                Mô tả: {{description}} <br>
+            </div>
+            <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
             </div>
         </div>
