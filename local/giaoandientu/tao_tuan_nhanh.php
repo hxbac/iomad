@@ -112,7 +112,7 @@ if ($action === null) {
 
 
     $jsonlistweeks = required_param('jsonlistweeks', PARAM_RAW);
-    $listweeks = json_decode($jsonlistweeks);
+    $listweeks = array_reverse(json_decode($jsonlistweeks));
 
     foreach ($listweeks as $insertrecord) {
         $weekid = $DB->insert_record('lms_gadt_weeks', $insertrecord);

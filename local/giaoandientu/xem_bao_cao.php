@@ -17,9 +17,11 @@ $PAGE->set_title('Báo cáo giảng dạy');
 $PAGE->set_heading('Nộp kế hoạch bài dạy');
 echo $OUTPUT->header();
 
-$weeksofcategory = $DB->get_records('lms_gadt_weeks', [
-    'categoryid' => $categoryid,
-], 'timecreated DESC');
+$currenttime = new DateTime("now", core_date::get_server_timezone_object());
+$nowtimestamp = $currenttime->getTimestamp();
+$sqlraw = 'SELECT * FROM `'. $CFG->prefix .'lms_gadt_weeks` WHERE `categoryid` = ' . $categoryid . ' AND `startdate` <= ' . $nowtimestamp . ' ORDER BY timecreated DESC';
+
+$weeksofcategory = $DB->get_records_sql($sqlraw);
 
 $breadcrumbobj = (object) [];
 $breadcrumbobj->parentname = '';
