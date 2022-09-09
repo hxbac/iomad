@@ -90,9 +90,10 @@ foreach ($listteachersendfile as $recordstore) {
         $datateacher = (object) [
             'name' => $tengiaovien
         ];
-        $datateacher->coursename = $DB->get_record('course', [
+        $datateacher->coursename = explode('_', $DB->get_record('course', [
             'id' => $recordstore->courseid
-        ])->fullname;
+        ])->shortname)[3];
+        
         $datateacher->urlhistory = new moodle_url('/local/giaoandientu/lich_su.php', [
             'weekid' => $weekid,
             'courseid' => $recordstore->courseid,

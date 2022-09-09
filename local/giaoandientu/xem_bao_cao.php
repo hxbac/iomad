@@ -51,9 +51,11 @@ foreach ($weeksofcategory as $weekofcategory) {
             $renderitem->description = $weekofcategory->description;
             $renderitem->startdate = $weekofcategory->startdate;
             $renderitem->enddate = $weekofcategory->enddate;
-            $renderitem->course = $DB->get_record('course', [
+
+            $renderitem->course = explode('_', $DB->get_record('course', [
                 'id' => $storerecord->courseid
-            ])->fullname;
+            ])->shortname)[3] ?? 'Khóa học đã bị xóa';
+
             if ($storerecord->status != 0) {
                 $renderitem->urlsendfile = false;
                 if ($storerecord->feedback == null) {

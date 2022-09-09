@@ -34,7 +34,7 @@ $storerecords = $DB->get_records('lms_gadt_storereport', [
 $course = $DB->get_record('course', [
     'id' => $courseid
 ]);
-$coursename = $course->fullname ?? 'Khóa học đã bị xóa';
+$coursename = explode('_', $course->shortname)[3] ?? 'Khóa học đã bị xóa';
 $weekrecord = $DB->get_record('lms_gadt_weeks', [
     'id' => $weekid
 ]);

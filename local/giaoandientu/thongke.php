@@ -33,9 +33,9 @@ foreach ($weeks as $week) {
     $sql = "SELECT courseid, count(*) AS `solanchuagui` FROM `" . $CFG->prefix . "lms_gadt_storereport` WHERE status = 0 AND weekid = ". $week->id ." GROUP BY courseid";
     $courses = $DB->get_records_sql($sql);
     foreach ($courses as $course) {
-        $course->coursename = $DB->get_record('course', [
+        $course->coursename = explode('_', $DB->get_record('course', [
             'id' => $course->courseid
-        ])->fullname ?? 'Khóa học đã bị xóa';
+        ])->shortname)[3] ?? 'Khóa học đã bị xóa';
     }
     $week->data = [...$courses];
 }

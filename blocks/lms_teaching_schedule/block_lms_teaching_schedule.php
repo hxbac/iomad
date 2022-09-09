@@ -62,6 +62,8 @@ class block_lms_teaching_schedule extends block_base
             $urlmanager = new moodle_url('/local/giaoandientu/quan_ly.php');
             $this->content->text = "<a href='".$urlmanager."'>Cấu hình</a>";
         }
+
+        $this->content->text = "<div><i class='fa-thin fa-book-user'></i></div>";
         
         $sqlq = "SELECT COUNT(*) as `solanconlai` FROM `".$CFG->prefix."lms_gadt_storereport` WHERE `status` = 0 AND `userid` = " . $USER->id;
         $storerecordofuser = $DB->get_record_sql($sqlq);
