@@ -20,9 +20,14 @@ class form_create_week extends moodleform {
         
         $mform->addElement('date_time_selector', 'startdate', 'Bắt đầu');
         $mform->setDefault('startdate', $week->startdate ?? '');
+
+        $now = new DateTime("now", core_date::get_server_timezone_object());
+        $datetime = new DateTime();
+        $datetime->setTimestamp($now->getTimestamp());
+        $datetime->modify('+7 day');
         
         $mform->addElement('date_time_selector', 'enddate', 'Kết thúc');
-        $mform->setDefault('enddate', $week->enddate ?? '');
+        $mform->setDefault('enddate', $week->enddate ?? $datetime->getTimestamp());
         
         $mform->addElement('text', 'description', 'Yêu cầu'); // Add elements to your form.
         $mform->setType('description', PARAM_NOTAGS); 
