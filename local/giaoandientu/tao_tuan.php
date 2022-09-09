@@ -79,7 +79,7 @@ if ($weekid === -1) {
                 ];
                 $DB->insert_record('lms_gadt_storereport', $datainsert);
     
-                sendMessageGadt($teacher, 'Nộp báo cáo mới', $message, $messagehtml, $messageurl);
+                sendMessageGadt($teacher, 'Nộp KHBD '. $fromform->weekname, $message, $messagehtml, $messageurl);
             }
         }
     
