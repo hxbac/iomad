@@ -88,7 +88,19 @@ if ($hassiteconfig) {
 if ($showsettingslinks) {
     $node = $PAGE->settingsnav->find('root', navigation_node::TYPE_SITE_ADMIN);
     if ($node) {
-        echo $OUTPUT->render_from_template('core/settings_link_page', ['node' => $node]);
+        $lmsroleid = $DB->get_field('role', 'id', ['shortname' => 'submanager']);
+        $issubmanager = $DB->record_exists('role_assignments', [
+            'userid' => $USER->id, 
+            'roleid' => $lmsroleid,
+            'contextid' => context_system::instance()->id
+        ]);
+        $urlUploadCourse = new moodle_url('/admin/tool/uploadcourse/index.php');
+        
+        echo $OUTPUT->render_from_template('core/settings_link_page', [
+            'node' => $node,
+            'issubmanager' => $issubmanager,
+            'urluploadcourse' => $urlUploadCourse
+        ]);
     }
 }
 

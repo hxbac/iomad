@@ -145,3 +145,43 @@
         {{/children.count}}
     {{/node.children}}
 </div>
+
+<script>
+    function lmsStart() {
+        if ({{issubmanager}}) {
+            document.querySelector('.dashboard_main_content .nav-tabs a.nav-link[href="#linkusers"]').click()
+            const navItems = document.querySelectorAll('.dashboard_main_content .nav-tabs a.nav-link')
+            const panels = document.querySelectorAll('.dashboard_main_content .tab-content > .tab-pane')
+
+            navItems.forEach((element) => {
+                if (
+                    element.getAttribute('href') == '#linkroot' || 
+                    element.getAttribute('href') == '#linkgrades' || 
+                    element.getAttribute('href') == '#linkmodules' ||
+                    element.getAttribute('href') == '#linkreports'
+                ) {
+                    element.remove()
+                }
+            })
+
+            panels.forEach(element => {
+                if (
+                    element.id == 'linkroot' || 
+                    element.id == 'linkgrades' || 
+                    element.id == 'linkmodules' ||
+                    element.id == 'linkreports'
+                ) {
+                    element.remove()
+                }
+            })
+
+            const elementLinkManagerCourse = document.querySelector('.dashboard_main_content .list-unstyled a[href*="course/management.php"]')
+            const liElementLinkUploadCourse = document.createElement('li')
+            liElementLinkUploadCourse.innerHTML = `<a href="{{{ urluploadcourse }}}">Tải môn học từ tệp</a>`
+            
+            elementLinkManagerCourse.closest('ul.list-unstyled').appendChild(liElementLinkUploadCourse)
+        }
+    }
+
+    lmsStart()
+</script>

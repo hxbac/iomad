@@ -26,7 +26,15 @@ require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/csvlib.class.php');
 
-admin_externalpage_setup('tooluploadcourse');
+$lmsroleid = $DB->get_field('role', 'id', ['shortname' => 'submanager']);
+$issubmanager = $DB->record_exists('role_assignments', [
+    'userid' => $USER->id, 
+    'roleid' => $lmsroleid,
+    'contextid' => context_system::instance()->id
+]);
+if (!$issubmanager) {
+    admin_externalpage_setup('tooluploadcourse');
+}
 
 $importid         = optional_param('importid', '', PARAM_INT);
 $previewrows = optional_param('previewrows', 10, PARAM_INT);
