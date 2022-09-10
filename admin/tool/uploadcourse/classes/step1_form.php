@@ -69,6 +69,15 @@ class tool_uploadcourse_step1_form extends tool_uploadcourse_base_form {
         $mform->setType('previewrows', PARAM_INT);
         $mform->addHelpButton('previewrows', 'rowpreviewnum', 'tool_uploadcourse');
 
+        $choicescheckshortname = array(
+            '0' => 'Bắt buộc',
+            '1' => 'Không bắt buộc',
+        );
+
+        $mform->addElement('select', 'forceshortname', 'Bắt buộc theo tiêu chuẩn shortname', $choicescheckshortname);
+        $mform->setType('forceshortname', PARAM_INT);
+        $mform->addHelpButton('forceshortname', 'checkshortname', 'tool_uploadcourse');
+
         $this->add_import_options();
 
         $mform->addElement('hidden', 'showpreview', 1);

@@ -44,10 +44,11 @@ $returnurl = new moodle_url('/admin/tool/uploadcourse/index.php');
 if (empty($importid)) {
     $mform1 = new tool_uploadcourse_step1_form();
     if ($form1data = $mform1->get_data()) {
+        $checkshortnamecourse = $form1data->forceshortname === '0' ? true : false;
         $importid = csv_import_reader::get_new_iid('uploadcourse');
         $cir = new csv_import_reader($importid, 'uploadcourse');
         $content = $mform1->get_file_content('coursefile');
-        $readcount = $cir->load_csv_content($content, $form1data->encoding, $form1data->delimiter_name);
+        $readcount = $cir->load_csv_content($content, $form1data->encoding, $form1data->delimiter_name, null, '"', $checkshortnamecourse);
         unset($content);
         if ($readcount === false) {
             print_error('csvfileerror', 'tool_uploadcourse', $returnurl, $cir->get_error());

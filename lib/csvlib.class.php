@@ -89,7 +89,7 @@ class csv_import_reader {
      * @param string $enclosure field wrapper. One character only.
      * @return bool false if error, count of data lines if ok; use get_error() to get error string
      */
-    public function load_csv_content($content, $encoding, $delimiter_name, $column_validation=null, $enclosure='"') {
+    public function load_csv_content($content, $encoding, $delimiter_name, $column_validation=null, $enclosure='"', $checkshortnamecourse = false) {
         global $USER, $CFG;
 
         $this->close();
@@ -182,6 +182,21 @@ class csv_import_reader {
         fclose($fp);
         unlink($tempfile);
         fclose($filepointer);
+
+        if ($checkshortnamecourse) {
+            $returnurluploadcourse = new moodle_url('/admin/tool/uploadcourse/index.php');
+            $tempcolumns = $columns;
+            $indexshortnameinarray = array_search('shortname', array_shift($tempcolumns));
+            if ($indexshortnameinarray === null) {
+                print_error('printerrornocolumnshortname', 'tool_uploadcourse', $returnurluploadcourse);
+            }
+            foreach ($tempcolumns as $item) {
+                if (substr_count($item[$indexshortnameinarray], '_') !== 4) {
+                    print_error('printerrorcheckshortname', 'tool_uploadcourse', $returnurluploadcourse);
+                    exit;
+                }
+            }
+        }
 
         $datacount = count($columns);
         return $datacount;
