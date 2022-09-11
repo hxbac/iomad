@@ -53,7 +53,7 @@ echo $OUTPUT->header($focus);
 // Display a warning if site is not registered.
 if (empty($query)) {
     $adminrenderer = $PAGE->get_renderer('core', 'admin');
-    echo $adminrenderer->warn_if_not_registered();
+    //echo $adminrenderer->warn_if_not_registered();
 }
 
 echo $OUTPUT->heading(get_string('administrationsite'));
