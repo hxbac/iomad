@@ -180,6 +180,11 @@
             liElementLinkUploadCourse.innerHTML = `<a href="{{{ urluploadcourse }}}">Tải môn học từ tệp</a>`
             
             elementLinkManagerCourse.closest('ul.list-unstyled').appendChild(liElementLinkUploadCourse)
+
+            const elementRemove = document.querySelector('.dashboard_main_content a[href*="course/recommendations.php"]')
+            if (elementRemove) {
+                elementRemove.closest('.row').remove()
+            }
         }
     }
 
