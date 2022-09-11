@@ -78,6 +78,8 @@ class tool_uploadcourse_step1_form extends tool_uploadcourse_base_form {
         $mform->setType('forceshortname', PARAM_INT);
         $mform->addHelpButton('forceshortname', 'checkshortname', 'tool_uploadcourse');
 
+        $mform->addElement('html', '<div style="margin: 0 -15px 14px -15px; display: flex;"><div class="col-md-3">File mẫu tạo khóa học: </div><div class="col-md-9"><a href="https://drive.google.com/file/d/1NabTBmZJsVv_5R-hnpoHPKp62ypC4f3d/view" target="_blank">Tải xuống</a></div></div>');
+
         $this->add_import_options();
 
         $mform->addElement('hidden', 'showpreview', 1);
