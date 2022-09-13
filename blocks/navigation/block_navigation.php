@@ -131,6 +131,10 @@ class block_navigation extends block_base {
         // Navcount is used to allow us to have multiple trees although I dont' know why
         // you would want two trees the same
 
+        if (!$this->viewable()) {
+            return null;
+        }
+        
         block_navigation::$navcount++;
 
         // Check if this block has been docked
@@ -205,6 +209,38 @@ class block_navigation extends block_base {
         $this->contentgenerated = true;
 
         return $this->content;
+    }
+
+    protected function viewable() {
+        global $DB, $USER;
+
+        if (is_siteadmin()) {
+            return true;
+        }
+
+        $principalRole = $DB->get_record('role', [
+            'shortname' => 'hieutruong'
+        ]);
+        $isprincipal = $DB->record_exists('role_assignments', [
+            'userid' => $USER->id,
+            'roleid' => $principalRole->id
+        ]);
+        if ($isprincipal) {
+            return true;
+        }
+
+        $tbmRole = $DB->get_record('role', [
+            'shortname' => 'truongbomon'
+        ]);
+        $istbm = $DB->record_exists('role_assignments', [
+            'userid' => $USER->id,
+            'roleid' => $tbmRole->id
+        ]);
+        if ($istbm) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
