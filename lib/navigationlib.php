@@ -1802,20 +1802,20 @@ class global_navigation extends navigation_node {
      * @return navigation_node|void returns a navigation node if a category has been loaded.
      */
     protected function load_all_categories($categoryid = self::LOAD_ROOT_CATEGORIES, $showbasecategories = false) {
-        global $CFG, $DB, $USER;
+        global $CFG, $DB;
 
-        $lmsparentid = 0;
-        $skiplms = false;
+        // $lmsparentid = 0;
+        // $skiplms = false;
 
-        $roletbm = $DB->get_record('role', [
-            'shortname' => 'truongbomon'
-        ]);
-        $istbm = $DB->record_exists('role_assignments', [
-            'userid' => $USER->id,
-            'roleid' => $roletbm->id,
-        ]);
-        $idlms = optional_param('id', '', PARAM_ALPHANUM);
-        $typelms = optional_param('type', -100, PARAM_INT);
+        // $roletbm = $DB->get_record('role', [
+        //     'shortname' => 'truongbomon'
+        // ]);
+        // $istbm = $DB->record_exists('role_assignments', [
+        //     'userid' => $USER->id,
+        //     'roleid' => $roletbm->id,
+        // ]);
+        // $idlms = optional_param('id', '', PARAM_ALPHANUM);
+        // $typelms = optional_param('type', -100, PARAM_INT);
 
         // Check if this category has already been loaded
         if ($this->allcategoriesloaded || ($categoryid < 1 && $this->is_category_fully_loaded($categoryid))) {
@@ -1836,19 +1836,19 @@ class global_navigation extends navigation_node {
             // on the database server!
         } else if ($categoryid == self::LOAD_ROOT_CATEGORIES) { // can be 0
             // We are going to load all of the first level categories (categories without parents)
-            if ($istbm && $idlms == 'courses' && $typelms == 0) {
-                $skiplms = true;
-                $sqlgetlistidtbm = 'SELECT cc.id FROM `'. $CFG->prefix .'course_categories` cc JOIN `'. $CFG->prefix .'context` ctx ON cc.id = ctx.instanceid JOIN `'. $CFG->prefix .'role_assignments` ra ON ra.contextid = ctx.id WHERE ctx.contextlevel = '. CONTEXT_COURSECAT .' AND ra.userid = '. $USER->id;
-                $listassigntbm = $DB->get_records_sql($sqlgetlistidtbm);
-                $sqlcondition = '(';
-                foreach ($listassigntbm as $record) {
-                    $sqlcondition .= $record->id . ',';
-                } 
-                $sqlcondition = substr($sqlcondition, 0, -1) . ')';
-                $sqlwhere .= " AND cc.id IN " . $sqlcondition;
-            } else {
+            // if ($istbm && $idlms == 'courses' && $typelms == 0) {
+            //     $skiplms = true;
+            //     $sqlgetlistidtbm = 'SELECT cc.id FROM `'. $CFG->prefix .'course_categories` cc JOIN `'. $CFG->prefix .'context` ctx ON cc.id = ctx.instanceid JOIN `'. $CFG->prefix .'role_assignments` ra ON ra.contextid = ctx.id WHERE ctx.contextlevel = '. CONTEXT_COURSECAT .' AND ra.userid = '. $USER->id;
+            //     $listassigntbm = $DB->get_records_sql($sqlgetlistidtbm);
+            //     $sqlcondition = '(';
+            //     foreach ($listassigntbm as $record) {
+            //         $sqlcondition .= $record->id . ',';
+            //     } 
+            //     $sqlcondition = substr($sqlcondition, 0, -1) . ')';
+            //     $sqlwhere .= " AND cc.id IN " . $sqlcondition;
+            // } else {
                 $sqlwhere .= " AND cc.parent = 0";
-            }
+            // }
         } else if (array_key_exists($categoryid, $this->addedcategories)) {
             // The category itself has been loaded already so we just need to ensure its subcategories
             // have been loaded
@@ -1881,19 +1881,19 @@ class global_navigation extends navigation_node {
         $categories = array();
         foreach ($categoriesrs as $category) {
             // Add full category name for role of truongbomon
-            if ($istbm && $idlms == 'courses' && $typelms == 0) {
-                $listparentid = explode('/', $category->path);
-                array_shift($listparentid);
-                array_pop($listparentid);
-                $fullnameparentcategory = '';
-                foreach ($listparentid as $parentid) {
-                    $nameparentcategory = $DB->get_record('course_categories', [
-                        'id' => $parentid
-                    ])->name;
-                    $fullnameparentcategory .= $nameparentcategory . '/';
-                }
-                $category->name = $fullnameparentcategory . $category->name;
-            }
+            // if ($istbm && $idlms == 'courses' && $typelms == 0) {
+            //     $listparentid = explode('/', $category->path);
+            //     array_shift($listparentid);
+            //     array_pop($listparentid);
+            //     $fullnameparentcategory = '';
+            //     foreach ($listparentid as $parentid) {
+            //         $nameparentcategory = $DB->get_record('course_categories', [
+            //             'id' => $parentid
+            //         ])->name;
+            //         $fullnameparentcategory .= $nameparentcategory . '/';
+            //     }
+            //     $category->name = $fullnameparentcategory . $category->name;
+            // }
             // Preload the context.. we'll need it when adding the category in order
             // to format the category name.
             context_helper::preload_from_record($category);

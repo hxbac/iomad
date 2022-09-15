@@ -151,7 +151,7 @@ Example context (json):
                     })
 
                     if (i === 0) {
-                        yearHTML = `<option value="0"}>Không có dữ liệu</option>`
+                        yearHTML = `<option value="Không có dữ liệu"}>Không có dữ liệu</option>`
                     }
 
                     yearSelector.innerHTML = yearHTML
@@ -181,7 +181,7 @@ Example context (json):
                     })
 
                     if (i === 0) {
-                        semesterHTML = `<option value="0"}>Không có dữ liệu</option>`
+                        semesterHTML = `<option value="Không có dữ liệu"}>Không có dữ liệu</option>`
                     }
 
                     semesterSelector.innerHTML = semesterHTML
@@ -210,7 +210,7 @@ Example context (json):
                         i++
                     })
                     if (i === 0) {
-                        subjectManageHTML = `<option value="0"}>Không có dữ liệu</option>`
+                        subjectManageHTML = `<option value="Không có dữ liệu"}>Không có dữ liệu</option>`
                     }
                     subjectManageSelector.innerHTML = subjectManageHTML
                 }
@@ -240,7 +240,7 @@ Example context (json):
                         })
 
                         if (i === 0) {
-                            subjectHTML = `<option value="0"}>Không có dữ liệu</option>`
+                            subjectHTML = `<option value="Không có dữ liệu"}>Không có dữ liệu</option>`
                         }
 
                         subjectSelector.innerHTML = subjectHTML
@@ -280,8 +280,15 @@ Example context (json):
                     semesterSelector.setAttribute('class', 'form-control')
                     semesterSelector.style.cssText += `width: 45%`
 
+                    const subjectManageSelector = document.createElement('select')
+                    subjectManageSelector.setAttribute('class', 'form-control')
+                    subjectManageSelector.style.cssText += `width: 45%`
+
                     divCustom.appendChild(yearSelector)
                     divCustom.appendChild(semesterSelector)
+                    divNextDivParentCustom.insertBefore(subjectManageSelector, divNextDivParentCustom.firstChild);
+
+                    divNextDivParentCustom.style.cssText += `display: flex; justify-content: space-around;`
 
                     const inputSearchNew = document.createElement('input')
                     inputSearchNew.setAttribute('type', 'text')
@@ -290,39 +297,88 @@ Example context (json):
                     inputSearchNew.style.cssText += `width: 45%`
                     divNextDivParentCustom.appendChild(inputSearchNew)
                     inputSearchDefault.style.cssText += `visibility: hidden;`
+                    inputSearchDefault.closest('#DataTables_Table_0_filter').style.cssText += `display: none;`
 
                     fetchGetDataYear(domain, yearSelector)
 
-                    yearSelector.addEventListener('change', handleChangeYearSelector)
-                    let yearId = 0
-                    function handleChangeYearSelector() {
+                    function handleChangeYear() {
                         const awaitFetchYear = setInterval(function () {
                             if (yearSelector.value) {
-                                yearId = Number(yearSelector.value)
-                                fetchDataSemester(domain, semesterSelector, yearId)
+                                fetchDataSemester(domain, semesterSelector, yearSelector.value)
                                 semesterSelector.dispatchEvent(new Event('change', { bubbles: true }))
                                 clearInterval(awaitFetchYear)
                             }
                         }, 200)
                     }
 
+                    yearSelector.addEventListener('change', handleChangeYear)
+
+                    semesterSelector.addEventListener('change', function () {
+                        const awaitFetchSemester = setInterval(function () {
+                            if (semesterSelector.value) {
+                                fetchDataSubjectManage(domain, subjectManageSelector, semesterSelector.value)
+                                subjectManageSelector.dispatchEvent(new Event('change', { bubbles: true }))
+                                clearInterval(awaitFetchSemester)
+                            }
+                        }, 200)
+                    })
+
+                    subjectManageSelector.addEventListener('change', function () {
+                        const awaitFetchSubjectManage = setInterval(function () {
+                            if (subjectManageSelector.value) {
+                                triggerEventInputDefault()
+                                clearInterval(awaitFetchSubjectManage)
+                            }
+                        }, 200)
+                    })
+                    yearSelector.dispatchEvent(new Event('change'))
+                    
+                    // fetchGetDataYear(domain, yearSelector)
+
+                    // yearSelector.addEventListener('change', handleChangeYearSelector)
+                    // let yearId = 0
+                    // function handleChangeYearSelector() {
+                    //     const awaitFetchYear = setInterval(function () {
+                    //         if (yearSelector.value) {
+                    //             yearId = Number(yearSelector.value)
+                    //             fetchDataSemester(domain, semesterSelector, yearId)
+                    //             semesterSelector.dispatchEvent(new Event('change', { bubbles: true }))
+                    //             clearInterval(awaitFetchYear)
+                    //         }
+                    //     }, 200)
+                    // }
+
+                    // function handleChangeSemesterSelector() {
+                    //     const awaitFetchSemester = setInterval(function () {
+                    //         if (semesterSelector.value) {
+                    //             semesterid = Number(semesterSelector.value)
+                    //             fetchDataSubjectManage(domain, subjectmanagerselector, semesterid)
+                    //             subjectmanagerselector.dispatchEvent(new Event('change', { bubbles: true }))
+                    //             clearInterval(awaitFetchSemester)
+                    //         }
+                    //     }, 200)
+                    // }
+
                     function triggerEventInputDefault() {
                         const awaitFetchDataYear = setInterval(function () {
                             if (yearSelector.value) {
                                 let yearString = yearSelector.value
                                 let semesterString = semesterSelector.value
+                                let subjectManage = subjectManageSelector.value
                                 let searchString = inputSearchNew.value
     
-                                inputSearchDefault.value = yearString + ' ' + semesterString + ' ' + searchString
+                                inputSearchDefault.value = yearString + ' ' + semesterString + ' ' + subjectManage + ' ' + searchString
                                 inputSearchDefault.dispatchEvent(new Event('input', { bubbles: true }))
 
                                 clearInterval(awaitFetchDataYear)
                             }
                         }, 200)
                     }
-                    semesterSelector.addEventListener('change', triggerEventInputDefault)
+
+                    // subjectmanagerselector.addEventListener('change', triggerEventInputDefault)
+                    // semesterSelector.addEventListener('change', triggerEventInputDefault)
                     inputSearchNew.addEventListener('input', triggerEventInputDefault)
-                    handleChangeYearSelector()
+                    // handleChangeYearSelector()
 
 
                     clearInterval(awaitDatatableLoaded)
