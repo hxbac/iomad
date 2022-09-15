@@ -53,7 +53,8 @@ foreach ($categoriesSendFilter as $categoryrecord) {
     $categoryrecord->url = new moodle_url('/local/giaoandientu/xem_bao_cao.php', [
         'categoryid' => $categoryrecord->categoryid
     ]);
-    $sqlq = "SELECT COUNT(*) as `solanconlai` FROM `".$CFG->prefix."lms_gadt_storereport` `sr` JOIN `".$CFG->prefix."lms_gadt_weeks` `w` ON `sr`.weekid = `w`.id  WHERE `status` = 0 AND `sr`.`userid` = " . $USER->id . " AND `categoryid` = " . $categoryrecord->categoryid;
+    $now = (new DateTime("now", core_date::get_server_timezone_object()))->getTimestamp();
+    $sqlq = "SELECT COUNT(*) as `solanconlai` FROM `".$CFG->prefix."lms_gadt_storereport` `sr` JOIN `".$CFG->prefix."lms_gadt_weeks` `w` ON `sr`.weekid = `w`.id  WHERE `status` = 0 AND `sr`.`userid` = " . $USER->id . " AND `categoryid` = " . $categoryrecord->categoryid ." AND w.startdate < ". $now ." AND w.enddate > ". $now;
     $storerecordofuser = $DB->get_record_sql($sqlq);
     $categoryrecord-> solanconlai = $storerecordofuser->solanconlai;
 
