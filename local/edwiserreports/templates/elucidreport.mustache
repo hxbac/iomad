@@ -504,6 +504,12 @@ Example context (json):
                     semesterSelector.style.cssText += `margin-bottom: 16px;`
                     divCustom.appendChild(semesterSelector)
 
+                    // create subject manage selector into div wrapper
+                    const subjectManageSelector = document.createElement('select')
+                    subjectManageSelector.setAttribute('class', 'form-control')
+                    subjectManageSelector.style.cssText += `margin-bottom: 16px;`
+                    divCustom.appendChild(subjectManageSelector)
+
                     // create search input into div wrapper
                     const inputSearchNew = document.createElement('input')
                     inputSearchNew.setAttribute('class', 'form-control')
@@ -527,8 +533,18 @@ Example context (json):
                     semesterSelector.addEventListener('change', function () {
                         const awaitSemesterLoaded = setInterval(function () {
                             if (semesterSelector.value) {
-                                handleChangeValue()
+                                fetchDataSubjectManage(domain, subjectManageSelector, semesterSelector.value)
+                                subjectManageSelector.dispatchEvent(new Event('change'))
                                 clearInterval(awaitSemesterLoaded)
+                            }
+                        }, 200)
+                    })
+
+                    subjectManageSelector.addEventListener('change', function () {
+                        const awaitSubjectManageLoaded = setInterval(function () {
+                            if (subjectManageSelector.value) {
+                                handleChangeValue()
+                                clearInterval(awaitSubjectManageLoaded)
                             }
                         }, 200)
                     })
@@ -538,9 +554,10 @@ Example context (json):
                     function handleChangeValue() {
                         let yearValue = yearSelector.value ?? ''
                         let semesterValue = semesterSelector.value ?? ''
+                        let subjectmanage = subjectManageSelector.value ?? ''
                         let searchValue = inputSearchNew.value ?? ''
 
-                        inputDefault.value = `${yearValue} ${semesterValue} ${searchValue}`
+                        inputDefault.value = `${yearValue} ${semesterValue} ${subjectmanage} ${searchValue}`
                         inputDefault.dispatchEvent(new Event('input', { bubbles: true }))
                     }
 
