@@ -49,6 +49,20 @@ Example context (json):
         margin-bottom: 0;
     }
 
+    ul.dropdown-menu::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        background-color: #F5F5F5;
+    }
+
+    ul.dropdown-menu::-webkit-scrollbar {
+        width: 6px;
+        background-color: #F5F5F5;
+    }
+
+    ul.dropdown-menu::-webkit-scrollbar-thumb {
+        background-color: #000000;
+    }
+
     @media only screen and (max-width: 1200px) {
         .lms_gadt_totruong_td {
             display: block;
@@ -64,7 +78,8 @@ Example context (json):
     }
 </style>
 {{#breadcrumbobj}}
-<div style="margin-bottom: 20px;"><a href="{{{ urlgiaoandientu }}}">Giáo án điện tử / </a>{{ parentname }}<b>{{ name }}</b></div>
+<div style="margin-bottom: 20px;"><a href="{{{ urlgiaoandientu }}}">Giáo án điện tử / </a>{{ parentname }}<b>{{ name
+        }}</b></div>
 {{/breadcrumbobj}}
 <br>
 <div style="display: flex; margin-bottom: 14px;">
@@ -75,17 +90,25 @@ Example context (json):
     <div class="dropdown">
         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{ weekname }}
             <span class="caret"></span></button>
-        <ul class="dropdown-menu" style="min-width: 16rem;">
+        <ul class="dropdown-menu" style="min-width: 16rem; max-height: 33vh; overflow-y: scroll;">
             {{#listweek}}
-            <li style="padding: 8px 16px;" onMouseOver="this.style.backgroundColor = '#ececec'" onMouseOut="this.style.backgroundColor = 'unset'"><a href="{{{id}}}" style="display: block; width: 100%;">{{ weekname }}</a></li>
+            <li style="padding: 8px 16px;" onMouseOver="this.style.backgroundColor = '#ececec'"
+                onMouseOut="this.style.backgroundColor = 'unset'"><a href="{{{id}}}"
+                    style="display: block; width: 100%;">{{ weekname }}</a></li>
             {{/listweek}}
         </ul>
     </div>
 
-    <a href="{{{urlupdateweek}}}" class="btn btn-warning" style="margin-left: 14px; padding: 0 20px; display: flex; align-items: center; justify-content: center;">Sửa đổi</a>
-    <a class="btn btn-danger" style="margin-left: 14px; padding: 0 20px; display: flex; align-items: center; justify-content: center; color: #fff;" data-toggle="modal" data-target="#modalDeleteWeek">Xóa</a>
-    <button class="btn btn-primary" style="margin-left: 14px;" data-toggle="modal" data-target="#modalUpdateTeacherWeek">Cập nhật giáo viên</button>
-    <button class="btn btn-primary" style="margin-left: 14px;" data-toggle="modal" data-target="#modalShowInfoWeek">Xem thông tin</button>
+    <a href="{{{urlupdateweek}}}" class="btn btn-warning"
+        style="margin-left: 14px; padding: 0 20px; display: flex; align-items: center; justify-content: center;">Sửa
+        đổi</a>
+    <a class="btn btn-danger"
+        style="margin-left: 14px; padding: 0 20px; display: flex; align-items: center; justify-content: center; color: #fff;"
+        data-toggle="modal" data-target="#modalDeleteWeek">Xóa</a>
+    <button class="btn btn-primary" style="margin-left: 14px;" data-toggle="modal"
+        data-target="#modalUpdateTeacherWeek">Cập nhật giáo viên</button>
+    <button class="btn btn-primary" style="margin-left: 14px;" data-toggle="modal" data-target="#modalShowInfoWeek">Xem
+        thông tin</button>
 </div>
 <br>
 <br>
@@ -137,7 +160,8 @@ Example context (json):
 <!-- Modal -->
 <div class="modal fade" id="modalDeleteWeek" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog" role="document" style="width: 520px !important; max-width: 100% !important; margin-top: 50px !important;">
+    <div class="modal-dialog" role="document"
+        style="width: 520px !important; max-width: 100% !important; margin-top: 50px !important;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Xóa tuần</h5>
@@ -146,7 +170,8 @@ Example context (json):
                 </button>
             </div>
             <div class="modal-body">
-                Bạn có chắc chắn xóa tuần hiện tại. Việc này sẽ xóa tất cả bản ghi giáo viên đã nộp và không thể khôi phục lại.
+                Bạn có chắc chắn xóa tuần hiện tại. Việc này sẽ xóa tất cả bản ghi giáo viên đã nộp và không thể khôi
+                phục lại.
             </div>
             <div class="modal-footer">
                 <a href="{{{urldeleteweek}}}" type="button" class="btn btn-secondary">Xóa</a>
@@ -159,7 +184,8 @@ Example context (json):
 <!-- Modal -->
 <div class="modal fade" id="modalUpdateTeacherWeek" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog" role="document" style="width: 520px !important; max-width: 100% !important; margin-top: 50px !important;">
+    <div class="modal-dialog" role="document"
+        style="width: 520px !important; max-width: 100% !important; margin-top: 50px !important;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Cập nhật giáo viên</h5>
@@ -168,7 +194,8 @@ Example context (json):
                 </button>
             </div>
             <div class="modal-body">
-                Bạn có chắc chắn cập nhật giáo viên cho tuần hiện tại. Việc này sẽ xóa tất cả bản ghi giáo viên hiện tại đã nộp và không thể khôi phục lại.
+                Bạn có chắc chắn cập nhật giáo viên cho tuần hiện tại. Việc này sẽ xóa tất cả bản ghi giáo viên hiện tại
+                đã nộp và không thể khôi phục lại.
             </div>
             <div class="modal-footer">
                 <a href="{{urlupdateteachersweek}}" type="button" class="btn btn-secondary">Cập nhật</a>
@@ -181,7 +208,8 @@ Example context (json):
 <!-- Modal -->
 <div class="modal fade" id="modalShowInfoWeek" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog" role="document" style="width: 520px !important; max-width: 100% !important; margin-top: 50px !important;">
+    <div class="modal-dialog" role="document"
+        style="width: 520px !important; max-width: 100% !important; margin-top: 50px !important;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Thông tin tuần</h5>
@@ -214,12 +242,12 @@ Example context (json):
     submitBtns.forEach((btn) => {
         btn.onclick = function () {
             const tdParent = this.closest('td.lms_gadt_totruong_td')
-            if(tdParent) {
+            if (tdParent) {
                 const inputStatus = tdParent.querySelector('input[name=status]')
-                if(this.classList.contains('btn-primary')) {
+                if (this.classList.contains('btn-primary')) {
                     inputStatus.value = 0
                 }
-                if(this.classList.contains('btn-secondary')) {
+                if (this.classList.contains('btn-secondary')) {
                     inputStatus.value = 1
                 }
 
