@@ -75,9 +75,9 @@ Example context (json):
     <div class="dropdown">
         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{ weekname }}
             <span class="caret"></span></button>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu" style="min-width: 16rem;">
             {{#listweek}}
-            <li><a href="{{{id}}}">{{ weekname }}</a></li>
+            <li style="padding: 8px 16px;" onMouseOver="this.style.backgroundColor = '#ececec'" onMouseOut="this.style.backgroundColor = 'unset'"><a href="{{{id}}}" style="display: block; width: 100%;">{{ weekname }}</a></li>
             {{/listweek}}
         </ul>
     </div>
