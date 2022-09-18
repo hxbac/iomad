@@ -63,10 +63,12 @@ getParentNameCategory($category->parent, $breadcrumbobj->parentname);
 $breadcrumbobj->urlgiaoandientu = new moodle_url('/local/giaoandientu/');
 $breadcrumbobj->name = $category->name;
 
+$renderActionWeek = false;
 // Lấy danh sách tuần của category chỉ định
 // Sửa id của dánh sách tuần thành url để gán vào thẻ a xem theo tuần đó
 $listidweek = (array) [];
 foreach ($weeks as $week) {
+    $renderActionWeek = true;
     $week->id = new moodle_url('/local/giaoandientu/view.php', [
         'categoryid' => $categoryid,
         'weekid' => $week->id
@@ -151,6 +153,7 @@ echo $OUTPUT->render_from_template('local_giaoandientu/totruong', [
     'description' => $week->description,
     'usercreate' => $usercreate->firstname. ' ' .$usercreate->lastname,
     'breadcrumbobj' => $breadcrumbobj,
+    'renderActionWeek' => $renderActionWeek
 ]);
 
 echo $OUTPUT->footer();
