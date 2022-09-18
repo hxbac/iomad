@@ -79,26 +79,14 @@ class customreportsblock extends block_base {
             $params = array_merge($params, $uparams);
         }
 
-        // $schools = $DB->get_records('course_categories', [
-        //     'parent' => 0
-        // ]);
-        // $schools = array_filter([...$schools], function ($school) {
-        //     global $DB, $USER;
-        //     $roleprincipal = $DB->get_record('role', [
-        //         'shortname' => 'hieutruong'
-        //     ]);
-        //     $context = \context_coursecat::instance($school->id);
-        //     $principals = get_role_users($roleprincipal->id, $context);
-        //     foreach ($principals as $principal) {
-        //         if ($USER->id == $principal->id) {
-        //             return true;
-        //         }
-        //     }
-        //     return false;
-        // });
         // Main query to execute the custom query reports.
-        
-        
+        $inputSearchStringCategory = optional_param('lmsSearchDownload', '', PARAM_TEXT);
+        $inputSearchStringCategory = str_replace("'", '', $inputSearchStringCategory);
+        $inputSearchStringCategory = str_replace('"', '', $inputSearchStringCategory);
+        $addconditionlms = '';
+        if ($inputSearchStringCategory !== '') {
+            $addconditionlms = " AND ctg.path LIKE '". $inputSearchStringCategory ."'";
+        }
         $sql = 'SELECT '.$customfields.', `ctg`.`path` AS `pathcategory`, c.id AS `courseid`
                 FROM {user} u
                 JOIN {role_assignments} ra ON ra.userid = u.id
@@ -112,62 +100,34 @@ class customreportsblock extends block_base {
                 WHERE u.id '.$userdb.'
                 AND ct.contextlevel = '.CONTEXT_COURSE.'
                 AND r.archetype = \'student\'
-                AND u.deleted = 0';
-
-        // if (count($schools) != 0) {
-        //     $listcategoryofschools = [];
-        //     foreach ($schools as $school) {
-        //         $sql = "SELECT * FROM `". $CFG->prefix ."course_categories` WHERE `path` LIKE '/". $school->id ."/%' ORDER BY `path`";
-        //         $childcategories = $DB->get_records_sql($sql);
-        //         foreach ($childcategories as $item) {
-        //             array_push($listcategoryofschools, $item->id);
-        //         }
-        //     }
-
-        //     $conditionString = implode(',', $listcategoryofschools);
-        //     $sql = 'SELECT '.$customfields.', `ctg`.`path` AS `pathcategory`
-        //             FROM {user} u
-        //             JOIN {role_assignments} ra ON ra.userid = u.id
-        //             JOIN {role} r ON r.id = ra.roleid
-        //             JOIN {context} ct ON ct.id = ra.contextid
-        //             JOIN {course} c ON c.id = ct.instanceid
-        //             JOIN {edwreports_course_progress} ec ON ec.courseid = c.id AND ec.userid = u.id AND c.id '.$coursedb.'
-        //             JOIN {course_categories} ctg ON ctg.id = c.category
-        //             JOIN {course_format_options} cfo ON c.id = cfo.courseid
-        //             JOIN {enrol} e ON c.id = e.courseid AND e.status = 0
-        //             WHERE u.id '.$userdb.'
-        //             AND ct.contextlevel = '.CONTEXT_COURSE.'
-        //             AND r.archetype = \'student\'
-        //             AND u.deleted = 0
-        //             AND c.category IN ('. $conditionString .')';
-        // }
+                AND u.deleted = 0' . $addconditionlms;
 
         $recordset = $DB->get_recordset_sql($sql, $params);
         $records = array();
-        // foreach ($recordset as $record) {
-            // if ($record->coursename != null) {
-            //     $record->coursename = '<span style="position: absolute; visibility: hidden;">' . $record->pathcategory . '</span>' . $record->coursename;
-            //     unset($record->pathcategory);
-            // }
-
-        //     if (!empty($resultfunc)) {
-        //         foreach ($resultfunc as $id => $func) {
-        //             $record->$id = $func($record->$id);
-        //         }
-        //     }
-
-        //     if (!in_array($record, $records)) {
-        //         $records[] = $record;
-        //     }
-            
-        // }
         while ($recordset->key()) {
             $record = $recordset->current();
+            $courseid = $record->courseid;
             $urlViewCourse = new moodle_url('/course/view.php', [
-                'id' => $record->courseid
+                'id' => $courseid
             ]);
             if ($record->coursename != null) {
-                $record->coursename = '<span style="position: absolute; visibility: hidden;">' . $record->pathcategory . '</span><a href="'. $urlViewCourse .'" target="_blank">' . $record->coursename .'</a>';
+                if ($inputSearchStringCategory === '') {
+                    $record->coursename = '<span style="position: absolute; visibility: hidden;">' . $record->pathcategory . '</span><a href="'. $urlViewCourse .'" target="_blank">' . $record->coursename .'</a>';
+                } else {
+                    $now = new \DateTime("now", \core_date::get_server_timezone_object());
+                    $record->ngaytaixuong = date_format($now, 'd-m-Y H:i:s');
+                }
+
+                $teacherroleid = $DB->get_field('role', 'id', [
+                    'shortname' => 'editingteacher'
+                ]);
+                $contextcourse = \context_course::instance($courseid);
+                $teachers = get_role_users($teacherroleid, $contextcourse);
+                $teachersNameOfCourse = array_reduce([...$teachers], function ($result, $teacher) {
+                    $teacherfullname = $teacher->firstname .' '. $teacher->lastname;
+                    return $result === '' ? $teacherfullname : $result . ' và ' . $teacherfullname;
+                }, '');
+                $record->coursecategory = $teachersNameOfCourse ?? '';
             }
             unset($record->pathcategory);
             unset($record->courseid);

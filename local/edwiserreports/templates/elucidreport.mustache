@@ -266,6 +266,7 @@ Example context (json):
             const awaitDatatableLoaded = setInterval(() => {
                 const divCustomWrapper = firstChild.querySelector('.panel .panel-body .dataTables_wrapper')
                 if (divCustomWrapper != null) {
+                    const formDownloadReport = firstChild.querySelector('form[action*="edwiserreports/download.php"]')
                     const parentDivCustom = divCustomWrapper.firstElementChild
                     const divCustom = parentDivCustom.firstElementChild
                     const divNextDivParentCustom = divCustom.nextSibling
@@ -274,7 +275,19 @@ Example context (json):
                                             align-items: center;
                                             justify-content: space-around;`
 
+                    // Create input stored search string
+                    const inputSearchDownload = document.createElement('input')
+                    const attributeInput = {
+                        type: 'hidden',
+                        name: 'lmsSearchDownload'
+                    }
+                    Object.assign(inputSearchDownload, attributeInput)
+                    formDownloadReport.appendChild(inputSearchDownload)
+
                     divCustom.style.cssText += cssDivCustom
+
+                    inputSearchDefault.value = `Không có dữ liệu`
+                    inputSearchDefault.dispatchEvent(new Event('input'))
 
                     const yearSelector = document.createElement('select')
                     yearSelector.setAttribute('class', 'form-control')
@@ -336,32 +349,6 @@ Example context (json):
                         }, 200)
                     })
                     yearSelector.dispatchEvent(new Event('change'))
-                    
-                    // fetchGetDataYear(domain, yearSelector)
-
-                    // yearSelector.addEventListener('change', handleChangeYearSelector)
-                    // let yearId = 0
-                    // function handleChangeYearSelector() {
-                    //     const awaitFetchYear = setInterval(function () {
-                    //         if (yearSelector.value) {
-                    //             yearId = Number(yearSelector.value)
-                    //             fetchDataSemester(domain, semesterSelector, yearId)
-                    //             semesterSelector.dispatchEvent(new Event('change', { bubbles: true }))
-                    //             clearInterval(awaitFetchYear)
-                    //         }
-                    //     }, 200)
-                    // }
-
-                    // function handleChangeSemesterSelector() {
-                    //     const awaitFetchSemester = setInterval(function () {
-                    //         if (semesterSelector.value) {
-                    //             semesterid = Number(semesterSelector.value)
-                    //             fetchDataSubjectManage(domain, subjectmanagerselector, semesterid)
-                    //             subjectmanagerselector.dispatchEvent(new Event('change', { bubbles: true }))
-                    //             clearInterval(awaitFetchSemester)
-                    //         }
-                    //     }, 200)
-                    // }
 
                     function triggerEventInputDefault() {
                         const awaitFetchDataYear = setInterval(function () {
@@ -373,16 +360,13 @@ Example context (json):
     
                                 inputSearchDefault.value = yearString + ' ' + semesterString + ' ' + subjectManage + ' ' + searchString
                                 inputSearchDefault.dispatchEvent(new Event('input', { bubbles: true }))
-
+                                inputSearchDownload.value = `/${yearString}${semesterString !== '' ? '/' + semesterString : ''}${subjectManage !== '' ? '/' + subjectManage : ''}`
                                 clearInterval(awaitFetchDataYear)
                             }
                         }, 200)
                     }
 
-                    // subjectmanagerselector.addEventListener('change', triggerEventInputDefault)
-                    // semesterSelector.addEventListener('change', triggerEventInputDefault)
                     inputSearchNew.addEventListener('input', triggerEventInputDefault)
-                    // handleChangeYearSelector()
 
 
                     clearInterval(awaitDatatableLoaded)
@@ -487,6 +471,8 @@ Example context (json):
                 if (divCustomWrapper != null) {
                     const inputDefault = divCustomWrapper.querySelector('.dataTables_filter input')
                     inputDefault.style.cssText += 'display: none;'
+                    inputDefault.value = `Không có dữ liệu`
+                    inputDefault.dispatchEvent(new Event('input'))
 
                     const divCustom = document.createElement('div')
                     divCustom.setAttribute('class', 'row')
