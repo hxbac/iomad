@@ -168,7 +168,15 @@ class courseengageblock extends utility {
         $courseurl = new moodle_url($CFG->wwwroot . "/course/view.php", array("id" => $course->id));
 
         // Get course name with course url.
-        $engagement->coursename = html_writer::link($courseurl, $course->fullname);
+        $inputSearchStringCategory = optional_param('lmsSearchDownload', '', PARAM_TEXT);
+        $inputSearchStringCategory = str_replace("'", '', $inputSearchStringCategory);
+        $inputSearchStringCategory = str_replace('"', '', $inputSearchStringCategory);
+
+        if ($inputSearchStringCategory !== '') {
+            $engagement->coursename = html_writer::link($courseurl, $course->fullname, array('target' => '_blank'));
+        } else {
+            $engagement->coursename = html_writer::link($courseurl, $course->fullname .' <span style="position: relative; visibility: hidden;">'. $course->pathcategory .'</span>', array('target' => '_blank'));
+        }
 
         // Generate enrolments link.
         $engagement->enrolment = self::get_course_engagement_link(
