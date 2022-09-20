@@ -224,10 +224,20 @@ class courseprogressblock extends block_base {
 
             // Assign response data.
             $res->id = $course->id;
-            $res->coursename = html_writer::link(
-                new moodle_url($CFG->wwwroot . "/course/view.php", array("id" => $course->id)),
-                $course->fullname
-            );
+
+            // Check action download file 
+            $inputSearchStringCategory = optional_param('lmsSearchDownload', '', PARAM_TEXT);
+            if ($inputSearchStringCategory !== '') {
+                $res->coursename = html_writer::link(
+                    new moodle_url($CFG->wwwroot . "/course/view.php", array("id" => $course->id)),
+                    $course->fullname, array('target' => '_blank')
+                );
+            } else {
+                $res->coursename = html_writer::link(
+                    new moodle_url($CFG->wwwroot . "/course/view.php", array("id" => $course->id)),
+                    $course->fullname. ' <span style="position: relative; visibility: hidden;">'. $course->pathcategory .'</span>', array('target' => '_blank')
+                );
+            }
 
             // Get only enrolled student.
             $enrolledstudents = \local_edwiserreports\utility::get_enrolled_students($course->id);

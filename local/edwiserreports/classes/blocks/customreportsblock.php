@@ -85,7 +85,7 @@ class customreportsblock extends block_base {
         $inputSearchStringCategory = str_replace('"', '', $inputSearchStringCategory);
         $addconditionlms = '';
         if ($inputSearchStringCategory !== '') {
-            $addconditionlms = " AND ctg.path LIKE '". $inputSearchStringCategory ."'";
+            $addconditionlms = " AND ctg.path LIKE '". $inputSearchStringCategory ."%'";
         }
         $sql = 'SELECT '.$customfields.', `ctg`.`path` AS `pathcategory`, c.id AS `courseid`
                 FROM {user} u

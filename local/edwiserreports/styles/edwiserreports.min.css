@@ -2934,6 +2934,6 @@ span.flatpickr-weekday {
     border-top-color: #11c26d;
 }
 
-.edwiserReport-block button[type="submit"][name="type"]:not([value="excel"]) {
+button[type="submit"][name="type"]:not([value="excel"]) {
     display: none !important;
 }
