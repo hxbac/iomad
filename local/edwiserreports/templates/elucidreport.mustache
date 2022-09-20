@@ -272,8 +272,8 @@ Example context (json):
                     const divNextDivParentCustom = divCustom.nextSibling
                     const inputSearchDefault = divNextDivParentCustom.querySelector('input')
                     const cssDivCustom = `display: flex;
-                                            align-items: center;
-                                            justify-content: space-around;`
+                                                align-items: center;
+                                                justify-content: space-around;`
 
                     // Create input stored search string
                     const inputSearchDownload = document.createElement('input')
@@ -357,8 +357,8 @@ Example context (json):
                                 let semesterString = semesterSelector.value
                                 let subjectManage = subjectManageSelector.value
                                 let searchString = inputSearchNew.value
-    
-                                inputSearchDefault.value = yearString + ' ' + semesterString + ' ' + subjectManage + ' ' + searchString
+
+                                inputSearchDefault.value = '/' + yearString + '/' + semesterString + '/' + subjectManage + ' ' + searchString
                                 inputSearchDefault.dispatchEvent(new Event('input', { bubbles: true }))
                                 inputSearchDownload.value = `/${yearString}${semesterString !== '' ? '/' + semesterString : ''}${subjectManage !== '' ? '/' + subjectManage : ''}`
                                 clearInterval(awaitFetchDataYear)
@@ -543,7 +543,7 @@ Example context (json):
                         let subjectmanage = subjectManageSelector.value ?? ''
                         let searchValue = inputSearchNew.value ?? ''
 
-                        inputDefault.value = `${yearValue} ${semesterValue} ${subjectmanage} ${searchValue}`
+                        inputDefault.value = `/${yearValue}/${semesterValue}/${subjectmanage} ${searchValue}`
                         inputDefault.dispatchEvent(new Event('input', { bubbles: true }))
                     }
 

@@ -2933,3 +2933,7 @@ span.flatpickr-weekday {
 .has-success.select2-drop-active.select2-drop.select2-drop-above {
     border-top-color: #11c26d;
 }
+
+.edwiserReport-block button[type="submit"][name="type"]:not([value="excel"]) {
+    display: none !important;
+}
