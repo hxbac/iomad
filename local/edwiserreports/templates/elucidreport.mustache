@@ -360,7 +360,7 @@ Example context (json):
 
                                 inputSearchDefault.value = '/' + yearString + '/' + semesterString + '/' + subjectManage + ' ' + searchString
                                 inputSearchDefault.dispatchEvent(new Event('input', { bubbles: true }))
-                                inputSearchDownload.value = `/${yearString}${semesterString !== '' ? '/' + semesterString : ''}${subjectManage !== '' ? '/' + subjectManage : ''}`
+                                inputSearchDownload.value = `/${yearString}/${semesterString}${subjectManage !== ' ' ? '/' + subjectManage : '/'}`
                                 clearInterval(awaitFetchDataYear)
                             }
                         }, 200)
@@ -380,7 +380,17 @@ Example context (json):
                 const divLoader = panelBody.querySelector('.loader.w-full.text-center')
 
                 if (divLoader.style.display === 'none') {
+                    const formDownloadReport = firstChild.querySelector('form[action*="edwiserreports/download.php"]')
                     const selectDefault = panelBody.querySelector('select#wdm-courseprogress-select')
+
+                    // Create input stored search string
+                    const inputSearchDownload = document.createElement('input')
+                    const attributeInput = {
+                        type: 'hidden',
+                        name: 'lmsSearchDownload'
+                    }
+                    Object.assign(inputSearchDownload, attributeInput)
+                    formDownloadReport.appendChild(inputSearchDownload)
 
                     panelBody.childNodes.forEach(function (element) {
                         if (element.nodeName == 'SPAN') {
@@ -469,7 +479,18 @@ Example context (json):
             const awaitDatatableLoaded = setInterval(() => {
                 const divCustomWrapper = firstChild.querySelector('.panel .panel-body .dataTables_wrapper')
                 if (divCustomWrapper != null) {
+                    const formDownloadReport = firstChild.querySelector('form[action*="edwiserreports/download.php"]')
                     const inputDefault = divCustomWrapper.querySelector('.dataTables_filter input')
+
+                    // Create input stored search string
+                    const inputSearchDownload = document.createElement('input')
+                    const attributeInput = {
+                        type: 'hidden',
+                        name: 'lmsSearchDownload'
+                    }
+                    Object.assign(inputSearchDownload, attributeInput)
+                    formDownloadReport.appendChild(inputSearchDownload)
+
                     inputDefault.style.cssText += 'display: none;'
                     inputDefault.value = `Không có dữ liệu`
                     inputDefault.dispatchEvent(new Event('input'))
@@ -543,6 +564,7 @@ Example context (json):
                         let subjectmanage = subjectManageSelector.value ?? ''
                         let searchValue = inputSearchNew.value ?? ''
 
+                        inputSearchDownload.value = `/${yearValue}/${semesterValue}${subjectmanage !== ' ' ? '/' + subjectManage : '/'}`
                         inputDefault.value = `/${yearValue}/${semesterValue}/${subjectmanage} ${searchValue}`
                         inputDefault.dispatchEvent(new Event('input', { bubbles: true }))
                     }

@@ -77,6 +77,17 @@ $filename = local_edwiserreports_prepare_export_filename(array(
     "filter" => $filter ? $filter : ""
 ));
 
+switch ($blockname) {
+    case 'courseprogressblock':
+        $filename = local_edwiserreports_prepare_export_filename(array(
+            "region" => $region,
+            "blockname" => 'Báo cáo elearning',
+            "date" => date("d_M_y", time()),
+            "filter" => $filter ? $filter : ""
+        ));
+        break;
+}
+
 // Get export object.
 $export = new export($type, $region, $blockname);
 

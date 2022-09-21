@@ -45,6 +45,12 @@ if ($istbm) {
             'userid' => $USER->id,
         ]);
     });
+} else {
+    $itemShowAll = (Object) [
+        'id' => ' ',
+        'name' => 'Tất cả'
+    ];
+    array_unshift($subjectManages, $itemShowAll);
 }
 
 $data = [];

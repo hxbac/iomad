@@ -251,9 +251,21 @@
                 // handleYearSelect()
                 yearSelector.dispatchEvent(new Event('change', { bubbles: true }))
 
+                // Eng -> Vi string 
+                const labelSelectNumEntries = datatableWrapper.querySelector('.dataTables_length > label')
+                labelSelectNumEntries.childNodes.forEach(element => {
+                    if (element.nodeName == '#text' && element.data === 'Show ') {
+                        element.data = 'Hiển thị '
+                    }
+                    if (element.nodeName == '#text' && element.data === ' entries') {
+                        element.data = ' dòng'
+                    }
+                })
+                
+
                 clearInterval(awaitDatatableLoaded)
             }
-        }, 200);
+        }, 200)
     }
 
     startEngagement()
