@@ -632,3 +632,5 @@ $string['guestaccess'] = 'Course Guest Access';
 $string['selectcourses'] = 'Select Courses';
 $string['selectcohorts'] = 'Select Cohorts';
 $string['createnewcustomreports'] = 'Create new Report';
+
+$string['categoryname'] = 'Tổ';

@@ -135,17 +135,78 @@ class export {
      * @param array  $data    Data to be export
      */
     public function data_export_excel($filename, $data) {
+        global $DB;
+
+        $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+        $isFromEdwiserreportsCustomBlock = strpos($url,'edwiserreports') !== false && strpos($this->blockname, 'customreportsblock') !== false;
+
         // Creating a workbook.
         $workbook = new MoodleExcelWorkbook("-");
 
         // Adding the worksheet.
         $myxls = $workbook->add_worksheet($this->region . "_" . $this->blockname);
+        
+        $format = $workbook->add_format();
+        $i = true;
 
-        foreach ($data as $rownum => $row) {
-            foreach ($row as $colnum => $val) {
-                $myxls->write_string($rownum, $colnum, $val);
+        if ($isFromEdwiserreportsCustomBlock) {
+            $inputSearchStringCategory = optional_param('lmsSearchDownload', '', PARAM_TEXT);
+            $inputSearchStringCategory = str_replace("'", '', $inputSearchStringCategory);
+            $inputSearchStringCategory = str_replace('"', '', $inputSearchStringCategory);
+            $arrayInfo = explode('/', $inputSearchStringCategory);
+
+            $yearName = $DB->get_field('course_categories', 'name', [
+                'id' => $arrayInfo[1]
+            ]) ?? '';
+
+            $semesterName = $DB->get_field('course_categories', 'name', [
+                'id' => $arrayInfo[2]
+            ]) ?? '';
+
+            $format->set_bold(1);
+            $format->set_align('center');
+            $myxls->write_string(0, 0, 'BÁO CÁO TIẾN ĐỘ HỌC TẬP', $format);
+            $myxls->write_string(1, 0, 'Năm học: '. $yearName, $format);
+            $myxls->write_string(2, 0, 'Học kỳ: '. $semesterName, $format);
+            $myxls->merge_cells(0, 0, 0, 4);
+            $myxls->merge_cells(1, 0, 1, 4);
+            $myxls->merge_cells(2, 0, 2, 4);
+            $format->set_border(1);
+            
+            $i = 0;
+            foreach ($data as $index => $val) {
+                // Change position item of array 3 -> 2
+                $out = array_splice($data[$index], 3, 1);
+                array_splice($data[$index], 2, 0, $out);
+
+                array_unshift($data[$index], $i === 0 ? 'STT' : $i);
+                $i++;
             }
         }
+
+        $totalrownum = 0;
+
+        foreach ($data as $rownum => $row) {
+            $rownum += 4;
+            foreach ($row as $colnum => $val) {
+                $myxls->write_string($rownum, $colnum, $val, $format);
+            }
+            if ($i) {
+                $format->set_bold(0);
+                $format->set_align('left');    
+                $i = false;
+            }
+            $totalrownum = $rownum;
+        }
+
+        if ($isFromEdwiserreportsCustomBlock) {
+
+        }
+        $format->set_italic();
+
+        $now = new \DateTime("now", \core_date::get_server_timezone_object());
+
+        $myxls->write_string($totalrownum + 2, 3, 'Thời điểm xuất báo cáo: '. date_format($now, 'd-m-Y H:i:s'), $format);
 
         // Sending HTTP headers.
         $workbook->send($filename);

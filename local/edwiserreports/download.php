@@ -77,15 +77,13 @@ $filename = local_edwiserreports_prepare_export_filename(array(
     "filter" => $filter ? $filter : ""
 ));
 
-switch ($blockname) {
-    case 'courseprogressblock':
-        $filename = local_edwiserreports_prepare_export_filename(array(
-            "region" => $region,
-            "blockname" => 'Báo cáo elearning',
-            "date" => date("d_M_y", time()),
-            "filter" => $filter ? $filter : ""
-        ));
-        break;
+if (strpos($blockname, 'customreportsblock') !== false) {
+    $filename = local_edwiserreports_prepare_export_filename(array(
+        "region" => $region,
+        "blockname" => 'Báo cáo elearning',
+        "date" => date("d_m_y", time()),
+        "filter" => $filter ? $filter : ""
+    ));
 }
 
 // Get export object.

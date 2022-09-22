@@ -114,8 +114,7 @@ class customreportsblock extends block_base {
                 if ($inputSearchStringCategory === '') {
                     $record->coursename = '<span style="position: absolute; visibility: hidden;">' . $record->pathcategory . '</span><a href="'. $urlViewCourse .'" target="_blank">' . $record->coursename .'</a>';
                 } else {
-                    $now = new \DateTime("now", \core_date::get_server_timezone_object());
-                    $record->ngaytaixuong = date_format($now, 'd-m-Y H:i:s');
+                    $record->categoryname = $record->coursecategory;
                 }
 
                 $teacherroleid = $DB->get_field('role', 'id', [
@@ -230,8 +229,13 @@ class customreportsblock extends block_base {
         $params = json_decode($customreport->data);
         $params->fields = $params->selectedfield;
         unset($params->selectedfield);
-
+        
         $records = $this->get_data($params);
+        $customField = new stdClass();
+        $customField->data = 'categoryname';
+        $customField->title = 'Tổ';
+        array_push($records->columns, $customField);
+        // array_splice( $records->columns, 2, 0, [$customField] );
         $header = array_column($records->columns, 'title');
         $data = array_map(function($record) {
             return array_values((array) $record);
