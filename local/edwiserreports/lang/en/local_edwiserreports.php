@@ -145,6 +145,7 @@ $string['noofactiveusers'] = "No. of active users";
 $string['noofenrolledusers'] = "No. of enrollments";
 $string['noofcompletedusers'] = "No. of completions";
 $string['email'] = "Email";
+$string['username'] = "Mã học sinh";
 $string['emailscheduled'] = "Email Scheduled";
 $string['usersnotavailable'] = "No Users are available for this day";
 $string['activeusersmodaltitle'] = 'Users active on {$a->date}';

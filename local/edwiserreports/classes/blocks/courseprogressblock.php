@@ -173,11 +173,14 @@ class courseprogressblock extends block_base {
      */
     public static function get_header() {
         $header = array(
-            get_string("name", "local_edwiserreports"),
-            get_string("email", "local_edwiserreports"),
+            // get_string("name", "local_edwiserreports"),
+            'Họ và tên',
+            // get_string("email", "local_edwiserreports"),
+            'Mã học sinh',
             get_string("coursename", "local_edwiserreports"),
             get_string("completedactivity", "local_edwiserreports"),
-            get_string("completions", "local_edwiserreports")
+            // get_string("completions", "local_edwiserreports")
+            'Tiến độ'
         );
         return $header;
     }
@@ -433,7 +436,7 @@ class courseprogressblock extends block_base {
             $completed = $completion["completedactivities"] . "/" . $completion["totalactivities"];
             $export[] = array(
                 fullname($student),
-                $student->email,
+                $student->username,
                 $course->fullname,
                 $completed,
                 $completion["progresspercentage"] . "%"

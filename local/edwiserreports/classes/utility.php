@@ -239,6 +239,7 @@ class utility
         $inputSearchStringCategory = optional_param('lmsSearchDownload', '', PARAM_TEXT);
         $inputSearchStringCategory = str_replace("'", '', $inputSearchStringCategory);
         $inputSearchStringCategory = str_replace('"', '', $inputSearchStringCategory);
+        $inputSearchStringCategory = trim($inputSearchStringCategory);
         $addconditionlms = '';
         if ($inputSearchStringCategory !== '') {
             $addconditionlms = " WHERE cc.path LIKE '". $inputSearchStringCategory ."%'";

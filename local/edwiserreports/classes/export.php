@@ -139,6 +139,7 @@ class export {
 
         $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
         $isFromEdwiserreportsCustomBlock = strpos($url,'edwiserreports') !== false && strpos($this->blockname, 'customreportsblock') !== false;
+        $isFromEdwiserreportsBlockCourseProgress = strpos($url,'edwiserreports') !== false && $this->blockname === 'courseprogressblock';
 
         // Creating a workbook.
         $workbook = new MoodleExcelWorkbook("-");
@@ -146,10 +147,12 @@ class export {
         // Adding the worksheet.
         $myxls = $workbook->add_worksheet($this->region . "_" . $this->blockname);
         
+        $numskip = 0;
         $format = $workbook->add_format();
         $i = true;
 
         if ($isFromEdwiserreportsCustomBlock) {
+            $numskip = 4;
             $inputSearchStringCategory = optional_param('lmsSearchDownload', '', PARAM_TEXT);
             $inputSearchStringCategory = str_replace("'", '', $inputSearchStringCategory);
             $inputSearchStringCategory = str_replace('"', '', $inputSearchStringCategory);
@@ -165,7 +168,7 @@ class export {
 
             $format->set_bold(1);
             $format->set_align('center');
-            $myxls->write_string(0, 0, 'BÁO CÁO TIẾN ĐỘ HỌC TẬP', $format);
+            $myxls->write_string(0, 0, 'Báo cáo triển khai nội dung dạy học Elearning', $format);
             $myxls->write_string(1, 0, 'Năm học: '. $yearName, $format);
             $myxls->write_string(2, 0, 'Học kỳ: '. $semesterName, $format);
             $myxls->merge_cells(0, 0, 0, 4);
@@ -173,21 +176,70 @@ class export {
             $myxls->merge_cells(2, 0, 2, 4);
             $format->set_border(1);
             
-            $i = 0;
             foreach ($data as $index => $val) {
                 // Change position item of array 3 -> 2
                 $out = array_splice($data[$index], 3, 1);
                 array_splice($data[$index], 2, 0, $out);
-
-                array_unshift($data[$index], $i === 0 ? 'STT' : $i);
-                $i++;
             }
         }
 
-        $totalrownum = 0;
+        if ($isFromEdwiserreportsBlockCourseProgress) {
+            $numskip = 7;
+            $filterlms = optional_param("filter", false, PARAM_TEXT);
+            $filterlms = (int)$filterlms;
+            
+            $course = $DB->get_record('course', [
+                'id' => $filterlms
+            ]);
 
+            $courseManage = $DB->get_record('course_categories', [
+                'id' => $course->category
+            ]);
+
+            $semester = $DB->get_record('course_categories', [
+                'id' => $courseManage->parent
+            ]);
+
+            $year = $DB->get_record('course_categories', [
+                'id' => $semester->parent
+            ]);
+
+            $teacherroleid = $DB->get_field('role', 'id', [
+                'shortname' => 'editingteacher'
+            ]);
+            $contextcourse = context_course::instance($filterlms);
+            $teachers = get_role_users($teacherroleid, $contextcourse);
+            $teachername = '';
+            foreach ($teachers as $teacher) {
+                $teachername = $teacher->firstname . ' ' . $teacher->lastname;
+                break;
+            }
+
+            $format->set_bold(1);
+            $format->set_align('center');
+            $myxls->write_string(0, 0, 'BÁO CÁO TIẾN ĐỘ HỌC TẬP', $format);
+
+            $format->set_bold(0);
+            $format->set_align('left');    
+            $myxls->write_string(2, 1, 'Năm học: ', $format);
+            $myxls->write_string(2, 2, $year->name, $format);
+            $myxls->write_string(3, 1, 'Học kỳ: ', $format);
+            $myxls->write_string(3, 2, $semester->name, $format);
+            $myxls->write_string(4, 1, 'Môn học: ', $format);
+            $myxls->write_string(4, 2, $course->fullname, $format);
+            $myxls->write_string(5, 1, 'Giáo viên: ', $format);
+            $myxls->write_string(5, 2, $teachername, $format);
+            $myxls->merge_cells(0, 0, 0, 5);
+            $format->set_border(1);
+            $format->set_align('center');    
+            $format->set_bold(1);
+        }
+
+        $totalrownum = 0;
+        $index = 0;
         foreach ($data as $rownum => $row) {
-            $rownum += 4;
+            array_unshift($row, $index === 0 ? 'STT' : $index);
+            $rownum += $numskip;
             foreach ($row as $colnum => $val) {
                 $myxls->write_string($rownum, $colnum, $val, $format);
             }
@@ -196,6 +248,7 @@ class export {
                 $format->set_align('left');    
                 $i = false;
             }
+            $index++;
             $totalrownum = $rownum;
         }
 

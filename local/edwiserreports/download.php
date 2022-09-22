@@ -86,6 +86,18 @@ if (strpos($blockname, 'customreportsblock') !== false) {
     ));
 }
 
+if ($blockname === 'courseprogressblock') {
+    $coursename = $DB->get_field('course', 'fullname', [
+        'id' => (int)$filter
+    ]);
+    $filename = local_edwiserreports_prepare_export_filename(array(
+        "region" => $region,
+        "blockname" => 'Báo cáo lớp '. $coursename,
+        "date" => date("d_m_y", time()),
+        "filter" => $filter ? $filter : ""
+    ));
+}
+
 // Get export object.
 $export = new export($type, $region, $blockname);
 
