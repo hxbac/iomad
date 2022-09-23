@@ -159,11 +159,11 @@ class export {
             $arrayInfo = explode('/', $inputSearchStringCategory);
 
             $yearName = $DB->get_field('course_categories', 'name', [
-                'id' => $arrayInfo[1]
+                'id' => $arrayInfo[2]
             ]) ?? '';
 
             $semesterName = $DB->get_field('course_categories', 'name', [
-                'id' => $arrayInfo[2]
+                'id' => $arrayInfo[3]
             ]) ?? '';
 
             $format->set_bold(1);
@@ -196,12 +196,14 @@ class export {
                 'id' => $course->category
             ]);
 
+            $arrayInfoExport = explode('/', $courseManage->path);
+
             $semester = $DB->get_record('course_categories', [
-                'id' => $courseManage->parent
+                'id' => $arrayInfoExport[3]
             ]);
 
             $year = $DB->get_record('course_categories', [
-                'id' => $semester->parent
+                'id' => $arrayInfoExport[2]
             ]);
 
             $teacherroleid = $DB->get_field('role', 'id', [

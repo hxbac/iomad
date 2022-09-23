@@ -1,32 +1,32 @@
 {{!
-    This file is part of Moodle - http://moodle.org/
+This file is part of Moodle - http://moodle.org/
 
-    Moodle is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Moodle is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    Moodle is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+Moodle is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-    Edwiser RemUI
-    @package   theme_remui
-    @copyright (c) 2020 WisdmLabs (https://wisdmlabs.com/)
-    @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+Edwiser RemUI
+@package theme_remui
+@copyright (c) 2020 WisdmLabs (https://wisdmlabs.com/)
+@license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 
 }}
 {{!
-    @template theme_remui/activity_navigation
+@template theme_remui/activity_navigation
 
-    Display the activity navigation for all activities in a course
+Display the activity navigation for all activities in a course
 
-    Context variables required for this template:
+Context variables required for this template:
 
-    Example context (json):
-    {
-    }
+Example context (json):
+{
+}
 }}
 <div id="wdm-courseprogress-individual" class="table-responsive mt-1" data-sesskey="{{sesskey}}">
     <table class="table admintable" style="display: none;">
@@ -67,37 +67,44 @@
                     </a>
                 </td>
                 <td>
-                    <a href="javascript:void(0)" class="w-full text-dark modal-trigger" data-action="enrolments" data-minvalue="-1" data-maxvalue="100" data-courseid="{{id}}" data-coursename="{{fullname}}">
+                    <a href="javascript:void(0)" class="w-full text-dark modal-trigger" data-action="enrolments"
+                        data-minvalue="-1" data-maxvalue="100" data-courseid="{{id}}" data-coursename="{{fullname}}">
                         {{enrolments}}
                     </a>
                 </td>
                 <td>
-                	<a href="javascript:void(0)" class="w-full text-dark modal-trigger" data-action="completed" data-minvalue="99" data-maxvalue="100" data-courseid="{{id}}" data-coursename="{{fullname}}">
-                		{{completed100}}
-                	</a>
+                    <a href="javascript:void(0)" class="w-full text-dark modal-trigger" data-action="completed"
+                        data-minvalue="99" data-maxvalue="100" data-courseid="{{id}}" data-coursename="{{fullname}}">
+                        {{completed100}}
+                    </a>
                 </td>
                 <td>
-                    <a href="javascript:void(0)" class="w-full text-dark modal-trigger" data-action="completed80" data-minvalue="80" data-maxvalue="99" data-courseid="{{id}}" data-coursename="{{fullname}}">
+                    <a href="javascript:void(0)" class="w-full text-dark modal-trigger" data-action="completed80"
+                        data-minvalue="80" data-maxvalue="99" data-courseid="{{id}}" data-coursename="{{fullname}}">
                         {{completed80}}
                     </a>
                 </td>
                 <td>
-                    <a href="javascript:void(0)" class="w-full text-dark modal-trigger" data-action="completed60" data-minvalue="60" data-maxvalue="80" data-courseid="{{id}}" data-coursename="{{fullname}}">
+                    <a href="javascript:void(0)" class="w-full text-dark modal-trigger" data-action="completed60"
+                        data-minvalue="60" data-maxvalue="80" data-courseid="{{id}}" data-coursename="{{fullname}}">
                         {{completed60}}
                     </a>
                 </td>
                 <td>
-                    <a href="javascript:void(0)" class="w-full text-dark modal-trigger" data-action="completed40" data-minvalue="40" data-maxvalue="60" data-courseid="{{id}}" data-coursename="{{fullname}}">
+                    <a href="javascript:void(0)" class="w-full text-dark modal-trigger" data-action="completed40"
+                        data-minvalue="40" data-maxvalue="60" data-courseid="{{id}}" data-coursename="{{fullname}}">
                         {{completed40}}
                     </a>
                 </td>
                 <td>
-                    <a href="javascript:void(0)" class="w-full text-dark modal-trigger" data-action="completed20" data-minvalue="20" data-maxvalue="40" data-courseid="{{id}}" data-coursename="{{fullname}}">
+                    <a href="javascript:void(0)" class="w-full text-dark modal-trigger" data-action="completed20"
+                        data-minvalue="20" data-maxvalue="40" data-courseid="{{id}}" data-coursename="{{fullname}}">
                         {{completed20}}
                     </a>
                 </td>
                 <td>
-                    <a href="javascript:void(0)" class="w-full text-dark modal-trigger" data-action="incompleted" data-minvalue="-1" data-maxvalue="20" data-courseid="{{id}}" data-coursename="{{fullname}}">
+                    <a href="javascript:void(0)" class="w-full text-dark modal-trigger" data-action="incompleted"
+                        data-minvalue="-1" data-maxvalue="20" data-courseid="{{id}}" data-coursename="{{fullname}}">
                         {{completed00}}
                     </a>
                 </td>
@@ -109,8 +116,9 @@
 
 <script>
     function startlms() {
-        function fetchGetDataYear(domain, yearSelector) {
-            fetch(domain + '/local/edwiserreports/lms_custom_api_get_year.php', {
+
+        function fetchGetDataSchool(domain, schoolSelector) {
+            fetch(domain + '/local/edwiserreports/lms_custom_api_get_school.php', {
                 method: 'POST', // or 'PUT'
                 headers: {
                     'Content-Type': 'application/json',
@@ -120,18 +128,22 @@
                 .then((response) => response.json())
                 .then((dataRes) => {
                     if (dataRes.message == 'success') {
-                        let yearHTML = ''
-                        let i = 0
-                        dataRes.data.forEach(year => {
-                            yearHTML += `<option value="${year.id}" ${i === 0 ? 'selected' : ''}">${year.name}</option>`
-                            i++
+                        let schoolHTML = ''
+                        let i = true
+                        dataRes.data.forEach(school => {
+                            schoolHTML += `<option value="${school.id}" ${i === 0 ? 'selected' : ''}">${school.name}</option>`
+                            i = false
                         })
 
-                        if (i === 0) {
-                            yearHTML = `<option value="Không có dữ liệu"}>Không có dữ liệu</option>`
+                        if (dataRes.data.length === 1) {
+                            schoolSelector.style += 'display: none;'
                         }
 
-                        yearSelector.innerHTML = yearHTML
+                        if (i) {
+                            schoolHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+                        }
+
+                        schoolSelector.innerHTML = schoolHTML
                     }
                 })
                 .catch((error) => {
@@ -139,34 +151,72 @@
                 })
         }
 
-        function fetchDataSemester(domain, semesterSelector, yearId) {
-            fetch(domain + '/local/edwiserreports/lms_custom_api_get_semester.php?yearId=' + yearId, {
-                method: 'POST', // or 'PUT'
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify([]),
-            })
-                .then((response) => response.json())
-                .then((dataRes) => {
-                    if (dataRes.message == 'success') {
-                        let semesterHTML = ''
-                        let i = 0
-                        dataRes.data.forEach(semester => {
-                            semesterHTML += `<option value="${semester.id}" ${i === 0 ? 'selected' : ''}>${semester.name}</option>`
-                            i++
-                        })
-
-                        if (i === 0) {
-                            semesterHTML = `<option value="Không có dữ liệu"}>Không có dữ liệu</option>`
+        function fetchGetDataYear(domain, yearSelector, schoolid) {
+            if (schoolid !== 'Không có dữ liệu') {
+                fetch(domain + '/local/edwiserreports/lms_custom_api_get_year.php?schoolid=' + schoolid, {
+                    method: 'POST', // or 'PUT'
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify([]),
+                })
+                    .then((response) => response.json())
+                    .then((dataRes) => {
+                        if (dataRes.message == 'success') {
+                            let yearHTML = ''
+                            let i = 0
+                            dataRes.data.forEach(year => {
+                                yearHTML += `<option value="${year.id}" ${i === 0 ? 'selected' : ''}">${year.name}</option>`
+                                i++
+                            })
+    
+                            if (i === 0) {
+                                yearHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+                            }
+    
+                            yearSelector.innerHTML = yearHTML
                         }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    })
+            } else {
+                yearSelector.innerHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+            }
+        }
 
-                        semesterSelector.innerHTML = semesterHTML
-                    }
+        function fetchDataSemester(domain, semesterSelector, yearId) {
+            if (yearId !== 'Không có dữ liệu') {
+                fetch(domain + '/local/edwiserreports/lms_custom_api_get_semester.php?yearId=' + yearId, {
+                    method: 'POST', // or 'PUT'
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify([]),
                 })
-                .catch((error) => {
-                    console.error('Error:', error);
-                })
+                    .then((response) => response.json())
+                    .then((dataRes) => {
+                        if (dataRes.message == 'success') {
+                            let semesterHTML = ''
+                            let i = 0
+                            dataRes.data.forEach(semester => {
+                                semesterHTML += `<option value="${semester.id}" ${i === 0 ? 'selected' : ''}>${semester.name}</option>`
+                                i++
+                            })
+    
+                            if (i === 0) {
+                                semesterHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+                            }
+    
+                            semesterSelector.innerHTML = semesterHTML
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    })
+            } else {
+                semesterSelector.innerHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+            }
         }
 
         function fetchDataSubjectManage(domain, subjectManageSelector, semesterId) {
@@ -224,13 +274,18 @@
                 const filterWrapper = document.createElement('div')
                 const filterWrapperStyle = {
                     display: 'grid',
-                    gridTemplateColumns: '1fr 1fr 1fr 1fr',
-                    gridColumnGap: '20px',
+                    gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr',
+                    gridColumnGap: '15px',
                     margin: '10px 0'
                 }
                 Object.assign(filterWrapper.style, filterWrapperStyle)
                 filterWrapper.classList.add('row')
                 datatableWrapper.insertBefore(filterWrapper, datatableWrapper.firstChild.nextSibling)
+
+                // create school selector into div wrapper
+                const schoolSelector = document.createElement('select')
+                schoolSelector.setAttribute('class', 'form-control')
+                filterWrapper.appendChild(schoolSelector)
 
                 // create year selector into div wrapper
                 const yearSelector = document.createElement('select')
@@ -253,19 +308,29 @@
                 inputSearchNew.setAttribute('placeholder', 'Tìm kiếm')
                 filterWrapper.appendChild(inputSearchNew)
 
-                fetchGetDataYear(domain, yearSelector)
+                fetchGetDataSchool(domain, schoolSelector)
 
-                function handleYearSelect() {
-                    const awaitYearSelectLoaded = setInterval(function () {
-                        if (yearSelector.value) {
-                            fetchDataSemester(domain, semesterSelector, yearSelector.value)
-                            semesterSelector.dispatchEvent(new Event('change'))
-                            clearInterval(awaitYearSelectLoaded)
+                function handleSchoolSelect() {
+                    const awaitSchoolSelectLoaded = setInterval(function () {
+                        if (schoolSelector.value) {
+                            fetchDataSemester(domain, yearSelector, schoolSelector.value)
+                            yearSelector.dispatchEvent(new Event('change'))
+                            clearInterval(awaitSchoolSelectLoaded)
                         }
                     }, 200)
                 }
 
-                yearSelector.addEventListener('change', handleYearSelect)
+                schoolSelector.addEventListener('change', handleSchoolSelect)
+
+                yearSelector.addEventListener('change', function () {
+                    const awaitYearSelectorLoaded = setInterval(function () {
+                        if (yearSelector.value) {
+                            fetchDataSemester(domain, semesterSelector, yearSelector.value)
+                            semesterSelector.dispatchEvent(new Event('change'))
+                            clearInterval(awaitYearSelectorLoaded)
+                        }
+                    }, 200)
+                })
 
                 semesterSelector.addEventListener('change', function () {
                     const awaitSemesterLoaded = setInterval(function () {
@@ -300,7 +365,7 @@
                 }
 
                 // handleYearSelect()
-                yearSelector.dispatchEvent(new Event('change', { bubbles: true }))
+                schoolSelector.dispatchEvent(new Event('change', { bubbles: true }))
 
 
                 // Eng -> Vi string 

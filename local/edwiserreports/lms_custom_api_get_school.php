@@ -2,16 +2,17 @@
 
 require_once("../../config.php");
 
-$schoolid = required_param('schoolid', PARAM_INT);
-
-$years = $DB->get_records('course_categories', [
-    'parent' => $schoolid
+$schools = $DB->get_records('course_categories', [
+    'parent' => 0
 ], 'id DESC');
 $data = [];
-foreach ($years as $year) {
+foreach ($schools as $school) {
+    if ($school->id == 1) {
+        continue;
+    }
     $result = [
-        'id' => $year->id,
-        'name' => $year->name,
+        'id' => $school->id,
+        'name' => $school->name,
     ];
     array_push($data, $result);
 }

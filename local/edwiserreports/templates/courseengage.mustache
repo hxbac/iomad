@@ -58,8 +58,8 @@
 
 <script>
     function startEngagement() {
-        function fetchGetDataYear(domain, yearSelector) {
-            fetch(domain + '/local/edwiserreports/lms_custom_api_get_year.php', {
+        function fetchGetDataSchool(domain, schoolSelector) {
+            fetch(domain + '/local/edwiserreports/lms_custom_api_get_school.php', {
                 method: 'POST', // or 'PUT'
                 headers: {
                     'Content-Type': 'application/json',
@@ -69,18 +69,22 @@
                 .then((response) => response.json())
                 .then((dataRes) => {
                     if (dataRes.message == 'success') {
-                        let yearHTML = ''
-                        let i = 0
-                        dataRes.data.forEach(year => {
-                            yearHTML += `<option value="${year.id}" ${i === 0 ? 'selected' : ''}">${year.name}</option>`
-                            i++
+                        let schoolHTML = ''
+                        let i = true
+                        dataRes.data.forEach(school => {
+                            schoolHTML += `<option value="${school.id}" ${i === 0 ? 'selected' : ''}">${school.name}</option>`
+                            i = false
                         })
 
-                        if (i === 0) {
-                            yearHTML = `<option value="Không có dữ liệu"}>Không có dữ liệu</option>`
+                        if (dataRes.data.length === 1) {
+                            schoolSelector.style += 'display: none;'
                         }
 
-                        yearSelector.innerHTML = yearHTML
+                        if (i) {
+                            schoolHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+                        }
+
+                        schoolSelector.innerHTML = schoolHTML
                     }
                 })
                 .catch((error) => {
@@ -88,34 +92,72 @@
                 })
         }
 
-        function fetchDataSemester(domain, semesterSelector, yearId) {
-            fetch(domain + '/local/edwiserreports/lms_custom_api_get_semester.php?yearId=' + yearId, {
-                method: 'POST', // or 'PUT'
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify([]),
-            })
-                .then((response) => response.json())
-                .then((dataRes) => {
-                    if (dataRes.message == 'success') {
-                        let semesterHTML = ''
-                        let i = 0
-                        dataRes.data.forEach(semester => {
-                            semesterHTML += `<option value="${semester.id}" ${i === 0 ? 'selected' : ''}>${semester.name}</option>`
-                            i++
-                        })
-
-                        if (i === 0) {
-                            semesterHTML = `<option value="Không có dữ liệu"}>Không có dữ liệu</option>`
+        function fetchGetDataYear(domain, yearSelector, schoolid) {
+            if (schoolid !== 'Không có dữ liệu') {
+                fetch(domain + '/local/edwiserreports/lms_custom_api_get_year.php?schoolid=' + schoolid, {
+                    method: 'POST', // or 'PUT'
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify([]),
+                })
+                    .then((response) => response.json())
+                    .then((dataRes) => {
+                        if (dataRes.message == 'success') {
+                            let yearHTML = ''
+                            let i = 0
+                            dataRes.data.forEach(year => {
+                                yearHTML += `<option value="${year.id}" ${i === 0 ? 'selected' : ''}">${year.name}</option>`
+                                i++
+                            })
+    
+                            if (i === 0) {
+                                yearHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+                            }
+    
+                            yearSelector.innerHTML = yearHTML
                         }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    })
+            } else {
+                yearSelector.innerHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+            }
+        }
 
-                        semesterSelector.innerHTML = semesterHTML
-                    }
+        function fetchDataSemester(domain, semesterSelector, yearId) {
+            if (yearId !== 'Không có dữ liệu') {
+                fetch(domain + '/local/edwiserreports/lms_custom_api_get_semester.php?yearId=' + yearId, {
+                    method: 'POST', // or 'PUT'
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify([]),
                 })
-                .catch((error) => {
-                    console.error('Error:', error);
-                })
+                    .then((response) => response.json())
+                    .then((dataRes) => {
+                        if (dataRes.message == 'success') {
+                            let semesterHTML = ''
+                            let i = 0
+                            dataRes.data.forEach(semester => {
+                                semesterHTML += `<option value="${semester.id}" ${i === 0 ? 'selected' : ''}>${semester.name}</option>`
+                                i++
+                            })
+    
+                            if (i === 0) {
+                                semesterHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+                            }
+    
+                            semesterSelector.innerHTML = semesterHTML
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    })
+            } else {
+                semesterSelector.innerHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+            }
         }
 
         function fetchDataSubjectManage(domain, subjectManageSelector, semesterId) {
@@ -173,13 +215,18 @@
                 const filterWrapper = document.createElement('div')
                 const filterWrapperStyle = {
                     display: 'grid',
-                    gridTemplateColumns: '1fr 1fr 1fr 1fr',
-                    gridColumnGap: '20px',
+                    gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr',
+                    gridColumnGap: '15px',
                     margin: '10px 0'
                 }
                 Object.assign(filterWrapper.style, filterWrapperStyle)
                 filterWrapper.classList.add('row')
                 datatableWrapper.insertBefore(filterWrapper, datatableWrapper.firstChild.nextSibling)
+
+                // create school selector into div wrapper
+                const schoolSelector = document.createElement('select')
+                schoolSelector.setAttribute('class', 'form-control')
+                filterWrapper.appendChild(schoolSelector)
 
                 // create year selector into div wrapper
                 const yearSelector = document.createElement('select')
@@ -202,19 +249,29 @@
                 inputSearchNew.setAttribute('placeholder', 'Tìm kiếm')
                 filterWrapper.appendChild(inputSearchNew)
 
-                fetchGetDataYear(domain, yearSelector)
+                fetchGetDataSchool(domain, schoolSelector)
 
-                function handleYearSelect() {
-                    const awaitYearSelectLoaded = setInterval(function () {
-                        if (yearSelector.value) {
-                            fetchDataSemester(domain, semesterSelector, yearSelector.value)
-                            semesterSelector.dispatchEvent(new Event('change'))
-                            clearInterval(awaitYearSelectLoaded)
+                function handleSchoolSelect() {
+                    const awaitSchoolSelectLoaded = setInterval(function () {
+                        if (schoolSelector.value) {
+                            fetchDataSemester(domain, yearSelector, schoolSelector.value)
+                            yearSelector.dispatchEvent(new Event('change'))
+                            clearInterval(awaitSchoolSelectLoaded)
                         }
                     }, 200)
                 }
 
-                yearSelector.addEventListener('change', handleYearSelect)
+                schoolSelector.addEventListener('change', handleSchoolSelect)
+
+                yearSelector.addEventListener('change', function () {
+                    const awaitYearSelectorLoaded = setInterval(function () {
+                        if (yearSelector.value) {
+                            fetchDataSemester(domain, semesterSelector, yearSelector.value)
+                            semesterSelector.dispatchEvent(new Event('change'))
+                            clearInterval(awaitYearSelectorLoaded)
+                        }
+                    }, 200)
+                })
 
                 semesterSelector.addEventListener('change', function () {
                     const awaitSemesterLoaded = setInterval(function () {
@@ -249,7 +306,7 @@
                 }
 
                 // handleYearSelect()
-                yearSelector.dispatchEvent(new Event('change', { bubbles: true }))
+                schoolSelector.dispatchEvent(new Event('change', { bubbles: true }))
 
                 // Eng -> Vi string 
                 const labelSelectNumEntries = datatableWrapper.querySelector('.dataTables_length > label')

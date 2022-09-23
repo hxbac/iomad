@@ -83,6 +83,7 @@ class customreportsblock extends block_base {
         $inputSearchStringCategory = optional_param('lmsSearchDownload', '', PARAM_TEXT);
         $inputSearchStringCategory = str_replace("'", '', $inputSearchStringCategory);
         $inputSearchStringCategory = str_replace('"', '', $inputSearchStringCategory);
+        
         $addconditionlms = '';
         if ($inputSearchStringCategory !== '') {
             $addconditionlms = " AND ctg.path LIKE '". $inputSearchStringCategory ."%'";
