@@ -254,9 +254,15 @@ class export {
             $totalrownum = $rownum;
         }
 
-        if ($isFromEdwiserreportsCustomBlock) {
-
+        $myxls->set_column(0, 0, 5);
+        for ($i = 0; $i < count($data); $i++) {
+            $maxLength = 0;
+            foreach ($data as $item) {
+                $maxLength = $maxLength < mb_strlen($item[$i]) ? mb_strlen($item[$i]) : $maxLength;
+            }
+            $myxls->set_column($i + 1, $i + 1, $maxLength + 4);
         }
+
         $format->set_italic();
 
         $now = new \DateTime("now", \core_date::get_server_timezone_object());
