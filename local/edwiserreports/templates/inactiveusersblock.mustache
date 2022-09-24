@@ -45,3 +45,12 @@
         </thead>
     </table>
 </div>
+
+<script>
+    const blockInActiveUsers = document.getElementById('inactiveusersblock')
+    blockInActiveUsers.querySelector('a[data-value="never"]').innerText = 'Không bao giờ'
+    blockInActiveUsers.querySelector('a[data-value="1month"]').innerText = 'Trước 1 tháng'
+    blockInActiveUsers.querySelector('a[data-value="3month"]').innerText = 'Trước 3 tháng'
+    blockInActiveUsers.querySelector('a[data-value="6month"]').innerText = 'Trước 6 tháng'
+    blockInActiveUsers.querySelector('.block-filters > button').innerText = 'Không bao giờ'
+</script>
