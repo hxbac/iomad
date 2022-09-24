@@ -308,6 +308,7 @@ Example context (json):
                 const divCustomWrapper = firstChild.querySelector('.panel .panel-body .dataTables_wrapper')
                 if (divCustomWrapper != null) {
                     const formDownloadReport = firstChild.querySelector('form[action*="edwiserreports/download.php"]')
+                    const divParentForm = formDownloadReport.parentElement
                     const parentDivCustom = divCustomWrapper.firstElementChild
                     const divCustom = parentDivCustom.firstElementChild
                     const divNextDivParentCustom = divCustom.nextSibling
@@ -316,6 +317,14 @@ Example context (json):
                                                 align-items: center;
                                                 justify-content: space-around;`
 
+                    // Create button update column total activity course 
+                    const buttonUpdateTotalActivity = document.createElement('a')
+                    buttonUpdateTotalActivity.classList.add('btn')
+                    buttonUpdateTotalActivity.classList.add('btn-primary')
+                    buttonUpdateTotalActivity.href = `${domain}/local/edwiserreports/update_course_total_activity.php`
+                    buttonUpdateTotalActivity.innerText = 'Cập nhật hoạt động khóa học'
+                    divParentForm.insertBefore(buttonUpdateTotalActivity, formDownloadReport)
+                    
                     // Create input stored search string
                     const inputSearchDownload = document.createElement('input')
                     const attributeInput = {
