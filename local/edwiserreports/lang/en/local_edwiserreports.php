@@ -635,3 +635,4 @@ $string['selectcohorts'] = 'Select Cohorts';
 $string['createnewcustomreports'] = 'Create new Report';
 
 $string['categoryname'] = 'Tổ';
+$string['msgerrorcourseprogressnotvalue'] = 'Môn học không tồn tại!';

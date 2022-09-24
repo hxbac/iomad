@@ -46,6 +46,10 @@ $region = required_param("region", PARAM_TEXT);
 $blockname = required_param("block", PARAM_TEXT);
 $filter = optional_param("filter", false, PARAM_TEXT);
 
+if ($blockname === 'courseprogressblock' && !$filter) {
+    print_error('msgerrorcourseprogressnotvalue', 'local_edwiserreports');
+}
+
 // If user dont have capability to download report.
 if (strpos($blockname, 'customreports') === false) {
 
