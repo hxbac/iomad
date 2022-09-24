@@ -2934,6 +2934,17 @@ span.flatpickr-weekday {
     border-top-color: #11c26d;
 }
 
-button[type="submit"][name="type"]:not([value="excel"]) {
+button[type="submit"][name="type"][value="csv"],
+button[type="submit"][name="type"][value="pdf"],
+button[type="submit"][name="type"][value="email"],
+#activecoursesblock button[type="submit"][name="type"][value="excel"]
+{
     display: none !important;
 }
+
+.edwiserReport-block table tbody tr:hover td {
+    background-color: rgba(0,0,0,.075) !important;
+    transition: 0.2s linear;
+    border-collapse: collapse !important;
+}
+
