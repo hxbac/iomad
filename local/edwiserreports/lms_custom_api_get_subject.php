@@ -4,23 +4,17 @@ require_once("../../config.php");
 
 $subjectManageId = required_param('subjectManageId', PARAM_INT);
 
-// $principalrole = $DB->get_record('role', [
-//     'shortname' => 'hieutruong'
-// ]);
-// $isPrincipal = ($DB->get_record('role_assignments', [
-//     'roleid' => $principalrole->id,
-//     'userid' => $USER->id
-// ]));
+$sql = "SELECT id FROM `". $CFG->prefix ."course_categories` WHERE path LIKE '%". $subjectManageId ."%'";
+$childCategories = $DB->get_records_sql($sql);
 
-// if (!isloggedin() && (is_siteadmin() || !$isPrincipal)) {
-//     $resData = [
-//         'message' => 'error',
-//         'data' => []
-//     ];
-//     echo json_encode($resData);
-//     exit;
-// }
-$courses = get_courses($subjectManageId);
+$condition = '';
+foreach ($childCategories as $category) {
+    $condition .= $category->id . ',';
+}
+
+$condition = rtrim($condition, ",");
+$sql = 'SELECT id, fullname FROM `'. $CFG->prefix .'course` WHERE category IN ('. $condition .')';
+$courses = $DB->get_records_sql($sql);
 
 $data = [];
 foreach ($courses as $course) {

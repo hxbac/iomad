@@ -265,8 +265,11 @@ Example context (json):
         }
     }
 
-    function fetchDataSubject(domain, subjectSelector, subjectManageId) {
+    function fetchDataSubject(domain, subjectSelector, subjectManageId, semesterSelector = null) {
         if (subjectManageId != 'Không có dữ liệu') {
+            if (subjectManageId.trim().length === 0) {
+                subjectManageId = semesterSelector.value
+            }
             fetch(domain + '/local/edwiserreports/lms_custom_api_get_subject.php?subjectManageId=' + subjectManageId, {
                 method: 'POST', // or 'PUT'
                 headers: {
@@ -532,7 +535,7 @@ Example context (json):
                     subjectManageSelector.addEventListener('change', function () {
                         const awaitFetchSubjectManage = setInterval(function () {
                             if (subjectManageSelector.value) {
-                                fetchDataSubject(domain, subjectSelector, subjectManageSelector.value)
+                                fetchDataSubject(domain, subjectSelector, subjectManageSelector.value, semesterSelector)
                                 subjectSelector.dispatchEvent(new Event('change', { bubbles: true }))
                                 clearInterval(awaitFetchSubjectManage)
                             }
