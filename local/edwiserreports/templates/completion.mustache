@@ -28,6 +28,17 @@
     {
     }
 }}
+
+<style>
+    #wdm-completion-individual table thead tr th:nth-child(3) {
+        display: none !important;
+    }
+
+    #wdm-completion-individual table tbody tr td:nth-child(3) {
+        display: none !important;
+    }
+</style>
+
 <div id="wdm-completion-individual" class="table-responsive" data-sesskey="{{sesskey}}">
     <div id="wdm-userfilter" class="h-auto my-10">
         <div class="row mx-0">
@@ -91,3 +102,28 @@
     </div>
     {{/ completionexport }}
 </div>
+
+<script>
+    function lmsStart() {
+        const page = document.querySelector('#wdm-completion-individual')
+        const awaitPageLoaded =  setInterval(function() {
+            const tbody = page.querySelector('tbody')
+            if (tbody.innerHTML.length !== 0) {
+                // Eng -> Vi string 
+                const labelSelectNumEntries = page.querySelector('.dataTables_length > label')
+                labelSelectNumEntries.childNodes.forEach(element => {
+                    if (element.nodeName == '#text' && element.data === 'Show ') {
+                        element.data = 'Hiển thị '
+                    }
+                    if (element.nodeName == '#text' && element.data === ' entries') {
+                        element.data = ' dòng'
+                    }
+                })
+
+                clearInterval(awaitPageLoaded)
+            }
+        }, 200)
+    }
+
+    lmsStart()
+</script>

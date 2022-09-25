@@ -151,7 +151,7 @@ class completionblock extends utility {
         return array(
             get_string("fullname", "local_edwiserreports"),
             get_string("enrolledon", "local_edwiserreports"),
-            get_string("enrolltype", "local_edwiserreports"),
+            // get_string("enrolltype", "local_edwiserreports"),
             get_string("noofvisits", "local_edwiserreports"),
             get_string("coursecompletion", "local_edwiserreports"),
             get_string("completiontime", "local_edwiserreports"),
@@ -174,6 +174,7 @@ class completionblock extends utility {
         $export[] = self::get_header();
         foreach ($completions as $completion) {
             $completion->username = strip_tags($completion->username);
+            unset($completion->enrolltype);
             $export[] = array_values((array)$completion);
         }
         return $export;
