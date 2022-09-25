@@ -47,7 +47,8 @@ $blockname = required_param("block", PARAM_TEXT);
 $filter = optional_param("filter", false, PARAM_TEXT);
 
 if ($blockname === 'courseprogressblock' && !$filter) {
-    print_error('msgerrorcourseprogressnotvalue', 'local_edwiserreports');
+    $returnurl = new \moodle_url('/local/edwiserreports/index.php');
+    print_error('msgerrorcourseprogressnotvalue', 'local_edwiserreports', $returnurl);
 }
 
 // If user dont have capability to download report.
