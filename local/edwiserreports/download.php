@@ -50,7 +50,6 @@ if ($blockname === 'courseprogressblock' && !$filter) {
     $returnurl = new \moodle_url('/local/edwiserreports/index.php');
     redirect($returnurl, get_string('msgerrorcourseprogressnotvalue', 'local_edwiserreports'), null, \core\output\notification::NOTIFY_ERROR);
     exit;
-    print_error('msgerrorcourseprogressnotvalue', 'local_edwiserreports', $returnurl);
 }
 
 // If user dont have capability to download report.
