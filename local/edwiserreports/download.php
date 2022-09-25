@@ -48,6 +48,8 @@ $filter = optional_param("filter", false, PARAM_TEXT);
 
 if ($blockname === 'courseprogressblock' && !$filter) {
     $returnurl = new \moodle_url('/local/edwiserreports/index.php');
+    redirect($returnurl, get_string('msgerrorcourseprogressnotvalue', 'local_edwiserreports'), null, \core\output\notification::NOTIFY_ERROR);
+    exit;
     print_error('msgerrorcourseprogressnotvalue', 'local_edwiserreports', $returnurl);
 }
 
