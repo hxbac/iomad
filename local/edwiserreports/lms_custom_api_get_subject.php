@@ -4,7 +4,7 @@ require_once("../../config.php");
 
 $subjectManageId = required_param('subjectManageId', PARAM_INT);
 
-$sql = "SELECT id FROM `". $CFG->prefix ."course_categories` WHERE path LIKE '%". $subjectManageId ."%'";
+$sql = "SELECT id FROM `". $CFG->prefix ."course_categories` WHERE path LIKE '%/". $subjectManageId ."/%'";
 $childCategories = $DB->get_records_sql($sql);
 
 $condition = '';
