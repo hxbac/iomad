@@ -243,6 +243,12 @@ class export {
             array_unshift($row, $index === 0 ? 'STT' : $index);
             $rownum += $numskip;
             foreach ($row as $colnum => $val) {
+                if (is_numeric($val) || $i) {
+                    $val = is_numeric($val) ? (int)$val : $val;
+                    $format->set_align('center');
+                } else {
+                    $format->set_align('left');
+                }
                 $myxls->write_string($rownum, $colnum, $val, $format);
             }
             if ($i) {
@@ -254,13 +260,15 @@ class export {
             $totalrownum = $rownum;
         }
 
+        $format->set_align('left');    
+
         $myxls->set_column(0, 0, 5);
         for ($i = 0; $i < count($data); $i++) {
             $maxLength = 0;
             foreach ($data as $item) {
                 $maxLength = $maxLength < mb_strlen($item[$i]) ? mb_strlen($item[$i]) : $maxLength;
             }
-            $myxls->set_column($i + 1, $i + 1, $maxLength + 4);
+            $myxls->set_column($i + 1, $i + 1, $maxLength + 1);
         }
 
         $format->set_italic();
@@ -269,6 +277,7 @@ class export {
 
         $myxls->write_string($totalrownum + 2, 3, 'Thời điểm xuất báo cáo: '. date_format($now, 'd-m-Y H:i:s'), $format);
 
+        
         // Sending HTTP headers.
         $workbook->send($filename);
         // Close the workbook.
