@@ -268,7 +268,7 @@ Example context (json):
     function fetchDataSubject(domain, subjectSelector, subjectManageId, semesterSelector = null) {
         if (subjectManageId != 'Không có dữ liệu') {
             if (subjectManageId.trim().length === 0) {
-                subjectManageId = semesterSelector.value
+                subjectManageId = semesterSelector.value + `&action=getall`
             }
             fetch(domain + '/local/edwiserreports/lms_custom_api_get_subject.php?subjectManageId=' + subjectManageId, {
                 method: 'POST', // or 'PUT'
