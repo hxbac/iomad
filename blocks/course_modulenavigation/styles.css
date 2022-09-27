@@ -257,4 +257,7 @@
     border-bottom-color: #ddd;
 }
 
+.block_course_modulenavigation h4.title {
+    color: blue !important;
+}
 /*# sourceMappingURL=styles.css.map */
