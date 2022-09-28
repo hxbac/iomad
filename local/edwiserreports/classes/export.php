@@ -148,11 +148,13 @@ class export {
         $myxls = $workbook->add_worksheet($this->region . "_" . $this->blockname);
         
         $numskip = 0;
+        $addwidthcolumn = 2;
         $format = $workbook->add_format();
         $i = true;
 
         if ($isFromEdwiserreportsCustomBlock) {
             $numskip = 4;
+            $addwidthcolumn = 10;
             $inputSearchStringCategory = optional_param('lmsSearchDownload', '', PARAM_TEXT);
             $inputSearchStringCategory = str_replace("'", '', $inputSearchStringCategory);
             $inputSearchStringCategory = str_replace('"', '', $inputSearchStringCategory);
@@ -181,10 +183,18 @@ class export {
                 $out = array_splice($data[$index], 3, 1);
                 array_splice($data[$index], 2, 0, $out);
             }
+
+            // Set width column 
+            $myxls->set_column(0, 0, 7);
+            $myxls->set_column(1, 1, 21);
+            $myxls->set_column(2, 2, 21);
+            $myxls->set_column(3, 3, 23);
+            $myxls->set_column(4, 4, 15);
         }
 
         if ($isFromEdwiserreportsBlockCourseProgress) {
             $numskip = 7;
+            $addwidthcolumn = 6;
             $filterlms = optional_param("filter", false, PARAM_TEXT);
             $filterlms = (int)$filterlms;
             
@@ -235,6 +245,14 @@ class export {
             $format->set_border(1);
             $format->set_align('center');    
             $format->set_bold(1);
+
+            // Set width column 
+            $myxls->set_column(0, 0, 7);
+            $myxls->set_column(1, 1, 20);
+            $myxls->set_column(2, 2, 17);
+            $myxls->set_column(3, 3, 18);
+            $myxls->set_column(4, 4, 13);
+            $myxls->set_column(5, 5, 13);
         }
 
         $totalrownum = 0;
@@ -261,15 +279,6 @@ class export {
         }
 
         $format->set_align('left');    
-
-        $myxls->set_column(0, 0, 5);
-        for ($i = 0; $i < count($data); $i++) {
-            $maxLength = 0;
-            foreach ($data as $item) {
-                $maxLength = $maxLength < mb_strlen($item[$i]) ? mb_strlen($item[$i]) : $maxLength;
-            }
-            $myxls->set_column($i + 1, $i + 1, $maxLength + 1);
-        }
 
         $format->set_italic();
 
