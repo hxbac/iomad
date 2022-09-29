@@ -1,681 +1,679 @@
 {{!
-This file is part of Moodle - http://moodle.org/
-
-Moodle is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Moodle is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-Edwiser RemUI
-@package theme_remui
-@copyright (c) 2020 WisdmLabs (https://wisdmlabs.com/)
-@license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-
-}}
-{{!
-@template theme_remui/activity_navigation
-
-Display the activity navigation for all activities in a course
-
-Context variables required for this template:
-
-Example context (json):
-{
-}
-}}
-<div id="wdm-edwiserreports" class="row m-0 d-none" data-editing="{{ editing }}">
-    {{# blocks }}
-    <div class="{{{extraclasses}}} mb-5 edwiserReport-block {{# hiddenblock }} block-hidden {{/ hiddenblock}}">
-        <div id="{{id}}" data-sesskey="{{sesskey}}" data-blockname="{{name}}">
-            <div class="panel m-0">
-                <div class="panel-header d-flex">
-                    <div class="panel-title px-0 col-10">
-                        <strong class="mb-1">
-                            {{{name}}}
-                            <a href="javascript:void(0)" data-title="{{info}}" class="small" data-toggle="tooltip"
-                                data-trigger="hover" data-placement="bottom">
-                                <i class="fa fa-question-circle"></i>
-                            </a>
-                        </strong>
-
-                        <div class="block-filters">{{{ filters }}}</div>
+    This file is part of Moodle - http://moodle.org/
+    
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+    
+    Edwiser RemUI
+    @package theme_remui
+    @copyright (c) 2020 WisdmLabs (https://wisdmlabs.com/)
+    @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+    
+    }}
+    {{!
+    @template theme_remui/activity_navigation
+    
+    Display the activity navigation for all activities in a course
+    
+    Context variables required for this template:
+    
+    Example context (json):
+    {
+    }
+    }}
+    <div id="wdm-edwiserreports" class="row m-0 d-none" data-editing="{{ editing }}">
+        {{# blocks }}
+        <div class="{{{extraclasses}}} mb-5 edwiserReport-block {{# hiddenblock }} block-hidden {{/ hiddenblock}}">
+            <div id="{{id}}" data-sesskey="{{sesskey}}" data-blockname="{{name}}">
+                <div class="panel m-0">
+                    <div class="panel-header d-flex">
+                        <div class="panel-title px-0 col-10">
+                            <strong class="mb-1">
+                                {{{name}}}
+                                <a href="javascript:void(0)" data-title="{{info}}" class="small" data-toggle="tooltip"
+                                    data-trigger="hover" data-placement="bottom">
+                                    <i class="fa fa-question-circle"></i>
+                                </a>
+                            </strong>
+    
+                            <div class="block-filters">{{{ filters }}}</div>
+                        </div>
+                        {{# editopt }}
+                        <div class="col-2 p-0">
+                            {{> local_edwiserreports/blocksettingdropdown }}
+                        </div>
+                        {{/ editopt }}
                     </div>
-                    {{# editopt }}
-                    <div class="col-2 p-0">
-                        {{> local_edwiserreports/blocksettingdropdown }}
+                    <div class="panel-body p-0">
+                        {{{ blockview }}}
+                        <div class="loader w-full text-center">
+                            {{# pix }} loader, local_edwiserreports{{/ pix }}
+                        </div>
+                        {{#iscustomblock}}
+                        <table class="table customreportdata w-full"></table>
+                        {{/iscustomblock}}
                     </div>
-                    {{/ editopt }}
-                </div>
-                <div class="panel-body p-0">
-                    {{{ blockview }}}
-                    <div class="loader w-full text-center">
-                        {{# pix }} loader, local_edwiserreports{{/ pix }}
+                    <div class="panel-footer row m-0">
+                        {{# morelink }}
+                        <div class="">
+                            <a href="{{{.}}}" class="btn btn-primary btn-sm">{{#str}} more, local_edwiserreports
+                                {{/str}}</a>
+                        </div>
+                        {{/ morelink }}
+                        {{# hasdownloadlink }}
+                        {{> local_edwiserreports/exportreports }}
+                        {{/ hasdownloadlink }}
                     </div>
-                    {{#iscustomblock}}
-                    <table class="table customreportdata w-full"></table>
-                    {{/iscustomblock}}
-                </div>
-                <div class="panel-footer row m-0">
-                    {{# morelink }}
-                    <div class="">
-                        <a href="{{{.}}}" class="btn btn-primary btn-sm">{{#str}} more, local_edwiserreports
-                            {{/str}}</a>
-                    </div>
-                    {{/ morelink }}
-                    {{# hasdownloadlink }}
-                    {{> local_edwiserreports/exportreports }}
-                    {{/ hasdownloadlink }}
                 </div>
             </div>
         </div>
+        {{#iscustomblock}}
+        {{#js}}
+        require([
+        'jquery',
+        'core/ajax',
+        'local_edwiserreports/customreportsblock'
+        ], function(
+        $,
+        ajax,
+        customreportsblock
+        ) {
+        var tableId = '#{{{id}}} table.customreportdata'
+    
+        $(document).ready(function() {
+        var getCustomReportsData = ajax.call([{
+        methodname: 'local_edwiserreports_get_customreports_data',
+        args: {
+        params: JSON.stringify({{{params}}})
+        }
+        }]);
+    
+        getCustomReportsData[0].done(function(response) {
+        if (response.success) {
+        var data = JSON.parse(response.data);
+        $(tableId).DataTable({
+        columns: data.columns,
+        data: data.reportsdata,
+        bInfo: false,
+        lengthChange: false,
+        language: {
+        searchPlaceholder: "{{#str}}searchreports, local_edwiserreports{{/str}}",
+        emptyTable: "{{#str}}noresult, local_edwiserreports{{/str}}"
+        },
+        drawCallback: function() {
+        $('.dataTables_paginate > .pagination').addClass('pagination-sm pull-right');
+        $('.dataTables_filter').addClass('pagination-sm pull-right');
+        }
+        });
+        }
+        });
+        });
+        });
+        {{/js}}
+        {{/iscustomblock}}
+        {{/ blocks }}
+        {{# canmanagecustomreports }}
+        <div class="col-12">
+            <a href="{{customreportseditlink}}" class="btn btn-primary pull-right">
+                <i class="icon fa fa-plus fa-fw " aria-hidden="true"></i>
+                {{#str}} createcustomreports, local_edwiserreports {{/str}}
+            </a>
+        </div>
+        {{/ canmanagecustomreports }}
     </div>
-    {{#iscustomblock}}
-    {{#js}}
-    require([
-    'jquery',
-    'core/ajax',
-    'local_edwiserreports/customreportsblock'
-    ], function(
-    $,
-    ajax,
-    customreportsblock
-    ) {
-    var tableId = '#{{{id}}} table.customreportdata'
-
-    $(document).ready(function() {
-    var getCustomReportsData = ajax.call([{
-    methodname: 'local_edwiserreports_get_customreports_data',
-    args: {
-    params: JSON.stringify({{{params}}})
-    }
-    }]);
-
-    getCustomReportsData[0].done(function(response) {
-    if (response.success) {
-    var data = JSON.parse(response.data);
-    $(tableId).DataTable({
-    columns: data.columns,
-    data: data.reportsdata,
-    bInfo: false,
-    lengthChange: false,
-    language: {
-    searchPlaceholder: "{{#str}}searchreports, local_edwiserreports{{/str}}",
-    emptyTable: "{{#str}}noresult, local_edwiserreports{{/str}}"
-    },
-    drawCallback: function() {
-    $('.dataTables_paginate > .pagination').addClass('pagination-sm pull-right');
-    $('.dataTables_filter').addClass('pagination-sm pull-right');
-    }
-    });
-    }
-    });
-    });
-    });
-    {{/js}}
-    {{/iscustomblock}}
-    {{/ blocks }}
-    {{# canmanagecustomreports }}
-    <div class="col-12">
-        <a href="{{customreportseditlink}}" class="btn btn-primary pull-right">
-            <i class="icon fa fa-plus fa-fw " aria-hidden="true"></i>
-            {{#str}} createcustomreports, local_edwiserreports {{/str}}
-        </a>
-    </div>
-    {{/ canmanagecustomreports }}
-</div>
-
-
-<script>
-    function fetchGetDataSchool(domain, schoolSelector) {
-        fetch(domain + '/local/edwiserreports/lms_custom_api_get_school.php', {
-            method: 'POST', // or 'PUT'
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify([]),
-        })
-            .then((response) => response.json())
-            .then((dataRes) => {
-                if (dataRes.message == 'success') {
-                    let schoolHTML = ''
-                    let i = true
-                    dataRes.data.forEach(school => {
-                        schoolHTML += `<option value="${school.id}" ${i === 0 ? 'selected' : ''}">${school.name}</option>`
-                        i = false
+    
+    
+    <script>
+        function fetchGetDataSchool(domain, schoolSelector) {
+            fetch(domain + '/local/edwiserreports/lms_custom_api_get_school.php', {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify([]),
+            })
+                .then((response) => response.json())
+                .then((dataRes) => {
+                    if (dataRes.message == 'success') {
+                        let schoolHTML = ''
+                        let i = true
+                        dataRes.data.forEach(school => {
+                            schoolHTML += `<option value="${school.id}" ${i === 0 ? 'selected' : ''}">${school.name}</option>`
+                            i = false
+                        })
+    
+                        if (dataRes.data.length === 1) {
+                            schoolSelector.style.cssText += 'display: none;'
+                        }
+    
+                        if (i) {
+                            schoolHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+                        }
+    
+                        schoolSelector.innerHTML = schoolHTML
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                })
+        }
+    
+        function fetchGetDataYear(domain, yearSelector, schoolid) {
+            if (schoolid !== 'Không có dữ liệu') {
+                fetch(domain + '/local/edwiserreports/lms_custom_api_get_year.php?schoolid=' + schoolid, {
+                    method: 'POST', // or 'PUT'
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify([]),
+                })
+                    .then((response) => response.json())
+                    .then((dataRes) => {
+                        if (dataRes.message == 'success') {
+                            let yearHTML = ''
+                            let i = 0
+                            dataRes.data.forEach(year => {
+                                yearHTML += `<option value="${year.id}" ${i === 0 ? 'selected' : ''}">${year.name}</option>`
+                                i++
+                            })
+        
+                            if (i === 0) {
+                                yearHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+                            }
+        
+                            yearSelector.innerHTML = yearHTML
+                        }
                     })
-
-                    if (dataRes.data.length === 1) {
-                        schoolSelector.style.cssText += 'display: none;'
-                    }
-
-                    if (i) {
-                        schoolHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
-                    }
-
-                    schoolSelector.innerHTML = schoolHTML
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            })
-    }
-
-    function fetchGetDataYear(domain, yearSelector, schoolid) {
-        if (schoolid !== 'Không có dữ liệu') {
-            fetch(domain + '/local/edwiserreports/lms_custom_api_get_year.php?schoolid=' + schoolid, {
-                method: 'POST', // or 'PUT'
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify([]),
-            })
-                .then((response) => response.json())
-                .then((dataRes) => {
-                    if (dataRes.message == 'success') {
-                        let yearHTML = ''
-                        let i = 0
-                        dataRes.data.forEach(year => {
-                            yearHTML += `<option value="${year.id}" ${i === 0 ? 'selected' : ''}">${year.name}</option>`
-                            i++
-                        })
-    
-                        if (i === 0) {
-                            yearHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
-                        }
-    
-                        yearSelector.innerHTML = yearHTML
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                })
-        } else {
-            yearSelector.innerHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
-        }
-    }
-
-    function fetchDataSemester(domain, semesterSelector, yearId) {
-        if (yearId !== 'Không có dữ liệu') {
-            fetch(domain + '/local/edwiserreports/lms_custom_api_get_semester.php?yearId=' + yearId, {
-                method: 'POST', // or 'PUT'
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify([]),
-            })
-                .then((response) => response.json())
-                .then((dataRes) => {
-                    if (dataRes.message == 'success') {
-                        let semesterHTML = ''
-                        let i = 0
-                        dataRes.data.forEach(semester => {
-                            semesterHTML += `<option value="${semester.id}" ${i === 0 ? 'selected' : ''}>${semester.name}</option>`
-                            i++
-                        })
-    
-                        if (i === 0) {
-                            semesterHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
-                        }
-    
-                        semesterSelector.innerHTML = semesterHTML
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                })
-        } else {
-            semesterSelector.innerHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
-        }
-    }
-
-    function fetchDataSubjectManage(domain, subjectManageSelector, semesterId) {
-        if (semesterId != 'Không có dữ liệu') {
-            fetch(domain + '/local/edwiserreports/lms_custom_api_get_subjectManage.php?semesterId=' + semesterId, {
-                method: 'POST', // or 'PUT'
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify([]),
-            })
-                .then((response) => response.json())
-                .then((dataRes) => {
-                    if (dataRes.message == 'success') {
-                        let subjectManageHTML = ''
-                        let i = 0
-                        dataRes.data.forEach(subjectManage => {
-                            subjectManageHTML += `<option value="${subjectManage.id}" ${i === 0 ? 'selected' : ''}>${subjectManage.name}</option>`
-                            i++
-                        })
-                        if (i === 0) {
-                            subjectManageHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
-                        }
-                        subjectManageSelector.innerHTML = subjectManageHTML
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                })
-        } else {
-            subjectManageSelector.innerHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
-        }
-    }
-
-    function fetchDataSubject(domain, subjectSelector, subjectManageId, semesterSelector = null) {
-        if (subjectManageId != 'Không có dữ liệu') {
-            if (subjectManageId.trim().length === 0) {
-                subjectManageId = semesterSelector.value + `&action=getall`
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    })
+            } else {
+                yearSelector.innerHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
             }
-            fetch(domain + '/local/edwiserreports/lms_custom_api_get_subject.php?subjectManageId=' + subjectManageId, {
-                method: 'POST', // or 'PUT'
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify([]),
-            })
-                .then((response) => response.json())
-                .then((dataRes) => {
-                    if (dataRes.message == 'success') {
-                        let subjectHTML = ''
-                        let i = 0
-                        dataRes.data.forEach(subject => {
-                            subjectHTML += `<option value="${subject.id}" ${i === 0 ? 'selected' : ''}>${subject.name}</option>`
-                            i++
+        }
+    
+        function fetchDataSemester(domain, semesterSelector, yearId) {
+            if (yearId !== 'Không có dữ liệu') {
+                fetch(domain + '/local/edwiserreports/lms_custom_api_get_semester.php?yearId=' + yearId, {
+                    method: 'POST', // or 'PUT'
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify([]),
+                })
+                    .then((response) => response.json())
+                    .then((dataRes) => {
+                        if (dataRes.message == 'success') {
+                            let semesterHTML = ''
+                            let i = 0
+                            dataRes.data.forEach(semester => {
+                                semesterHTML += `<option value="${semester.id}" ${i === 0 ? 'selected' : ''}>${semester.name}</option>`
+                                i++
+                            })
+        
+                            if (i === 0) {
+                                semesterHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+                            }
+        
+                            semesterSelector.innerHTML = semesterHTML
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    })
+            } else {
+                semesterSelector.innerHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+            }
+        }
+    
+        function fetchDataSubjectManage(domain, subjectManageSelector, semesterId) {
+            if (semesterId != 'Không có dữ liệu') {
+                fetch(domain + '/local/edwiserreports/lms_custom_api_get_subjectManage.php?semesterId=' + semesterId, {
+                    method: 'POST', // or 'PUT'
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify([]),
+                })
+                    .then((response) => response.json())
+                    .then((dataRes) => {
+                        if (dataRes.message == 'success') {
+                            let subjectManageHTML = ''
+                            let i = 0
+                            dataRes.data.forEach(subjectManage => {
+                                subjectManageHTML += `<option value="${subjectManage.id}" ${i === 0 ? 'selected' : ''}>${subjectManage.name}</option>`
+                                i++
+                            })
+                            if (i === 0) {
+                                subjectManageHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+                            }
+                            subjectManageSelector.innerHTML = subjectManageHTML
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    })
+            } else {
+                subjectManageSelector.innerHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+            }
+        }
+    
+        function fetchDataSubject(domain, subjectSelector, subjectManageId, semesterSelector = null) {
+            if (subjectManageId != 'Không có dữ liệu') {
+                if (subjectManageId.trim().length === 0) {
+                    subjectManageId = semesterSelector.value + `&action=getall`
+                }
+                fetch(domain + '/local/edwiserreports/lms_custom_api_get_subject.php?subjectManageId=' + subjectManageId, {
+                    method: 'POST', // or 'PUT'
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify([]),
+                })
+                    .then((response) => response.json())
+                    .then((dataRes) => {
+                        if (dataRes.message == 'success') {
+                            let subjectHTML = ''
+                            let i = 0
+                            dataRes.data.forEach(subject => {
+                                subjectHTML += `<option value="${subject.id}" ${i === 0 ? 'selected' : ''}>${subject.name}</option>`
+                                i++
+                            })
+    
+                            if (i === 0) {
+                                subjectHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+                            }
+    
+                            subjectSelector.innerHTML = subjectHTML
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    })
+            } else {
+                subjectSelector.innerHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
+            }
+        }
+    
+        const domain = window.location.origin;
+        const blocks = document.querySelectorAll('.edwiserReport-block')
+        blocks.forEach(block => {
+            const firstChild = block.firstElementChild
+            if (firstChild.nodeName == 'DIV' && firstChild.id.includes('customreportsblock')) {
+                const awaitDatatableLoaded = setInterval(() => {
+                    const divCustomWrapper = firstChild.querySelector('.panel .panel-body .dataTables_wrapper')
+                    if (divCustomWrapper != null) {
+                        clearInterval(awaitDatatableLoaded)
+                        const formDownloadReport = firstChild.querySelector('form[action*="edwiserreports/download.php"]')
+                        const divParentForm = formDownloadReport.parentElement
+                        const parentDivCustom = divCustomWrapper.firstElementChild
+                        const divCustom = parentDivCustom.firstElementChild
+                        const divNextDivParentCustom = divCustom.nextSibling
+                        const inputSearchDefault = divNextDivParentCustom.querySelector('input')
+                        const cssDivCustom = `display: flex;
+                                                    align-items: center;
+                                                    justify-content: space-around;`
+    
+                        // Create button update column total activity course 
+                        const buttonUpdateTotalActivity = document.createElement('a')
+                        buttonUpdateTotalActivity.classList.add('btn')
+                        buttonUpdateTotalActivity.classList.add('btn-primary')
+                        buttonUpdateTotalActivity.href = `${domain}/local/edwiserreports/update_course_total_activity.php`
+                        buttonUpdateTotalActivity.innerText = 'Cập nhật dữ liệu'
+                        divParentForm.insertBefore(buttonUpdateTotalActivity, formDownloadReport)
+                        
+                        // Create input stored search string
+                        const inputSearchDownload = document.createElement('input')
+                        const attributeInput = {
+                            type: 'hidden',
+                            name: 'lmsSearchDownload'
+                        }
+                        Object.assign(inputSearchDownload, attributeInput)
+                        formDownloadReport.appendChild(inputSearchDownload)
+    
+                        const rowWrapper = document.createElement('div')
+                        rowWrapper.classList.add('row')
+                        const cssRowWrapper = {
+                            display: 'grid',
+                            gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr',
+                            gridColumnGap: '15px',
+                        }
+                        Object.assign(rowWrapper.style, cssRowWrapper)
+                        divCustomWrapper.insertBefore(rowWrapper, divCustomWrapper.firstChild)
+    
+                        divCustom.style.cssText += cssDivCustom
+    
+                        inputSearchDefault.value = `Không có dữ liệu`
+                        inputSearchDefault.dispatchEvent(new Event('input'))
+    
+                        const schoolSelector = document.createElement('select')
+                        schoolSelector.setAttribute('class', 'form-control')
+    
+                        const yearSelector = document.createElement('select')
+                        yearSelector.setAttribute('class', 'form-control')
+    
+                        const semesterSelector = document.createElement('select')
+                        semesterSelector.setAttribute('class', 'form-control')
+    
+                        const subjectManageSelector = document.createElement('select')
+                        subjectManageSelector.setAttribute('class', 'form-control')
+    
+                        const inputSearchNew = document.createElement('input')
+                        inputSearchNew.setAttribute('type', 'text')
+                        inputSearchNew.setAttribute('class', 'form-control')
+                        inputSearchNew.setAttribute('placeholder', 'Tìm kiếm theo tên')
+    
+                        rowWrapper.appendChild(schoolSelector)
+                        rowWrapper.appendChild(yearSelector)
+                        rowWrapper.appendChild(semesterSelector)
+                        rowWrapper.appendChild(subjectManageSelector)
+                        rowWrapper.appendChild(inputSearchNew)
+                        
+                        inputSearchDefault.style.cssText += `display: none;`
+    
+                        fetchGetDataSchool(domain, schoolSelector)
+    
+                        function handleChangeSchool() {
+                            const awaitFetchSchool = setInterval(function () {
+                                if (schoolSelector.value) {
+                                    clearInterval(awaitFetchSchool)
+                                    fetchGetDataYear(domain, yearSelector, schoolSelector.value)
+                                    yearSelector.dispatchEvent(new Event('change', { bubbles: true }))
+                                }
+                            }, 200)
+                        }
+                        yearSelector.addEventListener('change', function () {
+                            const awaitFetchYear = setInterval(function () {
+                                if (yearSelector.value) {
+                                    clearInterval(awaitFetchYear)
+                                    fetchDataSemester(domain, semesterSelector, yearSelector.value)
+                                    semesterSelector.dispatchEvent(new Event('change', { bubbles: true }))
+                                }
+                            }, 200)
                         })
-
-                        if (i === 0) {
-                            subjectHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
-                        }
-
-                        subjectSelector.innerHTML = subjectHTML
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                })
-        } else {
-            subjectSelector.innerHTML = `<option value="Không có dữ liệu">Không có dữ liệu</option>`
-        }
-    }
-
-    const domain = window.location.origin;
-    const blocks = document.querySelectorAll('.edwiserReport-block')
-    blocks.forEach(block => {
-        const firstChild = block.firstElementChild
-        if (firstChild.nodeName == 'DIV' && firstChild.id.includes('customreportsblock')) {
-            const awaitDatatableLoaded = setInterval(() => {
-                const divCustomWrapper = firstChild.querySelector('.panel .panel-body .dataTables_wrapper')
-                if (divCustomWrapper != null) {
-                    const formDownloadReport = firstChild.querySelector('form[action*="edwiserreports/download.php"]')
-                    const divParentForm = formDownloadReport.parentElement
-                    const parentDivCustom = divCustomWrapper.firstElementChild
-                    const divCustom = parentDivCustom.firstElementChild
-                    const divNextDivParentCustom = divCustom.nextSibling
-                    const inputSearchDefault = divNextDivParentCustom.querySelector('input')
-                    const cssDivCustom = `display: flex;
-                                                align-items: center;
-                                                justify-content: space-around;`
-
-                    // Create button update column total activity course 
-                    const buttonUpdateTotalActivity = document.createElement('a')
-                    buttonUpdateTotalActivity.classList.add('btn')
-                    buttonUpdateTotalActivity.classList.add('btn-primary')
-                    buttonUpdateTotalActivity.href = `${domain}/local/edwiserreports/update_course_total_activity.php`
-                    buttonUpdateTotalActivity.innerText = 'Cập nhật hoạt động khóa học'
-                    divParentForm.insertBefore(buttonUpdateTotalActivity, formDownloadReport)
-                    
-                    // Create input stored search string
-                    const inputSearchDownload = document.createElement('input')
-                    const attributeInput = {
-                        type: 'hidden',
-                        name: 'lmsSearchDownload'
-                    }
-                    Object.assign(inputSearchDownload, attributeInput)
-                    formDownloadReport.appendChild(inputSearchDownload)
-
-                    const rowWrapper = document.createElement('div')
-                    rowWrapper.classList.add('row')
-                    const cssRowWrapper = {
-                        display: 'grid',
-                        gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr',
-                        gridColumnGap: '15px',
-                    }
-                    Object.assign(rowWrapper.style, cssRowWrapper)
-                    divCustomWrapper.insertBefore(rowWrapper, divCustomWrapper.firstChild)
-
-                    divCustom.style.cssText += cssDivCustom
-
-                    inputSearchDefault.value = `Không có dữ liệu`
-                    inputSearchDefault.dispatchEvent(new Event('input'))
-
-                    const schoolSelector = document.createElement('select')
-                    schoolSelector.setAttribute('class', 'form-control')
-
-                    const yearSelector = document.createElement('select')
-                    yearSelector.setAttribute('class', 'form-control')
-
-                    const semesterSelector = document.createElement('select')
-                    semesterSelector.setAttribute('class', 'form-control')
-
-                    const subjectManageSelector = document.createElement('select')
-                    subjectManageSelector.setAttribute('class', 'form-control')
-
-                    const inputSearchNew = document.createElement('input')
-                    inputSearchNew.setAttribute('type', 'text')
-                    inputSearchNew.setAttribute('class', 'form-control')
-                    inputSearchNew.setAttribute('placeholder', 'Tìm kiếm theo tên')
-
-                    rowWrapper.appendChild(schoolSelector)
-                    rowWrapper.appendChild(yearSelector)
-                    rowWrapper.appendChild(semesterSelector)
-                    rowWrapper.appendChild(subjectManageSelector)
-                    rowWrapper.appendChild(inputSearchNew)
-                    
-                    inputSearchDefault.style.cssText += `display: none;`
-
-                    fetchGetDataSchool(domain, schoolSelector)
-
-                    function handleChangeSchool() {
-                        const awaitFetchSchool = setInterval(function () {
-                            if (schoolSelector.value) {
-                                fetchGetDataYear(domain, yearSelector, schoolSelector.value)
-                                yearSelector.dispatchEvent(new Event('change', { bubbles: true }))
-                                clearInterval(awaitFetchSchool)
-                            }
-                        }, 200)
-                    }
-                    yearSelector.addEventListener('change', function () {
-                        const awaitFetchYear = setInterval(function () {
-                            if (yearSelector.value) {
-                                fetchDataSemester(domain, semesterSelector, yearSelector.value)
-                                semesterSelector.dispatchEvent(new Event('change', { bubbles: true }))
-                                clearInterval(awaitFetchYear)
-                            }
-                        }, 200)
-                    })
-
-                    schoolSelector.addEventListener('change', handleChangeSchool)
-
-                    semesterSelector.addEventListener('change', function () {
-                        const awaitFetchSemester = setInterval(function () {
-                            if (semesterSelector.value) {
-                                fetchDataSubjectManage(domain, subjectManageSelector, semesterSelector.value)
-                                subjectManageSelector.dispatchEvent(new Event('change', { bubbles: true }))
-                                clearInterval(awaitFetchSemester)
-                            }
-                        }, 200)
-                    })
-
-                    subjectManageSelector.addEventListener('change', function () {
-                        const awaitFetchSubjectManage = setInterval(function () {
+    
+                        schoolSelector.addEventListener('change', handleChangeSchool)
+    
+                        semesterSelector.addEventListener('change', function () {
+                            const awaitFetchSemester = setInterval(function () {
+                                if (semesterSelector.value) {
+                                    clearInterval(awaitFetchSemester)
+                                    fetchDataSubjectManage(domain, subjectManageSelector, semesterSelector.value)
+                                    subjectManageSelector.dispatchEvent(new Event('change', { bubbles: true }))
+                                }
+                            }, 200)
+                        })
+    
+                        subjectManageSelector.addEventListener('change', function () {
+                            const awaitFetchSubjectManage = setInterval(function () {
+                                if (subjectManageSelector.value) {
+                                    clearInterval(awaitFetchSubjectManage)
+                                    triggerEventInputDefault()
+                                }
+                            }, 200)
+                        })
+                        schoolSelector.dispatchEvent(new Event('change'))
+    
+                        function triggerEventInputDefault() {
                             if (subjectManageSelector.value) {
-                                triggerEventInputDefault()
-                                clearInterval(awaitFetchSubjectManage)
+                                let schoolString = schoolSelector.value
+                                let yearString = yearSelector.value
+                                let semesterString = semesterSelector.value
+                                let subjectManage = subjectManageSelector.value
+                                let searchString = inputSearchNew.value
+    
+                                inputSearchDefault.value = '/' + schoolString + '/' + yearString + '/' + semesterString + '/' + subjectManage + ' ' + searchString
+                                inputSearchDefault.dispatchEvent(new Event('input', { bubbles: true }))
+                                inputSearchDownload.value = `/${schoolString}/${yearString}/${semesterString}${subjectManage !== ' ' ? '/' + subjectManage : '/'}`
                             }
-                        }, 200)
-                    })
-                    schoolSelector.dispatchEvent(new Event('change'))
-
-                    function triggerEventInputDefault() {
-                        if (subjectManageSelector.value) {
-                            let schoolString = schoolSelector.value
-                            let yearString = yearSelector.value
-                            let semesterString = semesterSelector.value
-                            let subjectManage = subjectManageSelector.value
-                            let searchString = inputSearchNew.value
-
-                            inputSearchDefault.value = '/' + schoolString + '/' + yearString + '/' + semesterString + '/' + subjectManage + ' ' + searchString
-                            inputSearchDefault.dispatchEvent(new Event('input', { bubbles: true }))
-                            inputSearchDownload.value = `/${schoolString}/${yearString}/${semesterString}${subjectManage !== ' ' ? '/' + subjectManage : '/'}`
                         }
+    
+                        inputSearchNew.addEventListener('input', triggerEventInputDefault)
                     }
-
-                    inputSearchNew.addEventListener('input', triggerEventInputDefault)
-
-                    clearInterval(awaitDatatableLoaded)
-                }
-            }, 500)
-        }
-
-        if (firstChild.nodeName == 'DIV' && firstChild.id == 'courseprogressblock') {
-            const awaitCourseProgressLoaded = setInterval(function () {
-                const panelBody = firstChild.querySelector('.panel-body')
-                const divLoader = panelBody.querySelector('.loader.w-full.text-center')
-
-                if (divLoader.style.display === 'none') {
-                    const formDownloadReport = firstChild.querySelector('form[action*="edwiserreports/download.php"]')
-                    const selectDefault = panelBody.querySelector('select#wdm-courseprogress-select')
-
-                    // Create input stored search string
-                    const inputSearchDownload = document.createElement('input')
-                    const attributeInput = {
-                        type: 'hidden',
-                        name: 'lmsSearchDownload'
-                    }
-                    Object.assign(inputSearchDownload, attributeInput)
-                    formDownloadReport.appendChild(inputSearchDownload)
-
-                    panelBody.childNodes.forEach(function (element) {
-                        if (element.nodeName == 'SPAN') {
-                            element.style.display = 'none'
+                }, 500)
+            }
+    
+            if (firstChild.nodeName == 'DIV' && firstChild.id == 'courseprogressblock') {
+                const awaitCourseProgressLoaded = setInterval(function () {
+                    const panelBody = firstChild.querySelector('.panel-body')
+                    const divLoader = panelBody.querySelector('.loader.w-full.text-center')
+    
+                    if (divLoader.style.display === 'none') {
+                        clearInterval(awaitCourseProgressLoaded)
+                        const formDownloadReport = firstChild.querySelector('form[action*="edwiserreports/download.php"]')
+                        const selectDefault = panelBody.querySelector('select#wdm-courseprogress-select')
+    
+                        // Create input stored search string
+                        const inputSearchDownload = document.createElement('input')
+                        const attributeInput = {
+                            type: 'hidden',
+                            name: 'lmsSearchDownload'
                         }
-                    })
-                    // create element div wrapper
-                    const divCustomWrapper = document.createElement('div')
-                    panelBody.insertBefore(divCustomWrapper, panelBody.firstChild)
-
-                    // create year selector into div wrapper
-                    const schoolSelector = document.createElement('select')
-                    schoolSelector.setAttribute('class', 'form-control')
-                    schoolSelector.style.cssText += `margin-bottom: 16px;`
-                    divCustomWrapper.appendChild(schoolSelector)
-
-                    // create year selector into div wrapper
-                    const yearSelector = document.createElement('select')
-                    yearSelector.setAttribute('class', 'form-control')
-                    yearSelector.style.cssText += `margin-bottom: 16px;`
-                    divCustomWrapper.appendChild(yearSelector)
-
-                    // create semester selector into div wrapper
-                    const semesterSelector = document.createElement('select')
-                    semesterSelector.setAttribute('class', 'form-control')
-                    semesterSelector.style.cssText += `margin-bottom: 16px;`
-                    divCustomWrapper.appendChild(semesterSelector)
-
-                    // create subject manage selector into div wrapper
-                    const subjectManageSelector = document.createElement('select')
-                    subjectManageSelector.setAttribute('class', 'form-control')
-                    subjectManageSelector.style.cssText += `margin-bottom: 16px;`
-                    divCustomWrapper.appendChild(subjectManageSelector)
-
-                    // create subject selector into div wrapper
-                    const subjectSelector = document.createElement('select')
-                    subjectSelector.setAttribute('class', 'form-control')
-                    subjectSelector.style.cssText += `margin-bottom: 16px;`
-                    divCustomWrapper.appendChild(subjectSelector)
-
-                    fetchGetDataSchool(domain, schoolSelector)
-
-                    function handleChangeSchool() {
-                        const awaitFetchSchool = setInterval(function () {
-                            if (schoolSelector.value) {
-                                fetchGetDataYear(domain, yearSelector, schoolSelector.value)
-                                yearSelector.dispatchEvent(new Event('change', { bubbles: true }))
-                                clearInterval(awaitFetchSchool)
+                        Object.assign(inputSearchDownload, attributeInput)
+                        formDownloadReport.appendChild(inputSearchDownload)
+    
+                        panelBody.childNodes.forEach(function (element) {
+                            if (element.nodeName == 'SPAN') {
+                                element.style.display = 'none'
                             }
-                        }, 200)
+                        })
+                        // create element div wrapper
+                        const divCustomWrapper = document.createElement('div')
+                        panelBody.insertBefore(divCustomWrapper, panelBody.firstChild)
+    
+                        // create year selector into div wrapper
+                        const schoolSelector = document.createElement('select')
+                        schoolSelector.setAttribute('class', 'form-control')
+                        schoolSelector.style.cssText += `margin-bottom: 16px;`
+                        divCustomWrapper.appendChild(schoolSelector)
+    
+                        // create year selector into div wrapper
+                        const yearSelector = document.createElement('select')
+                        yearSelector.setAttribute('class', 'form-control')
+                        yearSelector.style.cssText += `margin-bottom: 16px;`
+                        divCustomWrapper.appendChild(yearSelector)
+    
+                        // create semester selector into div wrapper
+                        const semesterSelector = document.createElement('select')
+                        semesterSelector.setAttribute('class', 'form-control')
+                        semesterSelector.style.cssText += `margin-bottom: 16px;`
+                        divCustomWrapper.appendChild(semesterSelector)
+    
+                        // create subject manage selector into div wrapper
+                        const subjectManageSelector = document.createElement('select')
+                        subjectManageSelector.setAttribute('class', 'form-control')
+                        subjectManageSelector.style.cssText += `margin-bottom: 16px;`
+                        divCustomWrapper.appendChild(subjectManageSelector)
+    
+                        // create subject selector into div wrapper
+                        const subjectSelector = document.createElement('select')
+                        subjectSelector.setAttribute('class', 'form-control')
+                        subjectSelector.style.cssText += `margin-bottom: 16px;`
+                        divCustomWrapper.appendChild(subjectSelector)
+    
+                        fetchGetDataSchool(domain, schoolSelector)
+    
+                        function handleChangeSchool() {
+                            const awaitFetchSchool = setInterval(function () {
+                                if (schoolSelector.value) {
+                                    clearInterval(awaitFetchSchool)
+                                    fetchGetDataYear(domain, yearSelector, schoolSelector.value)
+                                    yearSelector.dispatchEvent(new Event('change', { bubbles: true }))
+                                }
+                            }, 200)
+                        }
+    
+                        schoolSelector.addEventListener('change', handleChangeSchool)
+    
+                        yearSelector.addEventListener('change', function () {
+                            const awaitFetchYear = setInterval(function () {
+                                if (yearSelector.value) {
+                                    clearInterval(awaitFetchYear)
+                                    fetchDataSemester(domain, semesterSelector, yearSelector.value)
+                                    semesterSelector.dispatchEvent(new Event('change', { bubbles: true }))
+                                }
+                            }, 200)
+                        })
+    
+                        semesterSelector.addEventListener('change', function () {
+                            const awaitFetchSemester = setInterval(function () {
+                                if (semesterSelector.value) {
+                                    clearInterval(awaitFetchSemester)
+                                    fetchDataSubjectManage(domain, subjectManageSelector, semesterSelector.value)
+                                    subjectManageSelector.dispatchEvent(new Event('change', { bubbles: true }))
+                                }
+                            }, 200)
+                        })
+    
+                        subjectManageSelector.addEventListener('change', function () {
+                            const awaitFetchSubjectManage = setInterval(function () {
+                                if (subjectManageSelector.value) {
+                                    clearInterval(awaitFetchSubjectManage)
+                                    fetchDataSubject(domain, subjectSelector, subjectManageSelector.value, semesterSelector)
+                                    subjectSelector.dispatchEvent(new Event('change', { bubbles: true }))
+                                }
+                            }, 200)
+                        })
+    
+                        subjectSelector.addEventListener('change', function () {
+                            const awaitFetchSubject = setInterval(function () {
+                                if (subjectSelector.value) {
+                                    clearInterval(awaitFetchSubject)
+                                    selectDefault.value = subjectSelector.value
+                                    selectDefault.dispatchEvent(new Event('change', { bubbles: true }))
+                                }
+                            }, 200)
+                        })
+                        schoolSelector.dispatchEvent(new Event('change'))
                     }
-
-                    schoolSelector.addEventListener('change', handleChangeSchool)
-
-                    yearSelector.addEventListener('change', function () {
-                        const awaitFetchYear = setInterval(function () {
-                            if (yearSelector.value) {
-                                fetchDataSemester(domain, semesterSelector, yearSelector.value)
-                                semesterSelector.dispatchEvent(new Event('change', { bubbles: true }))
-                                clearInterval(awaitFetchYear)
-                            }
-                        }, 200)
-                    })
-
-                    semesterSelector.addEventListener('change', function () {
-                        const awaitFetchSemester = setInterval(function () {
-                            if (semesterSelector.value) {
-                                fetchDataSubjectManage(domain, subjectManageSelector, semesterSelector.value)
-                                subjectManageSelector.dispatchEvent(new Event('change', { bubbles: true }))
-                                clearInterval(awaitFetchSemester)
-                            }
-                        }, 200)
-                    })
-
-                    subjectManageSelector.addEventListener('change', function () {
-                        const awaitFetchSubjectManage = setInterval(function () {
-                            if (subjectManageSelector.value) {
-                                fetchDataSubject(domain, subjectSelector, subjectManageSelector.value, semesterSelector)
-                                subjectSelector.dispatchEvent(new Event('change', { bubbles: true }))
-                                clearInterval(awaitFetchSubjectManage)
-                            }
-                        }, 200)
-                    })
-
-                    subjectSelector.addEventListener('change', function () {
-                        const awaitFetchSubject = setInterval(function () {
-                            if (subjectSelector.value) {
-                                selectDefault.value = subjectSelector.value
-                                selectDefault.dispatchEvent(new Event('change', { bubbles: true }))
-                                clearInterval(awaitFetchSubject)
-                            }
-                        }, 200)
-                    })
-                    schoolSelector.dispatchEvent(new Event('change'))
-                    
-                    clearInterval(awaitCourseProgressLoaded)
-                }
-
-            }, 500)
-        }
-
-        if (firstChild.nodeName == 'DIV' && firstChild.id == 'activecoursesblock') {
-            const awaitDatatableLoaded = setInterval(() => {
-                const divCustomWrapper = firstChild.querySelector('.panel .panel-body .dataTables_wrapper')
-                if (divCustomWrapper != null) {
-                    // const formDownloadReport = firstChild.querySelector('form[action*="edwiserreports/download.php"]')
-                    const inputDefault = divCustomWrapper.querySelector('.dataTables_filter input')
-
-                    // Create input stored search string
-                    // const inputSearchDownload = document.createElement('input')
-                    // const attributeInput = {
-                    //     type: 'hidden',
-                    //     name: 'lmsSearchDownload'
-                    // }
-                    // Object.assign(inputSearchDownload, attributeInput)
-                    // formDownloadReport.appendChild(inputSearchDownload)
-
-                    inputDefault.style.cssText += 'display: none;'
-                    inputDefault.value = `Không có dữ liệu`
-                    inputDefault.dispatchEvent(new Event('input'))
-
-                    const divCustom = document.createElement('div')
-                    divCustom.setAttribute('class', 'row')
-                    divCustomWrapper.insertBefore(divCustom, divCustomWrapper.firstChild)
-
-                    // create year selector into div wrapper
-                    const schoolSelector = document.createElement('select')
-                    schoolSelector.setAttribute('class', 'form-control')
-                    schoolSelector.style.cssText += `margin-bottom: 16px;`
-                    divCustom.appendChild(schoolSelector)
-
-                    // create year selector into div wrapper
-                    const yearSelector = document.createElement('select')
-                    yearSelector.setAttribute('class', 'form-control')
-                    yearSelector.style.cssText += `margin-bottom: 16px;`
-                    divCustom.appendChild(yearSelector)
-
-                    // create semester selector into div wrapper
-                    const semesterSelector = document.createElement('select')
-                    semesterSelector.setAttribute('class', 'form-control')
-                    semesterSelector.style.cssText += `margin-bottom: 16px;`
-                    divCustom.appendChild(semesterSelector)
-
-                    // create subject manage selector into div wrapper
-                    const subjectManageSelector = document.createElement('select')
-                    subjectManageSelector.setAttribute('class', 'form-control')
-                    subjectManageSelector.style.cssText += `margin-bottom: 16px;`
-                    divCustom.appendChild(subjectManageSelector)
-
-                    // create search input into div wrapper
-                    const inputSearchNew = document.createElement('input')
-                    inputSearchNew.setAttribute('class', 'form-control')
-                    inputSearchNew.setAttribute('placeholder', 'Tìm kiếm')
-                    divCustom.appendChild(inputSearchNew)
-
-                    fetchGetDataSchool(domain, schoolSelector)
-
-                    function handleChangeSchool() {
-                        const awaitSchoolSelectLoaded = setInterval(function () {
-                            if (schoolSelector.value) {
-                                fetchGetDataYear(domain, yearSelector, schoolSelector.value)
-                                yearSelector.dispatchEvent(new Event('change'))
-                                clearInterval(awaitSchoolSelectLoaded)
-                            }
-                        }, 200)
+    
+                }, 500)
+            }
+    
+            if (firstChild.nodeName == 'DIV' && firstChild.id == 'activecoursesblock') {
+                const awaitDatatableLoaded = setInterval(() => {
+                    const divCustomWrapper = firstChild.querySelector('.panel .panel-body .dataTables_wrapper')
+                    if (divCustomWrapper != null) {
+    
+                        clearInterval(awaitDatatableLoaded)
+                        // const formDownloadReport = firstChild.querySelector('form[action*="edwiserreports/download.php"]')
+                        const inputDefault = divCustomWrapper.querySelector('.dataTables_filter input')
+    
+                        // Create input stored search string
+                        // const inputSearchDownload = document.createElement('input')
+                        // const attributeInput = {
+                        //     type: 'hidden',
+                        //     name: 'lmsSearchDownload'
+                        // }
+                        // Object.assign(inputSearchDownload, attributeInput)
+                        // formDownloadReport.appendChild(inputSearchDownload)
+    
+                        inputDefault.style.cssText += 'display: none;'
+                        inputDefault.value = `Không có dữ liệu`
+                        inputDefault.dispatchEvent(new Event('input'))
+    
+                        const divCustom = document.createElement('div')
+                        divCustom.setAttribute('class', 'row')
+                        divCustomWrapper.insertBefore(divCustom, divCustomWrapper.firstChild)
+    
+                        // create year selector into div wrapper
+                        const schoolSelector = document.createElement('select')
+                        schoolSelector.setAttribute('class', 'form-control')
+                        schoolSelector.style.cssText += `margin-bottom: 16px;`
+                        divCustom.appendChild(schoolSelector)
+    
+                        // create year selector into div wrapper
+                        const yearSelector = document.createElement('select')
+                        yearSelector.setAttribute('class', 'form-control')
+                        yearSelector.style.cssText += `margin-bottom: 16px;`
+                        divCustom.appendChild(yearSelector)
+    
+                        // create semester selector into div wrapper
+                        const semesterSelector = document.createElement('select')
+                        semesterSelector.setAttribute('class', 'form-control')
+                        semesterSelector.style.cssText += `margin-bottom: 16px;`
+                        divCustom.appendChild(semesterSelector)
+    
+                        // create subject manage selector into div wrapper
+                        const subjectManageSelector = document.createElement('select')
+                        subjectManageSelector.setAttribute('class', 'form-control')
+                        subjectManageSelector.style.cssText += `margin-bottom: 16px;`
+                        divCustom.appendChild(subjectManageSelector)
+    
+                        // create search input into div wrapper
+                        const inputSearchNew = document.createElement('input')
+                        inputSearchNew.setAttribute('class', 'form-control')
+                        inputSearchNew.setAttribute('placeholder', 'Tìm kiếm')
+                        divCustom.appendChild(inputSearchNew)
+    
+                        fetchGetDataSchool(domain, schoolSelector)
+    
+                        function handleChangeSchool() {
+                            const awaitSchoolSelectLoaded = setInterval(function () {
+                                if (schoolSelector.value) {
+                                    clearInterval(awaitSchoolSelectLoaded)
+                                    fetchGetDataYear(domain, yearSelector, schoolSelector.value)
+                                    yearSelector.dispatchEvent(new Event('change'))
+                                }
+                            }, 200)
+                        }
+    
+                        schoolSelector.addEventListener('change', handleChangeSchool)
+    
+                        yearSelector.addEventListener('change', function () {
+                            const awaitYearLoaded = setInterval(function () {
+                                if (yearSelector.value) {
+                                    clearInterval(awaitYearLoaded)
+                                    fetchDataSemester(domain, semesterSelector, yearSelector.value)
+                                    semesterSelector.dispatchEvent(new Event('change'))
+                                }
+                            }, 200)
+                        })
+    
+                        semesterSelector.addEventListener('change', function () {
+                            const awaitSemesterLoaded = setInterval(function () {
+                                if (semesterSelector.value) {
+                                    clearInterval(awaitSemesterLoaded)
+                                    fetchDataSubjectManage(domain, subjectManageSelector, semesterSelector.value)
+                                    subjectManageSelector.dispatchEvent(new Event('change'))
+                                }
+                            }, 200)
+                        })
+    
+                        subjectManageSelector.addEventListener('change', function () {
+                            const awaitSubjectManageLoaded = setInterval(function () {
+                                if (subjectManageSelector.value) {
+                                    clearInterval(awaitSubjectManageLoaded)
+                                    handleChangeValue()
+                                }
+                            }, 200)
+                        })
+    
+                        inputSearchNew.addEventListener('input', handleChangeValue)
+    
+                        function handleChangeValue() {
+                            let schoolValue = schoolSelector.value ?? ''
+                            let yearValue = yearSelector.value ?? ''
+                            let semesterValue = semesterSelector.value ?? ''
+                            let subjectmanage = subjectManageSelector.value ?? ''
+                            let searchValue = inputSearchNew.value ?? ''
+    
+                            // inputSearchDownload.value = `/${schoolValue}/${yearValue}/${semesterValue}${subjectmanage !== ' ' ? '/' + subjectmanage : '/'}`
+                            inputDefault.value = `/${schoolValue}/${yearValue}/${semesterValue}/${subjectmanage} ${searchValue}`
+                            inputDefault.dispatchEvent(new Event('input', { bubbles: true }))
+                        }
+    
+                        // handleYearSelect()
+                        schoolSelector.dispatchEvent(new Event('change', { bubbles: true }))
                     }
-
-                    schoolSelector.addEventListener('change', handleChangeSchool)
-
-                    yearSelector.addEventListener('change', function () {
-                        const awaitYearLoaded = setInterval(function () {
-                            if (yearSelector.value) {
-                                fetchDataSemester(domain, semesterSelector, yearSelector.value)
-                                semesterSelector.dispatchEvent(new Event('change'))
-                                clearInterval(awaitYearLoaded)
-                            }
-                        }, 200)
-                    })
-
-                    semesterSelector.addEventListener('change', function () {
-                        const awaitSemesterLoaded = setInterval(function () {
-                            if (semesterSelector.value) {
-                                fetchDataSubjectManage(domain, subjectManageSelector, semesterSelector.value)
-                                subjectManageSelector.dispatchEvent(new Event('change'))
-                                clearInterval(awaitSemesterLoaded)
-                            }
-                        }, 200)
-                    })
-
-                    subjectManageSelector.addEventListener('change', function () {
-                        const awaitSubjectManageLoaded = setInterval(function () {
-                            if (subjectManageSelector.value) {
-                                handleChangeValue()
-                                clearInterval(awaitSubjectManageLoaded)
-                            }
-                        }, 200)
-                    })
-
-                    inputSearchNew.addEventListener('input', handleChangeValue)
-
-                    function handleChangeValue() {
-                        let schoolValue = schoolSelector.value ?? ''
-                        let yearValue = yearSelector.value ?? ''
-                        let semesterValue = semesterSelector.value ?? ''
-                        let subjectmanage = subjectManageSelector.value ?? ''
-                        let searchValue = inputSearchNew.value ?? ''
-
-                        // inputSearchDownload.value = `/${schoolValue}/${yearValue}/${semesterValue}${subjectmanage !== ' ' ? '/' + subjectmanage : '/'}`
-                        inputDefault.value = `/${schoolValue}/${yearValue}/${semesterValue}/${subjectmanage} ${searchValue}`
-                        inputDefault.dispatchEvent(new Event('input', { bubbles: true }))
-                    }
-
-                    // handleYearSelect()
-                    schoolSelector.dispatchEvent(new Event('change', { bubbles: true }))
-
-                    clearInterval(awaitDatatableLoaded)
-                }
-            }, 500)
-        }
-    })
-</script>
+                }, 500)
+            }
+        })
+    </script>

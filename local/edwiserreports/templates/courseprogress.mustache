@@ -254,6 +254,7 @@ Example context (json):
         const awaitDatatableLoaded = setInterval(() => {
             const datatableWrapper = document.querySelector('.tab-pane#progress .dataTables_wrapper')
             if (datatableWrapper) {
+                clearInterval(awaitDatatableLoaded)
                 const domain = window.location.origin
                 const formDownloadReport = document.querySelector('.tab-pane#progress form[action*="edwiserreports/download.php"]')
                 const inputDefault = datatableWrapper.querySelector('.dataTables_filter input')
@@ -313,9 +314,9 @@ Example context (json):
                 function handleSchoolSelect() {
                     const awaitSchoolSelectLoaded = setInterval(function () {
                         if (schoolSelector.value) {
+                            clearInterval(awaitSchoolSelectLoaded)
                             fetchDataSemester(domain, yearSelector, schoolSelector.value)
                             yearSelector.dispatchEvent(new Event('change'))
-                            clearInterval(awaitSchoolSelectLoaded)
                         }
                     }, 200)
                 }
@@ -325,9 +326,9 @@ Example context (json):
                 yearSelector.addEventListener('change', function () {
                     const awaitYearSelectorLoaded = setInterval(function () {
                         if (yearSelector.value) {
+                            clearInterval(awaitYearSelectorLoaded)
                             fetchDataSemester(domain, semesterSelector, yearSelector.value)
                             semesterSelector.dispatchEvent(new Event('change'))
-                            clearInterval(awaitYearSelectorLoaded)
                         }
                     }, 200)
                 })
@@ -335,9 +336,9 @@ Example context (json):
                 semesterSelector.addEventListener('change', function () {
                     const awaitSemesterLoaded = setInterval(function () {
                         if (semesterSelector.value) {
+                            clearInterval(awaitSemesterLoaded)
                             fetchDataSubjectManage(domain, subjectManageSelector, semesterSelector.value)
                             subjectManageSelector.dispatchEvent(new Event('change'))
-                            clearInterval(awaitSemesterLoaded)
                         }
                     }, 200)
                 })
@@ -345,8 +346,8 @@ Example context (json):
                 subjectManageSelector.addEventListener('change', function () {
                     const awaitSubjectManageLoaded = setInterval(function () {
                         if (subjectManageSelector.value) {
-                            handleChangeValue()
                             clearInterval(awaitSubjectManageLoaded)
+                            handleChangeValue()
                         }
                     }, 200)
                 })
@@ -378,8 +379,6 @@ Example context (json):
                         element.data = ' dòng'
                     }
                 })
-
-                clearInterval(awaitDatatableLoaded)
             }
         }, 200)
     }
