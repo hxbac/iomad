@@ -33,7 +33,7 @@ if ($istbm) {
         'id' => ' ',
         'name' => 'Tất cả'
     ];
-    array_push($subjectManages, $itemShowAll);
+    array_unshift($subjectManages, $itemShowAll);
 }
 
 $data = [];
