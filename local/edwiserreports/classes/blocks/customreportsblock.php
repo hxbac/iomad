@@ -79,16 +79,37 @@ class customreportsblock extends block_base {
             $params = array_merge($params, $uparams);
         }
 
-        // Main query to execute the custom query reports.
         $inputSearchStringCategory = optional_param('lmsSearchDownload', '', PARAM_TEXT);
         $inputSearchStringCategory = str_replace("'", '', $inputSearchStringCategory);
         $inputSearchStringCategory = str_replace('"', '', $inputSearchStringCategory);
-        
-        $addconditionlms = '';
+        $listConditionCategory = [];
         if ($inputSearchStringCategory !== '') {
-            $addconditionlms = " AND ctg.path LIKE '". $inputSearchStringCategory ."%'";
+            $categoryPathArr = explode('/', $inputSearchStringCategory);
+            $categoryPathArr = array_filter($categoryPathArr, function ($item) {
+                if ($item !== '') {
+                    return true;
+                }
+            });
+            
+            $lengthCategoryPath = count($categoryPathArr);
+            if ($lengthCategoryPath === 3) {
+                // Get all child of category 
+                $categoryChilds = $DB->get_records('course_categories', [
+                    'parent' => array_pop($categoryPathArr)
+                ]);
+                foreach ($categoryChilds as $category) {
+                    array_push($listConditionCategory, $category->id);
+                }
+            } else if ($lengthCategoryPath === 4) {
+                array_push($listConditionCategory, array_pop($categoryPathArr));
+            } else {
+                echo json_encode('Có lỗi. local/edwisereports/classes/blocks/customreportsblock.php dòng 102.');
+                die();
+            }
         }
-        $sql = 'SELECT '.$customfields.', `ctg`.`path` AS `pathcategory`, c.id AS `courseid`
+
+        // Main query to execute the custom query reports.
+        $sql = 'SELECT '.$customfields.', `ctg`.`path` AS `pathcategory`, c.id AS `courseid`, c.category AS `lmscoursecategory`
                 FROM {user} u
                 JOIN {role_assignments} ra ON ra.userid = u.id
                 JOIN {role} r ON r.id = ra.roleid
@@ -101,36 +122,23 @@ class customreportsblock extends block_base {
                 WHERE u.id '.$userdb.'
                 AND ct.contextlevel = '.CONTEXT_COURSE.'
                 AND r.archetype = \'student\'
-                AND u.deleted = 0' . $addconditionlms;
-
+                AND u.deleted = 0';
+                
         $recordset = $DB->get_recordset_sql($sql, $params);
         $records = array();
+
+        $teacherroleid = $DB->get_field('role', 'id', [
+            'shortname' => 'editingteacher'
+        ]);
         while ($recordset->key()) {
             $record = $recordset->current();
-            $courseid = $record->courseid;
-            $urlViewCourse = new moodle_url('/course/view.php', [
-                'id' => $courseid
-            ]);
-            if ($record->coursename != null) {
-                if ($inputSearchStringCategory === '') {
-                    $record->coursename = '<span style="position: absolute; visibility: hidden;">' . $record->pathcategory . '</span><a href="'. $urlViewCourse .'" target="_blank">' . $record->coursename .'</a>';
-                } else {
-                    $record->categoryname = $record->coursecategory;
-                }
 
-                $teacherroleid = $DB->get_field('role', 'id', [
-                    'shortname' => 'editingteacher'
-                ]);
-                $contextcourse = \context_course::instance($courseid);
-                $teachers = get_role_users($teacherroleid, $contextcourse);
-                $teachersNameOfCourse = array_reduce([...$teachers], function ($result, $teacher) {
-                    $teacherfullname = $teacher->firstname .' '. $teacher->lastname;
-                    return $result === '' ? $teacherfullname : $result . ' và ' . $teacherfullname;
-                }, '');
-                $record->coursecategory = $teachersNameOfCourse ?? '';
+            if ($inputSearchStringCategory !== '' && !in_array($record->lmscoursecategory, $listConditionCategory)) {
+                unset($record->lmscoursecategory);
+                $recordset->next();
+                continue;
             }
-            unset($record->pathcategory);
-            unset($record->courseid);
+            unset($record->lmscoursecategory);
             if (!empty($resultfunc)) {
                 foreach ($resultfunc as $id => $func) {
                     $record->$id = $func($record->$id);
@@ -141,6 +149,32 @@ class customreportsblock extends block_base {
                 $records[] = $record;
             }
             $recordset->next();
+        }
+
+        foreach ($records as $key => $record) {
+            $courseid = $record->courseid;
+            $urlViewCourse = new moodle_url('/course/view.php', [
+                'id' => $courseid
+            ]);
+            if ($record->coursename != null) {
+                if ($inputSearchStringCategory === '') {
+                    $records[$key]->coursename = '<span style="position: absolute; visibility: hidden;">' . $record->pathcategory . '</span><a href="'. $urlViewCourse .'" target="_blank">' . $record->coursename .'</a>';
+                } else {
+                    // Add column category name when export excel
+                    $records[$key]->categoryname = $record->coursecategory;
+                }
+            }
+            $contextcourse = \context_course::instance($courseid);
+            $teacherid = $DB->get_field('role_assignments', 'userid',[
+                'roleid' => $teacherroleid,
+                'contextid' => $contextcourse->id,
+            ]);
+            $teacher = $DB->get_record('user', [
+                'id' => $teacherid
+            ]);
+            $records[$key]->coursecategory = $teacher->firstname .' '. $teacher->lastname;
+            unset($records[$key]->courseid);
+            unset($records[$key]->pathcategory);
         }
 
         $return = new stdClass();
@@ -230,7 +264,6 @@ class customreportsblock extends block_base {
         $params = json_decode($customreport->data);
         $params->fields = $params->selectedfield;
         unset($params->selectedfield);
-        
         $records = $this->get_data($params);
         $customField = new stdClass();
         $customField->data = 'categoryname';

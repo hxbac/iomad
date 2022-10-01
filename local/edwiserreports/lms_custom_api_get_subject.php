@@ -14,6 +14,14 @@ if ($isGetAll === 'getall') {
     foreach ($childCategories as $category) {
         $condition .= $category->id . ',';
     }
+
+    if ($condition === '') {
+        echo json_encode([
+            'message' => 'success',
+            'data' => [],
+        ]);
+        die();
+    }
     
     $condition = rtrim($condition, ",");
     $sql = 'SELECT id, fullname FROM `'. $CFG->prefix .'course` WHERE category IN ('. $condition .')';
