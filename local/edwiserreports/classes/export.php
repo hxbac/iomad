@@ -148,13 +148,11 @@ class export {
         $myxls = $workbook->add_worksheet($this->region . "_" . $this->blockname);
         
         $numskip = 0;
-        $addwidthcolumn = 2;
         $format = $workbook->add_format();
         $i = true;
 
         if ($isFromEdwiserreportsCustomBlock) {
             $numskip = 4;
-            $addwidthcolumn = 10;
             $inputSearchStringCategory = optional_param('lmsSearchDownload', '', PARAM_TEXT);
             $inputSearchStringCategory = str_replace("'", '', $inputSearchStringCategory);
             $inputSearchStringCategory = str_replace('"', '', $inputSearchStringCategory);
@@ -194,7 +192,6 @@ class export {
 
         if ($isFromEdwiserreportsBlockCourseProgress) {
             $numskip = 7;
-            $addwidthcolumn = 6;
             $filterlms = optional_param("filter", false, PARAM_TEXT);
             $filterlms = (int)$filterlms;
             
@@ -241,32 +238,38 @@ class export {
             $myxls->write_string(4, 2, $course->fullname, $format);
             $myxls->write_string(5, 1, 'Giáo viên: ', $format);
             $myxls->write_string(5, 2, $teachername, $format);
-            $myxls->merge_cells(0, 0, 0, 5);
+            $myxls->merge_cells(0, 0, 0, 4);
             $format->set_border(1);
             $format->set_align('center');    
             $format->set_bold(1);
 
             // Set width column 
             $myxls->set_column(0, 0, 7);
-            $myxls->set_column(1, 1, 20);
-            $myxls->set_column(2, 2, 17);
-            $myxls->set_column(3, 3, 18);
-            $myxls->set_column(4, 4, 13);
-            $myxls->set_column(5, 5, 13);
+            $myxls->set_column(1, 1, 29);
+            $myxls->set_column(2, 2, 22);
+            $myxls->set_column(3, 3, 15);
+            $myxls->set_column(4, 4, 15);
         }
 
         $totalrownum = 0;
         $index = 0;
         foreach ($data as $rownum => $row) {
             array_unshift($row, $index === 0 ? 'STT' : $index);
+            array_splice($row, 3, 1);
             $rownum += $numskip;
             foreach ($row as $colnum => $val) {
+                if ($isFromEdwiserreportsBlockCourseProgress) {
+                    if ($colnum === 4 || $colnum === 3) {
+                        $format->set_align('center');
+                    } else {
+                        $format->set_align('left');
+                    }
+                }
                 if (is_numeric($val) || $i) {
                     $val = is_numeric($val) ? (int)$val : $val;
                     $format->set_align('center');
-                } else {
-                    $format->set_align('left');
                 }
+
                 $myxls->write_string($rownum, $colnum, $val, $format);
             }
             if ($i) {
