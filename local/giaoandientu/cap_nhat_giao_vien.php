@@ -8,6 +8,12 @@ $week = $DB->get_record('lms_gadt_weeks', [
     'id' => $weekid
 ]);
 
+$now = new DateTime("now", core_date::get_server_timezone_object());
+if ($week->enddate < $now->getTimestamp()) {
+    print_error('Tuần đã hết hạn', 'local_giaoandientu');
+    exit;
+}
+
 if (!checkManagerAccess($week->categoryid)) {
     print_error('accessdenied', 'admin');
 }

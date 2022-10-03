@@ -32,6 +32,7 @@ $PAGE->set_url('/local/giaoandientu/view.php', [
 $PAGE->set_title('Báo cáo giảng dạy');
 $PAGE->set_heading('Duyệt kế hoạch bài dạy');
 echo $OUTPUT->header();
+
 $urlcreateweek = new moodle_url('/local/giaoandientu/tao_tuan.php', (array) [
     'categoryid' => $categoryid
 ]);
@@ -138,6 +139,8 @@ $usercreate = $DB->get_record('user', [
     'id' => $week->userid
 ]);
 
+$isRenderButtonUpdateTeacher = $week->enddate > $nowtimestamp;
+
 echo $OUTPUT->render_from_template('local_giaoandientu/totruong', [
     'urltaotuan' => $urlcreateweek,
     'urlupdateweek' => $urlupdateweek,
@@ -153,7 +156,8 @@ echo $OUTPUT->render_from_template('local_giaoandientu/totruong', [
     'description' => $week->description,
     'usercreate' => $usercreate->firstname. ' ' .$usercreate->lastname,
     'breadcrumbobj' => $breadcrumbobj,
-    'renderActionWeek' => $renderActionWeek
+    'renderActionWeek' => $renderActionWeek,
+    'isRenderButtonUpdateTeacher' => $isRenderButtonUpdateTeacher,
 ]);
 
 echo $OUTPUT->footer();

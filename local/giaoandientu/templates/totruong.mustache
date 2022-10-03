@@ -106,8 +106,9 @@ Example context (json):
     <a class="btn btn-danger"
         style="margin-left: 14px; padding: 0 20px; display: flex; align-items: center; justify-content: center; color: #fff;"
         data-toggle="modal" data-target="#modalDeleteWeek">Xóa</a>
-    <button class="btn btn-primary" style="margin-left: 14px;" data-toggle="modal"
-        data-target="#modalUpdateTeacherWeek">Cập nhật giáo viên</button>
+    {{#isRenderButtonUpdateTeacher}}
+    <button class="btn btn-primary" style="margin-left: 14px;" data-toggle="modal" data-target="#modalUpdateTeacherWeek">Cập nhật giáo viên</button>
+    {{/isRenderButtonUpdateTeacher}}
     <button class="btn btn-primary" style="margin-left: 14px;" data-toggle="modal" data-target="#modalShowInfoWeek">Xem
         thông tin</button>
 </div>
