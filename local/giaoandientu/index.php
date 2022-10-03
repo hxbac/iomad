@@ -72,6 +72,8 @@ $categoriesManagerFilter = array_filter([...$categoriesActive], function ($categ
     return false;
 });
 
+$categoriesManagerFilter = json_decode(json_encode($categoriesManagerFilter));
+
 $checkmanagerrecord = false;
 foreach ($categoriesManagerFilter as $categoryrecord) {
     $checkmanagerrecord = true;
