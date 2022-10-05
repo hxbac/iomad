@@ -40,9 +40,14 @@ foreach ($weeks as $week) {
     $week->data = [...$courses];
 }
 
+$urlExportExcel = new moodle_url('/local/giaoandientu/exportexcel.php', [
+    'categoryid' => $categoryid
+]);
+
 echo $OUTPUT->render_from_template('local_giaoandientu/thongke', [
     'weeks' => [...$weeks],
-    'breadcrumbobj' => $breadcrumbobj
+    'breadcrumbobj' => $breadcrumbobj,
+    'urlexportexcel' => $urlExportExcel,
 ]);
 
 echo $OUTPUT->footer();
