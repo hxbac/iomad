@@ -8,23 +8,38 @@ if (!checkPrincipalAccessChild($categoryid)) {
     print_error('accessdenied', 'admin');
 }
 
-$school =  getSchoolByChildCategoryid($categoryid);
-$returnurl = new moodle_url('/local/giaoandientu/quan_ly.php', [
-    'categoryid' => $school->id
-]);
+$listChild = array();
+getAllChildOfCategory($categoryid, $listChild);
 
-$subjectofcategory = $DB->get_record('lms_gadt_subjects', [
+$returnurl = new moodle_url('/local/giaoandientu/quan_ly.php');
+
+$isCategoryAdded = $DB->record_exists('lms_gadt_subjects', [
     'categoryid' => $categoryid
 ]);
 
-if ($subjectofcategory == false) {
-    $DB->insert_record('lms_gadt_subjects', [
-        'categoryid' => $categoryid
-    ]);
-} else {
+if ($isCategoryAdded) {
     $DB->delete_records('lms_gadt_subjects', [
         'categoryid' => $categoryid
     ]);
+    foreach ($listChild as $childCategoryid) {
+        $DB->delete_records('lms_gadt_subjects', [
+            'categoryid' => $childCategoryid
+        ]);
+    }
+} else {
+    $DB->insert_record('lms_gadt_subjects', [
+        'categoryid' => $categoryid
+    ]);
+    foreach ($listChild as $childCategoryid) {
+        $isChildExist = $DB->record_exists('lms_gadt_subjects', [
+        'categoryid' => $childCategoryid
+        ]);
+        if (!$isChildExist) {
+            $DB->insert_record('lms_gadt_subjects', [
+                'categoryid' => $childCategoryid
+            ]);
+        }
+    }
 }
 
 redirect($returnurl);

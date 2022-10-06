@@ -4,24 +4,28 @@ function getCategoriesRenderManager(&$datarendercategories, $categories) {
     global $DB;
     // css transform: translateX($valuecss) để thụt đầu dòng cho phần tử con
     foreach ($categories as $category) {
+        $item = (object)[];
+        $item->selectable = false;
+        $urlhandlemanager = new moodle_url('/local/giaoandientu/handle_manager.php', [
+            'categoryid' => $category->id
+        ]);
+        $isChecked = $DB->record_exists('lms_gadt_subjects', [
+            'categoryid' => $category->id
+        ]);
+        $isChecked = $isChecked ? 'checked' : '';
+        $item->text = $category->name . "<a href='". $urlhandlemanager ."' style='margin-left: auto; display: inline-block;'><input type='checkbox' id='check". $category->id ."' class='togglecustom' ". $isChecked ."> <label for='check". $category->id ."' style='margin-bottom: 0; pointer-events: none;'></label></a>";
+        
+        $item->nodes = [];
+        array_push($datarendercategories, $item);
+
         $categorieschild = $DB->get_records('course_categories', [
             'parent' => $category->id
-        ], 'id DESC');
-        $subjectofcategory = $DB->get_record('lms_gadt_subjects', [
-            'categoryid' => $category->id
         ]);
-        if ($subjectofcategory == null) {
-            $category->checked = false;
-        } else {
-            $category->checked = true;
+        getCategoriesRenderManager($item->nodes, $categorieschild);
+
+        if (!$item->nodes) {
+            unset($item->nodes);
         }
-        $category->urlhandlemanager = new moodle_url('/local/giaoandientu/handle_manager.php', [
-            'categoryid' => $category->id
-        ]);
-        $splitpath = explode('/', $category->path);
-        $category->valuetransform = (count($splitpath) - 2) * 40;
-        array_push($datarendercategories, $category);
-        getCategoriesRenderManager($datarendercategories, $categorieschild);
     }
 }
 
@@ -60,6 +64,19 @@ function getManagerByCategoryid($categoryid) {
     $context = context_coursecat::instance($categoryid);
     $managers = get_role_users($role->id, $context);
     return $managers;
+}
+
+function getAllChildOfCategory($categoryid, &$listChild) {
+    global $DB;
+    if (!!$categoryid) {
+        $childs = $DB->get_records('course_categories', [
+            'parent' => $categoryid
+        ]);
+        foreach ($childs as $child) {
+            array_push($listChild, $child->id);
+            getAllChildOfCategory($child->id, $listChild);
+        }
+    }
 }
 
 function checkManagerAccess($categoryid) {

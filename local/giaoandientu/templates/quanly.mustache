@@ -92,27 +92,27 @@ Example context (json):
         height: 100%;
         vertical-align: middle;
     }
+
+    .treeview .list-group-item {
+        display: flex;
+        align-items: center;
+    }
 </style>
-{{! <h4 style="text-align: center;">Trường: <b>{{schoolname}}</b></h4> }}
-<br>
-<table class="table lms_custom_table">
-    <thead>
-        <tr>
-            <th scope="col" style="width: 80%; padding-left: 40px;">Tên danh mục</th>
-            <th scope="col" style="display: flex; justify-content: center; align-items: center;">Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{#categories}}
-        <tr>
-            <td style="width: 80%; transform: translateX({{ valuetransform }}px);">{{ name }}</td>
-            <td style="display: flex; justify-content: center; align-items: center;">
-                <a href="{{ urlhandlemanager }}">
-                    <input type="checkbox" id="check{{ id }}" class="togglecustom" {{#checked}} checked {{/checked}}>
-                    <label for="check{{ id }}" style="margin-bottom: 0; pointer-events: none;"></label>
-                </a>
-            </td>
-        </tr>
-        {{/categories}}
-    </tbody>
-</table>
+<div id="lmstree"></div>
+
+
+<script>
+    function handlePreventATag(e) {
+        e.preventDefault()
+    }
+
+    $( document ).ready(function() {
+        const lmstreeviewdata = JSON.parse(`{{{ datarendercategories }}}`)
+        $('#lmstree').treeview({
+            data: lmstreeviewdata,
+            levels: 1,
+            expandIcon:'fas fa-plus',
+            collapseIcon:'fa-sharp fa-solid fa-horizontal-rule',
+        })
+    });
+</script>
