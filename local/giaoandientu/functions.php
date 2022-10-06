@@ -140,7 +140,20 @@ function checkTeacherAccess($categoryid, $userid = null) {
 }
 
 function checkAccess($categoryid, $userid = null) {
-    global $USER;
+    global $USER, $DB;
+
+    $principalRoleId = $DB->get_field('role', 'id', [
+        'shortname' => 'hieutruong'
+    ]);
+    $isPrincipal = $DB->record_exists('role_assignments', [
+        'userid' => $USER->id,
+        'roleid' => $principalRoleId,
+        'contextid' => 1
+    ]);
+    if ($isPrincipal) {
+        return true;
+    }
+    
     if (checkManagerAccess($categoryid)) {
         return true;
     }
