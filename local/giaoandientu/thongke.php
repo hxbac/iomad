@@ -4,7 +4,7 @@ require_once('./functions.php');
 
 $categoryid = required_param('categoryid', PARAM_INT);
 
-if (!checkManagerAccess($categoryid)) {
+if (!checkManagerAndPrincipalAccess($categoryid)) {
     print_error('accessdenied', 'admin');
 }
 

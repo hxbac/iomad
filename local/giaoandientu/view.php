@@ -5,7 +5,7 @@ require_once($CFG->dirroot . '/local/giaoandientu/classes/form_create_week.php')
 
 $categoryid = required_param('categoryid', PARAM_INT);
 
-if (!checkManagerAccess($categoryid)) {
+if (!checkManagerAndPrincipalAccess($categoryid)) {
     print_error('accessdenied', 'admin');
 }
 

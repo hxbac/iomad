@@ -47,7 +47,7 @@ Example context (json):
         <tr>
             <th scope="col">Tên danh mục</th>
             <th scope="col">Báo cáo chưa gửi</th>
-            <th scope="col"></th>
+            <th scope="col">Hành động</th>
         </tr>
     </thead>
     <tbody>
@@ -70,15 +70,19 @@ Example context (json):
     <thead>
         <tr>
             <th scope="col">Tên danh mục</th>
-            <th scope="col">Báo cáo chưa duyệt</th>
-            <th scope="col" colspan="2"></th>
+            {{#rendercountreportformanager}}
+                <th scope="col">Báo cáo chưa duyệt</th>
+            {{/rendercountreportformanager}}
+            <th scope="col" colspan="2">Hành động</th>
         </tr>
     </thead>
     <tbody>
         {{#categorymanager}}
         <tr>
             <td>{{ parentname }}{{ name }}</td>
-            <td>{{ solanconlai }}</td>
+            {{#rendercountreportformanager}}
+                <td>{{ solanconlai }}</td>
+            {{/rendercountreportformanager}}
             <td><a href="{{{ url }}}">Xem chi tiết</a></td>
             <td><a href="{{{ urlthongke }}}">Thống kê</a></td>
         </tr>

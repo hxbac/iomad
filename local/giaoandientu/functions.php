@@ -2,7 +2,6 @@
 
 function getCategoriesRenderManager(&$datarendercategories, $categories) {
     global $DB;
-    // css transform: translateX($valuecss) để thụt đầu dòng cho phần tử con
     foreach ($categories as $category) {
         $item = (object)[];
         $item->selectable = false;
@@ -79,9 +78,36 @@ function getAllChildOfCategory($categoryid, &$listChild) {
     }
 }
 
+function checkManagerAndPrincipalAccess($categoryid) {
+    global $DB, $USER;
+    require_login();
+
+    $principalRoleId = $DB->get_field('role', 'id', [
+        'shortname' => 'hieutruong'
+    ]);
+    $isPrincipal = $DB->record_exists('role_assignments', [
+        'userid' => $USER->id,
+        'roleid' => $principalRoleId,
+        'contextid' => 1
+    ]);
+    if ($isPrincipal) {
+        return true;
+    }
+
+    $managers = getManagerByCategoryid($categoryid);
+    foreach ($managers as $manager) {
+        if ($USER->id == $manager->id) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function checkManagerAccess($categoryid) {
     global $DB, $USER;
     require_login();
+
     $managers = getManagerByCategoryid($categoryid);
     foreach ($managers as $manager) {
         if ($USER->id == $manager->id) {
