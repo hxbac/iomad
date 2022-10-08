@@ -82,10 +82,12 @@ Example context (json):
         }}</b></div>
 {{/breadcrumbobj}}
 <br>
+{{#isRenderActionForManager}}
 <div style="display: flex; margin-bottom: 14px;">
     <a href="{{urltaotuan}}" class="btn btn-primary" style="margin-right: 14px;">Tạo tuần mới</a>
     <a href="{{urlautocreateweek}}" class="btn btn-primary" style="margin-right: 14px;">Tạo tuần nhanh</a>
 </div>
+{{/isRenderActionForManager}}
 {{#renderActionWeek}}
 <div style="display: flex;">
     <div class="dropdown">
@@ -100,6 +102,7 @@ Example context (json):
         </ul>
     </div>
 
+    {{#isRenderActionForManager}}
     <a href="{{{urlupdateweek}}}" class="btn btn-warning"
         style="margin-left: 14px; padding: 0 20px; display: flex; align-items: center; justify-content: center;">Sửa
         đổi</a>
@@ -109,6 +112,8 @@ Example context (json):
     {{#isRenderButtonUpdateTeacher}}
     <button class="btn btn-primary" style="margin-left: 14px;" data-toggle="modal" data-target="#modalUpdateTeacherWeek">Cập nhật giáo viên</button>
     {{/isRenderButtonUpdateTeacher}}
+    {{/isRenderActionForManager}}
+
     <button class="btn btn-primary" style="margin-left: 14px;" data-toggle="modal" data-target="#modalShowInfoWeek">Xem
         thông tin</button>
 </div>

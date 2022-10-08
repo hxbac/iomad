@@ -141,6 +141,16 @@ $usercreate = $DB->get_record('user', [
 
 $isRenderButtonUpdateTeacher = $week->enddate > $nowtimestamp;
 
+$principalRoleId = $DB->get_field('role', 'id', [
+    'shortname' => 'hieutruong'
+]);
+$isPrincipal = $DB->record_exists('role_assignments', [
+    'roleid' => $principalRoleId,
+    'userid' => $USER->id,
+    'contextid' => 1
+]);
+$isRenderActionForManager = !$isPrincipal;
+
 echo $OUTPUT->render_from_template('local_giaoandientu/totruong', [
     'urltaotuan' => $urlcreateweek,
     'urlupdateweek' => $urlupdateweek,
@@ -158,6 +168,7 @@ echo $OUTPUT->render_from_template('local_giaoandientu/totruong', [
     'breadcrumbobj' => $breadcrumbobj,
     'renderActionWeek' => $renderActionWeek,
     'isRenderButtonUpdateTeacher' => $isRenderButtonUpdateTeacher,
+    'isRenderActionForManager' => $isRenderActionForManager,
 ]);
 
 echo $OUTPUT->footer();
