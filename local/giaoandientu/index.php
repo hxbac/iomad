@@ -110,7 +110,7 @@ if ($isPrincipal) {
         return false;
     });
 
-    $categoriesManagerFilter = json_decode(json_encode($categoriesManagerFilter));
+    $categoriesManagerFilter = (array)json_decode(json_encode($categoriesManagerFilter));
 
     $checkmanagerrecord = false;
     foreach ($categoriesManagerFilter as $categoryrecord) {
