@@ -103,8 +103,8 @@ class block_dedication_manager {
                 userdate($this->maxtime),
                 get_string('perioddiffrow', 'block_dedication'),
                 format_time($this->maxtime - $this->mintime),
+                $this->course->id,
             ),
-            array(''),
             array(
                 get_string('firstname'),
                 get_string('lastname'),
@@ -397,7 +397,7 @@ class block_dedication_utils {
      * @throws coding_exception
      */
     public static function generate_download($downloadname, $rows) {
-        global $CFG;
+        global $CFG, $DB;
 
         require_once($CFG->libdir . '/excellib.class.php');
 
@@ -406,9 +406,95 @@ class block_dedication_utils {
         $myxls = $workbook->add_worksheet(get_string('pluginname', 'block_dedication'));
 
         $rowcount = 0;
+        $lmsAction = optional_param('action', '', PARAM_TEXT);
+        if ($lmsAction === 'all') {
+            $infoCourse = array_shift($rows);
+            $courseid = array_pop($infoCourse);
+            $header = array_shift($rows);
+            array_splice($header, 3, 1);
+            array_unshift($header, 'STT');
+    
+            $course = $DB->get_record('course', [
+                'id' => $courseid
+            ]);
+            $pathCategory = $DB->get_field('course_categories', 'path',[
+                'id' => $course->category
+            ]);
+            $pathCategoryArr = explode('/', $pathCategory);
+            $yearName = $DB->get_field('course_categories', 'name', [
+                'id' => $pathCategoryArr[2] ?? ''
+            ]) ?? '';
+            $semesterName = $DB->get_field('course_categories', 'name', [
+                'id' => $pathCategoryArr[3] ?? ''
+            ]) ?? '';
+
+            $teacherroleid = $DB->get_field('role', 'id',[
+                'shortname' => 'editingteacher'
+            ]);
+            $contextCourse = \context_course::instance($courseid);
+            $teacherid = $DB->get_field('role_assignments', 'userid', [
+                'roleid' => $teacherroleid,
+                'contextid' => $contextCourse->id
+            ]);
+            $teacher = $DB->get_record('user', [
+                'id' => $teacherid
+            ]);
+
+            $formatCenterBold = $workbook->add_format();
+            $formatCenterBold->set_align('center');
+            $formatCenterBold->set_bold(1);
+
+            $myxls->write_string(0, 0, 'THỐNG KÊ THỜI GIAN HỌC', $formatCenterBold);
+            $myxls->merge_cells(0, 0, 0, 6);
+
+            $myxls->write_string(2, 1, 'Năm học:');
+            $myxls->write_string(2, 2, $yearName);
+
+            $myxls->write_string(3, 1, 'Học kì:');
+            $myxls->write_string(3, 2, $semesterName);
+
+            $myxls->write_string(4, 1, 'Môn:');
+            $myxls->write_string(4, 2, $course->fullname);
+
+            $myxls->write_string(5, 1, 'Giáo viên:');
+            $myxls->write_string(5, 2, $teacher->firstname .' '. $teacher->lastname);
+
+            $myxls->write_string(6, 1, 'Từ: '. $infoCourse[1]);
+            $myxls->write_string(7, 1, 'Đến: '. $infoCourse[3]);
+            $myxls->write_string(8, 1, 'Môn học đã bắt đầu được: '. $infoCourse[5]);
+
+            $formatCenterBold->set_border(1);
+            foreach ($header as $colnum => $val) {
+                $myxls->write_string(10, $colnum, $val, $formatCenterBold);
+            }
+
+            $rowcount = 11;
+
+            // Set width column 
+            $myxls->set_column(0, 0, 5);
+            $myxls->set_column(1, 1, 25);
+            $myxls->set_column(2, 2, 13);
+            $myxls->set_column(3, 3, 13);
+            $myxls->set_column(4, 4, 16);
+            $myxls->set_column(5, 5, 16);
+        }
+
+        $i = 1;
+        $format = $workbook->add_format();
+        $format->set_border(1);
         foreach ($rows as $row) {
+            if ($lmsAction === 'all') {
+                array_splice($row, 3, 1);
+                array_unshift($row, $i);
+                $i++;
+            }
             foreach ($row as $index => $content) {
-                $myxls->write($rowcount, $index, $content);
+                if (is_numeric($content)) {
+                    $format->set_align('center');
+                } else {
+                    $format->set_align('left');
+                }
+                $myxls->write($rowcount, $index, $content, $format);
             }
             $rowcount++;
         }
