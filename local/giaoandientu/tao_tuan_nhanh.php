@@ -43,7 +43,10 @@ if ($action === null) {
         $categoryid = (int)$fromform->categoryid;
     
         if ($weeksnumber > 5) {
-            print_error('Số tuần tạo trong một lần không được quá 5.');
+            $returnurl = new moodle_url('/local/giaoandientu/tao_tuan_nhanh.php', [
+                'categoryid' => $categoryid
+            ]);
+            print_error('Số tuần tạo trong một lần không được quá 5.', '', $returnurl);
         }
 
         $listweek = array();
