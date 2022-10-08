@@ -42,6 +42,10 @@ if ($action === null) {
         $distance = (int)$fromform->distance;
         $categoryid = (int)$fromform->categoryid;
     
+        if ($weeksnumber > 5) {
+            print_error('Số tuần tạo trong một lần không được quá 5.');
+        }
+
         $listweek = array();
     
         for ($i = 0; $i < $weeksnumber; $i++) {
