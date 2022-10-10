@@ -29,6 +29,22 @@ if ($weekid === -1) {
     if ($mform->is_cancelled()) {
         redirect($returnurl);
     } else if ($fromform = $mform->get_data()) {
+        if (trim($fromform->weekname) === '') {
+            $returnurl = new moodle_url('/local/giaoandientu/tao_tuan.php', [
+                'categoryid' => $fromform->categoryid
+            ]);
+            print_error('Tên không được trống.', '', $returnurl);
+            exit;
+        }
+
+        if ($fromform->startdate > $fromform->enddate) {
+            $returnurl = new moodle_url('/local/giaoandientu/tao_tuan.php', [
+                'categoryid' => $fromform->categoryid
+            ]);
+            print_error('Ngày kết thúc không được trước ngày tạo.', '', $returnurl);
+            exit;
+        }
+
         $sql = "SELECT weekname FROM `". $CFG->prefix ."lms_gadt_weeks` WHERE categoryid = ". $fromform->categoryid ." AND weekname = '". $fromform->weekname. "'";
         $checkWeekNameExists = $DB->record_exists_sql($sql);
 
