@@ -21,7 +21,7 @@ $categories = $DB->get_records('course_categories', [
 ], 'id DESC');
 getCategoriesRenderManager($datarendercategories, $categories);
 
-$PAGE->requires->js('/local/giaoandientu/assets/bootstrap-treeview.min.js');
+$PAGE->requires->js('/local/giaoandientu/assets/bootstrap-treeview-quanly.js');
 echo $OUTPUT->render_from_template('local_giaoandientu/quanly', [
     'datarendercategories' => json_encode($datarendercategories),
 ]);

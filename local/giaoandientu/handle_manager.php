@@ -4,8 +4,13 @@ require_once('./functions.php');
 
 $categoryid = required_param('categoryid', PARAM_INT);
 
+$response = (object)[];
+
 if (!checkPrincipalAccessChild($categoryid)) {
-    print_error('accessdenied', 'admin');
+    $response->status = 'error';
+    $response->message = 'accessdenied';
+    echo json_encode($response);
+    exit;
 }
 
 $listChild = array();
@@ -42,4 +47,7 @@ if ($isCategoryAdded) {
     }
 }
 
-redirect($returnurl);
+$response->status = 'success';
+$response->message = '';
+
+echo json_encode($response);

@@ -5,15 +5,13 @@ function getCategoriesRenderManager(&$datarendercategories, $categories) {
     foreach ($categories as $category) {
         $item = (object)[];
         $item->selectable = false;
-        $urlhandlemanager = new moodle_url('/local/giaoandientu/handle_manager.php', [
-            'categoryid' => $category->id
-        ]);
         $isChecked = $DB->record_exists('lms_gadt_subjects', [
             'categoryid' => $category->id
         ]);
-        $isChecked = $isChecked ? 'checked' : '';
-        $item->text = $category->name . "<a href='". $urlhandlemanager ."' style='margin-left: auto; display: inline-block;'><input type='checkbox' id='check". $category->id ."' class='togglecustom' ". $isChecked ."> <label for='check". $category->id ."' style='margin-bottom: 0; pointer-events: none;'></label></a>";
-        
+        $item->text = '';
+        $item->categoryname = $category->name;
+        $item->checked = $isChecked ? 'checked' : '';
+        $item->categoryid = $category->id;
         $item->nodes = [];
         array_push($datarendercategories, $item);
 

@@ -97,22 +97,92 @@ Example context (json):
         display: flex;
         align-items: center;
     }
-</style>
-<div id="lmstree"></div>
 
-
-<script>
-    function handlePreventATag(e) {
-        e.preventDefault()
+    #lmsoverlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.2);
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+        transition: 0.1s linear;
     }
 
-    $( document ).ready(function() {
-        const lmstreeviewdata = JSON.parse(`{{{ datarendercategories }}}`)
+    #lmsoverlay.show {
+        display: flex;
+    }
+
+    .lmsloader {
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 70px;
+        height: 70px;
+        -webkit-animation: lmsspin 2s linear infinite;
+        /* Safari */
+        animation: lmsspin 2s linear infinite;
+    }
+
+    /* Safari */
+    @-webkit-keyframes lmsspin {
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @keyframes lmsspin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    #lmstree span.icon {
+        padding: 4px;
+        transform: scale(1.15);
+    }
+
+    #lmstree span.icon.lms-icon-minus {
+        position: relative;
+    }
+
+    #lmstree span.icon.lms-icon-minus::after {
+        content: '';
+        position: absolute;
+        width: 10px;
+        height: 1px;
+        border-radius: 6px;
+        background-color: #857074;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%), translateY(-50%);
+    }
+
+</style>
+<div id="lmstree"></div>
+<div id="lmsoverlay">
+    <div class="lmsloader"></div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        window.lmstreeviewdata = JSON.parse(`{{{ datarendercategories }}}`)
         $('#lmstree').treeview({
-            data: lmstreeviewdata,
+            data: window.lmstreeviewdata,
             levels: 1,
-            expandIcon:'fas fa-plus',
-            collapseIcon:'fa-sharp fa-solid fa-horizontal-rule',
+            expandIcon: 'fas fa-plus',
+            collapseIcon: 'lms-icon-minus',
         })
     });
 </script>
