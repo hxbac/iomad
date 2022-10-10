@@ -11,7 +11,7 @@ if (!checkManagerAndPrincipalAccess($categoryid)) {
 
 $weeks = $DB->get_records('lms_gadt_weeks', [
     'categoryid' => $categoryid
-], 'id ASC');
+], 'startdate DESC');
 
 $currenttime = new DateTime("now", core_date::get_server_timezone_object());
 $nowtimestamp = $currenttime->getTimestamp();
@@ -22,7 +22,7 @@ if (!$currWeekid) {
     $weekstemp = [...$weeks];
     $currWeekid = (array_pop($weekstemp))->id;
 }
-$weekid = optional_param('weekid', $currWeekid ?? 30, PARAM_INT);
+$weekid = optional_param('weekid', $currWeekid ?? 0, PARAM_INT);
 
 $context = context_system::instance();
 $PAGE->set_context($context);
@@ -76,7 +76,6 @@ foreach ($weeks as $week) {
     ]);
     array_push($listidweek, (array)$week);
 }
-
 $listteachersendfile = $DB->get_records('lms_gadt_storereport', [
     'weekid' => $weekid
 ]);
