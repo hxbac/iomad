@@ -26,6 +26,42 @@ function getCategoriesRenderManager(&$datarendercategories, $categories) {
     }
 }
 
+function getDataRenderIndexForPrincipal(&$result, $categories) {
+    global $DB, $CFG;
+
+    foreach ($categories as $category) {
+        $categoryInfo = $DB->get_record('course_categories', [
+            'id' => $category->categoryid ?? $category->id
+        ]);
+        if (!!$category->categoryid) {
+            $fullnamecategory = '';
+            getParentNameCategory($categoryInfo->parent, $fullnamecategory);
+            $categoryInfo->name = $fullnamecategory . $categoryInfo->name;
+        }
+        $item = (object)[];
+        $url = new moodle_url('/local/giaoandientu/view.php', [
+            'categoryid' => $categoryInfo->id
+        ]);
+        $urlthongke = new moodle_url('/local/giaoandientu/thongke.php', [
+            'categoryid' => $categoryInfo->id
+        ]);
+        
+        $item->selectable = false;
+        $item->categoryid = $categoryInfo->id;
+        $item->text = "<a href='". $url ."'>". $categoryInfo->name ."</a><a href='". $urlthongke ."' style='margin-left: auto;'>Thống kê</a>";
+        $item->nodes = [];
+        $sql = "SELECT ctg.* FROM `". $CFG->prefix ."lms_gadt_subjects` lmsc JOIN `". $CFG->prefix ."course_categories` ctg ON lmsc.categoryid = ctg.id WHERE ctg.parent = ". $categoryInfo->id;
+        
+        $childsCategory = $DB->get_records_sql($sql);
+        getDataRenderIndexForPrincipal($item->nodes, (array)$childsCategory);
+
+        if (!$item->nodes) {
+            unset($item->nodes);
+        }
+        array_push($result, $item);
+    }
+}
+
 function getTeachersByCourseid($courseid) {
     global $DB;
     $role = $DB->get_record('role', array('shortname' => 'editingteacher'));

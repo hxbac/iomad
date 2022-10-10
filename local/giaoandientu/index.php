@@ -9,6 +9,8 @@ $PAGE->set_context($context);
 $PAGE->set_url('/local/giaoandientu/index.php');
 $PAGE->set_title('Báo cáo giảng dạy');
 $PAGE->set_heading('Quản lý kế hoạch giảng dạy');
+$PAGE->requires->css('/local/giaoandientu/assets/bootstrap-treeview.min.css');
+$PAGE->requires->css('/local/giaoandientu/assets/fontawesome.min.css');
 echo $OUTPUT->header();
 
 $principalRoleId = $DB->get_field('role', 'id', [
@@ -39,31 +41,27 @@ $categoriesActive = array_filter([...$categoriesActive], function ($category) {
 
 $checkmanagerrecord = false;
 if ($isPrincipal) {
-    foreach ($categoriesActive as $categoryrecord) {
-        $checkmanagerrecord = true;
-        $categoryrecord->parentname = '';
-        $categoryinfo = $DB->get_record('course_categories', [
+    $topCategories = array_filter($categoriesActive, function ($categoryrecord) {
+        global $DB;
+        $pathCategory = $DB->get_field('course_categories', 'path',[
             'id' => $categoryrecord->categoryid
         ]);
-        $categoryrecord->name = $categoryinfo->name;
-        $categoryrecord->url = new moodle_url('/local/giaoandientu/view.php', [
-            'categoryid' => $categoryrecord->categoryid
-        ]);
-        $categoryrecord->urlthongke = new moodle_url('/local/giaoandientu/thongke.php', [
-            'categoryid' => $categoryrecord->categoryid
-        ]);
-        
-        $categoryrecord-> solanconlai = false;
-    
-        getParentNameCategory($categoryinfo->parent, $categoryrecord->parentname);
+        if (count(explode('/', $pathCategory)) === 4) {
+            return true;
+        }
+    });
+    foreach ($topCategories as $topitem) {
+        $fullnamecategory = '';
+        getParentNameCategory($topitem->categoryid, $fullnamecategory);
     }
-    echo $OUTPUT->render_from_template('local_giaoandientu/index', [
-        'categorymanager' => [...$categoriesActive ?? []],
-        'checkmanagerrecord' => $checkmanagerrecord,
-        'rendercountreportformanager' => false
-    ]);
+    $dataRender = (array)[];
+    getDataRenderIndexForPrincipal($dataRender, $topCategories);
+    $dataRender = json_encode($dataRender);
     
-    echo $OUTPUT->footer();
+    $PAGE->requires->js('/local/giaoandientu/assets/bootstrap-treeview-index-hieutruong.js');
+    echo $OUTPUT->render_from_template('local_giaoandientu/indexForPrincipal', [
+        'dataRender' => $dataRender,
+    ]);
 } else {
 
     $categoriesSendFilter = array_filter([...$categoriesActive], function ($category) {
@@ -138,8 +136,7 @@ if ($isPrincipal) {
         'checksendrecord' => $checksendrecord,
         'categorymanager' => [...$categoriesManagerFilter ?? []],
         'checkmanagerrecord' => $checkmanagerrecord,
-        'rendercountreportformanager' => true
     ]);
-
-    echo $OUTPUT->footer();
 }
+
+echo $OUTPUT->footer();
