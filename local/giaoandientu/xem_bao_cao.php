@@ -19,7 +19,7 @@ echo $OUTPUT->header();
 
 $currenttime = new DateTime("now", core_date::get_server_timezone_object());
 $nowtimestamp = $currenttime->getTimestamp();
-$sqlraw = 'SELECT * FROM `'. $CFG->prefix .'lms_gadt_weeks` WHERE `categoryid` = ' . $categoryid . ' AND `startdate` <= ' . $nowtimestamp . ' ORDER BY timecreated DESC';
+$sqlraw = 'SELECT * FROM `'. $CFG->prefix .'lms_gadt_weeks` WHERE `categoryid` = ' . $categoryid . ' AND `startdate` <= ' . $nowtimestamp . ' ORDER BY enddate DESC';
 
 $weeksofcategory = $DB->get_records_sql($sqlraw);
 
