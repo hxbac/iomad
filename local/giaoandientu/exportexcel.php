@@ -24,12 +24,10 @@ foreach ($listTeacherOfCategory as $record) {
 }
 
 $i = 1;
-$headerexport = ['STT', 'Giáo viên', 'Môn học'];
+$headerexport = ['STT', 'Giáo viên', 'Môn học', 'Tổng số giáo án', 'Giáo án đã nộp', 'Giáo án chưa nộp'];
 foreach ($weeksOfCategory as $week) {
     array_push($headerexport, $week->weekname);
 }
-array_push($headerexport, 'Số báo cáo hoàn thành');
-array_push($headerexport, 'Tổng số báo cáo');
 
 $dataexport = array();
 foreach ($teacherAndCourse as $record) {
@@ -65,8 +63,8 @@ foreach ($teacherAndCourse as $record) {
         }
         array_push($item, $status);
     }
-    array_push($item, $countReportAccepted);
-    array_push($item, $countTotalReport);
+    array_splice( $item, 3, 0, [$countTotalReport, $countReportAccepted, $countTotalReport - $countReportAccepted] );
+    
 
     array_push($dataexport, $item);
     $i++;
@@ -101,8 +99,9 @@ for ($i = 0; $i < $weeknum; $i++) {
     $myxls->set_column($i + 3, $i + 3, 10);
 }
 
-$myxls->set_column($weeknum + 3, $weeknum + 3, 12, $formatWrapText);
-$myxls->set_column($weeknum + 4, $weeknum + 4, 12, $formatWrapText);
+$myxls->set_column(3, 3, 12, $formatWrapText);
+$myxls->set_column(4, 4, 12, $formatWrapText);
+$myxls->set_column(5, 5, 12, $formatWrapText);
 
 
 $format->set_align('left');
@@ -120,11 +119,10 @@ foreach ($dataexport as $rownum => $data) {
     $totalrownum = $rownum;
 }
 
-$format->set_border(0);
-$format->set_align('left');    
-$format->set_italic();
+$formatTime = $workbook->add_format(); 
+$formatTime->set_italic();
 $now = new \DateTime("now", \core_date::get_server_timezone_object());
-$myxls->write_string($totalrownum + 2, 3, 'Thời điểm xuất báo cáo: '. date_format($now, 'd-m-Y H:i:s'), $format);
+$myxls->write_string($totalrownum + 2, 6, 'Thời điểm xuất báo cáo: '. date_format($now, 'd-m-Y H:i:s'), $formatTime);
 
 // Sending HTTP headers.
 $workbook->send($filename);
