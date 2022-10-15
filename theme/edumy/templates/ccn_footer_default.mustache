@@ -1,3 +1,28 @@
+<style>
+  .footer_one {
+    padding: 65px 0 20px 0 !important;
+  }
+  .footer_one {
+    background-image: url(https://scontent.fhan3-4.fna.fbcdn.net/v/t1.15752-9/305521918_463381549110438_244792957569951719_n.png?_nc_cat=106&ccb=1-7&_nc_sid=ae9488&_nc_ohc=DmzIgV2tB7IAX89Fzbd&_nc_ht=scontent.fhan3-4.fna&oh=03_AdRBZrPQOfDrHJnbtsB7KJqdIFEj5d9cHU1oPVr7y_RA1Q&oe=636FCBA3);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+  }
+  .footer_contact_widget li:hover a,
+  .footer_company_widget li:hover a,
+  .footer_program_widget li:hover a {
+    padding-left: unset;
+    transform: translateX(10px);
+    display: inline-block;
+  }
+  .lms-footer-separate {
+    width: 100%;
+    height: 2px;
+    background-color: #fff;
+    margin: 30px 0;
+    border: 4px;
+  }
+</style>
 <section class="footer_one {{#footer_2}} home3 {{/footer_2}} {{#footer_3}} home4 {{/footer_3}}">
   <div class="container">
     <div class="row">
@@ -10,16 +35,16 @@
         </div>
       {{/footer_column_1}}
       {{#footer_column_2}}
-        <div class="{{{footer_col_2_class}}}">
-          <div class="footer_company_widget {{#footer_2}} home3 {{/footer_2}} {{#footer_3}} home4 {{/footer_3}}">
+        <div class="{{{footer_col_2_class}}}" style="display: flex; justify-content: flex-end;">
+          <div class="footer_company_widget {{#footer_2}} home3 {{/footer_2}} {{#footer_3}} home4 {{/footer_3}}" style="width: calc(fit-content + 10px);">
             <h4>{{{ footer_col_2_title }}}</h4>
             {{{ footer_col_2_body }}}
           </div>
         </div>
       {{/footer_column_2}}
       {{#footer_column_3}}
-        <div class="{{{footer_col_3_class}}}">
-          <div class="footer_program_widget {{#footer_2}} home3 {{/footer_2}} {{#footer_3}} home4 {{/footer_3}}">
+        <div class="{{{footer_col_3_class}}}" style="display: flex; justify-content: flex-end;">
+          <div class="footer_program_widget {{#footer_2}} home3 {{/footer_2}} {{#footer_3}} home4 {{/footer_3}}" style="width: calc(fit-content + 10px);">
             <h4>{{{ footer_col_3_title }}}</h4>
             {{{ footer_col_3_body }}}
           </div>
@@ -42,47 +67,15 @@
         </div>
       {{/footer_column_5}}
     </div>
-  </div>
-</section>
-<section class="footer_middle_area p0 {{#footer_2}} home3 {{/footer_2}} {{#footer_3}} home4 {{/footer_3}}">
-  <div class="container">
     <div class="row">
-      {{#logo_footer}}
-        <div class="col-sm-4 {{#logotype_footer}}col-md-3 col-lg-3 col-xl-3{{/logotype_footer}}{{^logotype_footer}}col-md-1 mr25{{/logotype_footer}} pb15 pt15">
-          <div class="logo-widget {{#footer_1}} home1 {{/footer_1}}  {{#footer_2}} home3 {{/footer_2}} {{#footer_3}} home3 {{/footer_3}}">
-            {{#logo_image_footer}} <img class="img-fluid" src="{{{footerlogo1}}}" alt="{{ sitename }}" {{#logo_styles_footer}} style="{{{logo_styles_footer}}}" {{/logo_styles_footer}}>{{/logo_image_footer}}
-            {{#logotype_footer}}<span>{{ sitename }}</span>{{/logotype_footer}}
-          </div>
-        </div>
-      {{/logo_footer}}
-      {{#footer_menu}}
-        <div class="col-sm-8 col-md-5 col-lg-6 col-xl-6 text-center pb25 pt25">
-          <div class="footer_menu_widget">
-            {{{footer_menu}}}
-          </div>
-        </div>
-      {{/footer_menu}}
-      <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 pb15 pt15">
-        <div class="footer_social_widget mt15">
-          <ul>
-            {{> theme_edumy/ccn_social_icons }}
-          </ul>
-        </div>
+      <div class="col">
+        <div class="lms-footer-separate"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h4 style="color: #fff; text-align: center;">COPYRIGHT © 2022 VINH UNIVERSITY</h4>
       </div>
     </div>
   </div>
 </section>
-{{#cocoon_copyright}}
-  <section class="footer_bottom_area pt25 pb25 {{#footer_2}} home3 {{/footer_2}} {{#footer_3}} home4 {{/footer_3}}">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-6 offset-lg-3">
-          <div class="copyright-widget text-center">
-            <p>{{{ cocoon_copyright }}}</p>
-            <div class="tool_usertours-resettourcontainer"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-{{/cocoon_copyright}}

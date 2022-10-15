@@ -1,64 +1,129 @@
-<header class="ccnHeader1 header-nav menu_style_home_one navbar-scrolltofixed stricky main-menu">
-  <div class="container-fluid">
-    <!-- Ace Responsive Menu -->
-    <nav>
-      <!-- Menu Toggle btn-->
-      <div class="menu-toggle">
-        <img class="nav_logo_img img-fluid" src="{{{headerlogo1}}}{{!output.get_logo_url}}" alt="{{sitename}}">
-        <button type="button" id="menu-btn">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
+<style>
+  .wrappertoolbar {
+    /* position: fixed; */
+    /* top: 0;
+    left: 0;
+    right: 0; */
+    background-color: #29313c;
+  }
+  .lmstoolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+  }
+  .toolbar__left,
+  .toolbar__right {
+    display: flex;
+  }
+  .toolbar__left .item {
+    padding: 12px 18px;
+    font-size: 13px;
+    position: relative;
+  }
+  .toolbar__left .item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 60%;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    background-color: white;
+  }
+  .toolbar__right .item svg {
+    width: 32px;
+    height: 32px;
+    padding: 8px 8px;
+  }
+  header.slideInDown .lmstoolbar {
+    display: none;
+  }
+  .mk-search-trigger {
+    top: 72px;
+  }
+  header.slideInDown .mk-search-trigger {
+    top: 25px !important;
+  }
+</style>
+<header class="ccnHeader1 header-nav menu_style_home_one navbar-scrolltofixed stricky main-menu" style="padding: 0 10px 0 0; ">
+  <div class="wrappertoolbar">
+    <div class="lmstoolbar container">
+      <div class="toolbar__left">
+          <div class="item">182 - Lê Duẩn - TP Vinh - Nghệ An</div>
+          <div class="item">vienncdttt@vinhuni.edu.vn</div>
+          <div class="item">(0238)3855452</div>
       </div>
-      {{#logo}}
-        <a href="{{{ ccnLogoUrl }}}" class="navbar_brand float-left dn-smd">
-          {{#logo_image}}<img class="logo1 img-fluid" src="{{{headerlogo1}}}{{!output.get_logo_url}}" alt="{{sitename}}" {{#logo_styles}} style="{{{logo_styles}}}" {{/logo_styles}}>{{/logo_image}}
-          {{#logo_image}}<img class="logo2 img-fluid" src="{{{headerlogo2}}}{{!output.get_logo_url}}" alt="{{sitename}}" {{#logo_styles}} style="{{{logo_styles}}}" {{/logo_styles}}>{{/logo_image}}
-          {{#logotype}}<span>{{{ sitename }}}</span>{{/logotype}}
-        </a>
-      {{/logo}}
-      {{#display_library_list}}
-        <ul class="mt20 pull-left mr20 ml10">
-          <li class="list-inline-item">
-            <div class="header_top_lang_widget">
-              <div class="ht-widget-container">
-                <div class="vertical-wrapper">
-                  <h2 class="title-vertical home3">
-                    <span class="text-title">{{#str}}library, theme_edumy{{/str}}</span> <i class="fa fa-angle-down show-down" aria-hidden="true"></i>
-                  </h2>
-                  <div class="content-vertical">
-                    {{{ ccn_librarylist }}}
+      <div class="toolbar__right">
+          <div class="item"><a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 310 310" style="enable-background:new 0 0 310 310" xml:space="preserve"><path fill="#ffffff" d="M81.703 165.106h33.981V305a5 5 0 0 0 5 5H178.3a5 5 0 0 0 5-5V165.765h39.064a5 5 0 0 0 4.967-4.429l5.933-51.502a5 5 0 0 0-4.966-5.572h-44.996V71.978c0-9.732 5.24-14.667 15.576-14.667h29.42a5 5 0 0 0 5-5V5.037a5 5 0 0 0-5-5h-40.545A39.746 39.746 0 0 0 185.896 0c-7.035 0-31.488 1.381-50.804 19.151-21.402 19.692-18.427 43.27-17.716 47.358v37.752H81.703a5 5 0 0 0-5 5v50.844a5 5 0 0 0 5 5.001z"/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/></svg></a></div>
+          <div class="item"><a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 310 310" style="enable-background:new 0 0 310 310" xml:space="preserve"><path fill="#ffffff" d="M302.973 57.388a117.512 117.512 0 0 1-14.993 5.463 66.276 66.276 0 0 0 13.494-23.73 5 5 0 0 0-7.313-5.824 117.994 117.994 0 0 1-34.878 13.783c-12.381-12.098-29.197-18.983-46.581-18.983-36.695 0-66.549 29.853-66.549 66.547 0 2.89.183 5.764.545 8.598C101.163 99.244 58.83 76.863 29.76 41.204a5.001 5.001 0 0 0-8.196.642c-5.896 10.117-9.013 21.688-9.013 33.461 0 16.035 5.725 31.249 15.838 43.137a56.37 56.37 0 0 1-8.907-3.977 5 5 0 0 0-7.427 4.257c-.007.295-.007.59-.007.889 0 23.935 12.882 45.484 32.577 57.229a57.372 57.372 0 0 1-5.063-.735 4.998 4.998 0 0 0-5.699 6.437c7.29 22.76 26.059 39.501 48.749 44.605-18.819 11.787-40.34 17.961-62.932 17.961a120.4 120.4 0 0 1-14.095-.826 5 5 0 0 0-3.286 9.174c29.023 18.609 62.582 28.445 97.047 28.445 67.754 0 110.139-31.95 133.764-58.753 29.46-33.421 46.356-77.658 46.356-121.367 0-1.826-.028-3.67-.084-5.508 11.623-8.757 21.63-19.355 29.773-31.536a5 5 0 0 0-6.182-7.351z"/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/></svg></a></div>
+          <div class="item"><a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 310 310" style="enable-background:new 0 0 310 310" xml:space="preserve"><path fill="#ffffff" d="M297.917 64.645c-11.19-13.302-31.85-18.728-71.306-18.728H83.386c-40.359 0-61.369 5.776-72.517 19.938C0 79.663 0 100.008 0 128.166v53.669c0 54.551 12.896 82.248 83.386 82.248h143.226c34.216 0 53.176-4.788 65.442-16.527C304.633 235.518 310 215.863 310 181.835v-53.669c0-29.695-.841-50.16-12.083-63.521zm-98.896 97.765-65.038 33.991a9.997 9.997 0 0 1-14.632-8.863v-67.764a10 10 0 0 1 14.609-8.874l65.038 33.772a10 10 0 0 1 .023 17.738z"/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/><g/></svg></a></div>
+          <div class="item"><a href="#"><svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 32 32" style="enable-background:new 0 0 32 32" xml:space="preserve"><style>.st0{fill:#ffffff;stroke:#000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}</style><path class="st0" d="M23 31H9c-4.4 0-8-3.6-8-8V9c0-4.4 3.6-8 8-8h14c4.4 0 8 3.6 8 8v14c0 4.4-3.6 8-8 8z"/><circle class="st0" cx="16" cy="16" r="7"/><circle class="st0" cx="24" cy="7" r="1"/></svg></a></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="container-fluid">
+      <!-- Ace Responsive Menu -->
+      <nav>
+        <!-- Menu Toggle btn-->
+        <div class="menu-toggle">
+          <img class="nav_logo_img img-fluid" src="{{{headerlogo1}}}{{!output.get_logo_url}}" alt="{{sitename}}">
+          <button type="button" id="menu-btn">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        {{#logo}}
+          <a href="{{{ ccnLogoUrl }}}" class="navbar_brand float-left dn-smd">
+            {{#logo_image}}<img class="logo1 img-fluid" src="{{{headerlogo1}}}{{!output.get_logo_url}}" alt="{{sitename}}" {{#logo_styles}} style="{{{logo_styles}}}" {{/logo_styles}}>{{/logo_image}}
+            {{#logo_image}}<img class="logo2 img-fluid" src="{{{headerlogo2}}}{{!output.get_logo_url}}" alt="{{sitename}}" {{#logo_styles}} style="{{{logo_styles}}}" {{/logo_styles}}>{{/logo_image}}
+            {{#logotype}}<span>{{{ sitename }}}</span>{{/logotype}}
+          </a>
+        {{/logo}}
+        {{#display_library_list}}
+          <ul class="mt20 pull-left mr20 ml10">
+            <li class="list-inline-item">
+              <div class="header_top_lang_widget">
+                <div class="ht-widget-container">
+                  <div class="vertical-wrapper">
+                    <h2 class="title-vertical home3">
+                      <span class="text-title">{{#str}}library, theme_edumy{{/str}}</span> <i class="fa fa-angle-down show-down" aria-hidden="true"></i>
+                    </h2>
+                    <div class="content-vertical">
+                      {{{ ccn_librarylist }}}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </li>
-        </ul>
-      {{/display_library_list}}
-      {{#header_search_bar}}
-        <ul class="pull-left mt15 mr20 ml10">
-          <li class="list-inline-item dn-1366">
-            <div class="ht_search_widget">
-              <div class="header_search_widget">
-                {{{ccn_globalsearch_navbar}}}
+            </li>
+          </ul>
+        {{/display_library_list}}
+        {{#header_search_bar}}
+          <ul class="pull-left mt15 mr20 ml10">
+            <li class="list-inline-item dn-1366">
+              <div class="ht_search_widget">
+                <div class="header_search_widget">
+                  {{{ccn_globalsearch_navbar}}}
+                </div>
               </div>
-            </div>
-          </li>
+            </li>
+          </ul>
+        {{/header_search_bar}}
+        <ul id="respMenu" class="ace-responsive-menu" data-menu-style="horizontal">
+          {{{ output.custom_menu }}}
+          {{> theme_edumy/ccn_navbar_user }}
         </ul>
-      {{/header_search_bar}}
-      <ul id="respMenu" class="ace-responsive-menu" data-menu-style="horizontal">
-        {{{ output.custom_menu }}}
-        {{> theme_edumy/ccn_navbar_user }}
-      </ul>
-      <ul class="sign_up_btn pull-right dn-smd mt20">
-        {{> theme_edumy/ccn_navbar_user_popup }}
-        {{#header_search_icon}}
-          <li class="list-inline-item list_s">
-            {{> theme_edumy/ccn_navbar_search_icon }}
-          </li>
-        {{/header_search_icon}}
-      </ul><!-- Button trigger modal -->
-    </nav>
+        <ul class="sign_up_btn pull-right dn-smd mt20">
+          {{> theme_edumy/ccn_navbar_user_popup }}
+          {{#header_search_icon}}
+            <li class="list-inline-item list_s">
+              {{> theme_edumy/ccn_navbar_search_icon }}
+            </li>
+          {{/header_search_icon}}
+        </ul><!-- Button trigger modal -->
+      </nav>
+    </div>
   </div>
 </header>
