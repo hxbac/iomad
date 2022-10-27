@@ -15,6 +15,32 @@
       </div>
     </div>
   </section>
+  <script>
+    (function lmsChangeBreadcrumb() {
+      const breadcrumbWrapper = document.querySelector('.inner_page_breadcrumb.ccn_breadcrumb_default')
+      if (window.innerWidth > 1200 && window.location.href.indexOf("{{{ config.wwwroot }}}/login/") != -1) {
+        breadcrumbWrapper.innerHTML = ''
+        breadcrumbWrapper.style.padding = 0
+
+        const divBackground = document.createElement('div')
+        divBackground.classList.add('lms-background-login')
+        let styleDivBackground = {
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          left: '0',
+          backgroundImage: 'url({{{ config.wwwroot }}}/pix/lms-indexpage/Header/BackgroundHeader.jpg)',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover',
+          top: '50px',
+        }
+        Object.assign(divBackground.style, styleDivBackground)
+
+        breadcrumbWrapper.appendChild(divBackground)
+      }
+    }())
+  </script>
 {{/breadcrumb_default}}
 {{#breadcrumb_m}}
   <section class="inner_page_breadcrumb ccn_breadcrumb_m {{{ breadcrumb_classes }}}">

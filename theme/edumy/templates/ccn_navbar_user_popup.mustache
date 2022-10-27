@@ -1,7 +1,12 @@
 {{#notloggedin}}
+  <style>
+    .inner_page_breadcrumb {
+      height: 440px !important;
+    }
+  </style>
   <li class="list-inline-item list_s">
     {{#header_login_popup}}
-    <a href="#" class="btn flaticon-user" data-toggle="modal" data-target="#exampleModalCenter"> <span class="dn-lg">{{#str}}login_register, theme_edumy{{/str}}</span></a>
+    <a href="{{{ config.wwwroot }}}/login" class="btn flaticon-user"> <span class="dn-lg">{{#str}}login_register, theme_edumy{{/str}}</span></a>
     {{/header_login_popup}}
     {{#header_login_link}}
     <a href="{{{ config.wwwroot }}}/login" class="btn flaticon-user"> <span class="dn-lg">{{#str}}login_register, theme_edumy{{/str}}</span></a>
