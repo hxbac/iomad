@@ -200,12 +200,11 @@ class mod_scorm_mod_form extends moodleform_mod {
         // Grade Settings.
         $mform->addElement('header', 'gradesettings', get_string('gradenoun'));
 
-      	/*thanh.le-start
-        $mform->addElement('select', $gradecatfieldname,
+        // Grade category 
+        $mform->addElement('select', 'gradecat',
                            get_string('gradecategoryonmodform', 'grades'),
                            grade_get_categories_menu($COURSE->id, $this->_outcomesused));
-        $mform->addHelpButton($gradecatfieldname, 'gradecategoryonmodform', 'grades');
-        thanh.le-end*/
+        $mform->addHelpButton('gradecat', 'gradecategoryonmodform', 'grades');
       
         // Grade Method.
         $mform->addElement('select', 'grademethod', get_string('grademethod', 'scorm'), scorm_get_grade_method_array());
