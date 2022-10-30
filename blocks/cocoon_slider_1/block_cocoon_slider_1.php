@@ -119,7 +119,7 @@ class block_cocoon_slider_1 extends block_base {
                 }
 /*<div class="slide slide-one" data-ccn="file_slide'.$i.'" data-ccn-img="bg-img-url" style="background-image: url('.$data->$sliderimage.'); height: 95vh;width:100%;">*/
                     $text .= '
-                    <div class="slide slide-one" data-ccn="file_slide'.$i.'" data-ccn-img="bg-img-url" style="background-image: url('.$data->$sliderimage.');height: 50vh; width:100%;">
+                    <div class="slide slide-one" data-ccn="file_slide'.$i.'" data-ccn-img="bg-img-url" style="background-image: url('.$data->$sliderimage.');height: 95vh; width:100%;">
 					            <div class="container">
 					                <div class="home-content">
 					                    <div class="home-content-inner text-center">';
