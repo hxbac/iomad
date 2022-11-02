@@ -201,6 +201,9 @@ if (has_capability('moodle/grade:manage', $systemcontext)
     $letters = new admin_externalpage('letters', new lang_string('letters', 'grades'), $CFG->wwwroot.'/grade/edit/letter/index.php', 'moodle/grade:manageletters');
     $ADMIN->add('grades', $letters);
 
+    $settingVisibleItemNav = new admin_externalpage('shownav', 'Ẩn/Hiện danh mục điểm cho giáo viên', $CFG->wwwroot.'/grade/edit/settingshownav/index.php', 'moodle/grade:manage');
+    $ADMIN->add('grades', $settingVisibleItemNav);
+
     // The plugins must implement a settings.php file that adds their admin settings to the $settings object
 
     // Reports

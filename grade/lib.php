@@ -767,7 +767,7 @@ function print_grade_plugin_selector($plugin_info, $active_type, $active_plugin,
  * @return nothing or string if $return true
  */
 function grade_print_tabs($active_type, $active_plugin, $plugin_info, $return=false) {
-    global $CFG, $COURSE;
+    global $CFG, $COURSE, $USER, $DB;
 
     if (!isset($currenttab)) { //TODO: this is weird
         $currenttab = '';
@@ -828,6 +828,39 @@ function grade_print_tabs($active_type, $active_plugin, $plugin_info, $return=fa
         return;
     }
 
+    $contextcourse = \context_course::instance($COURSE->id);
+    $teacherroleid = $DB->get_field('role', 'id', [
+        'shortname' => 'editingteacher'
+    ]);
+    $isTeacher = $DB->record_exists('role_assignments', [
+        'roleid' => $teacherroleid,
+        'userid' => $USER->id,
+        'contextid' => $contextcourse->id
+    ]);
+
+    if (!is_siteadmin($USER->id) && $isTeacher) {
+        $listIdTabDisableForTeacher = array();
+
+        $confixNavItem = $DB->get_record('config', [
+            'name' => 'lms_config_grade_nav_for_teacher'
+        ]);
+        $configValue = json_decode($confixNavItem->value);
+        foreach ($configValue as $key => $item) {
+            if ($item == '0') {
+                array_push($listIdTabDisableForTeacher, $key);
+            }
+        }
+
+        foreach($tabs as $key => $tab) {
+            $tabs[$key] = array_values(array_filter($tabs[$key], function ($item) use ($listIdTabDisableForTeacher) {
+                if (in_array($item->id, $listIdTabDisableForTeacher)) {
+                    return false;
+                } 
+                return true;
+            }));
+        }
+    }
+    
     $rv = html_writer::div(print_tabs($tabs, $active_plugin, $inactive, $activated, true), 'grade-navigation');
 
     if ($return) {

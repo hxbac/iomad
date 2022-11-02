@@ -216,7 +216,8 @@ class mod_scorm_mod_form extends moodleform_mod {
             $grades[$i] = "$i";
         }
         $mform->addElement('select', 'maxgrade', get_string('maximumgrade'), $grades);
-        $mform->setDefault('maxgrade', $cfgscorm->maxgrade);
+        // $mform->setDefault('maxgrade', $cfgscorm->maxgrade);
+        $mform->setDefault('maxgrade', 100);
         $mform->hideIf('maxgrade', 'grademethod', 'eq', GRADESCOES);
 
         // Attempts management.

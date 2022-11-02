@@ -50,3 +50,13 @@
     </div>
   {{/courseheader }}
 </div>
+
+<script>
+  const lmsStartChangeAHrefGrade = () => {
+    const aTagToGrade = document.querySelector('a[href*="/grade/edit/tree/index.php"]')
+    if (aTagToGrade) {
+      aTagToGrade.href = aTagToGrade.href.replace('/grade/edit/tree/index.php', '/grade/report/grader/index.php')
+    }
+  }
+  lmsStartChangeAHrefGrade()
+</script>

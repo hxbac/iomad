@@ -1,0 +1,55 @@
+<?php 
+//moodleform is defined in formslib.php
+require_once("$CFG->libdir/formslib.php");
+
+class form_show_hide_item_gradenav extends moodleform {
+    //Add elements to form
+    public function definition() {
+        global $CFG;
+        $mform = $this->_form; // Don't forget the underscore! 
+        $configValue = $this->_customdata['configValue'];
+        $choices = array();
+        $choices['0'] = 'Ẩn';
+        $choices['1'] = 'Hiện';
+
+        $mform->addElement('header', 'viewGrade', 'Xem');
+
+        $mform->addElement('select', 'overview', 'Báo cáo tổng quan', $choices);
+        $mform->setDefault('overview', (int)$configValue->overview);
+        $mform->addElement('select', 'singleview', 'Xem đơn giản', $choices);
+        $mform->setDefault('singleview', (int)$configValue->singleview);
+        $mform->addElement('select', 'user', 'Báo cáo', $choices);
+        $mform->setDefault('user', (int)$configValue->user);
+
+        $mform->addElement('header', 'gradeCategory', 'Các chuyên mục và mục');
+        $mform->addElement('select', 'setup', 'Sổ điểm', $choices);
+        $mform->setDefault('setup', (int)$configValue->setup);
+        $mform->addElement('select', 'coursesettings', 'Thiết lập điểm khóa học', $choices);
+        $mform->setDefault('coursesettings', (int)$configValue->coursesettings);
+        $mform->addElement('select', 'grader', 'Tùy chỉnh: Báo cáo chấm điểm', $choices);
+        $mform->setDefault('grader', (int)$configValue->grader);
+
+        $mform->addElement('header', 'letter', 'Chữ');
+        $mform->addElement('select', 'view', 'Xem', $choices);
+        $mform->setDefault('view', (int)$configValue->view);
+        $mform->addElement('select', 'edit', 'Chỉnh sửa', $choices);
+        $mform->setDefault('edit', (int)$configValue->edit);
+
+        $mform->addElement('header', 'import', 'Nhập dữ liệu');
+        $mform->addElement('select', 'csv', 'CSV file', $choices);
+        $mform->setDefault('csv', (int)$configValue->csv);
+        $mform->addElement('select', 'direct', 'Dán từ bảng tính', $choices);
+        $mform->setDefault('direct', (int)$configValue->direct);
+
+        $mform->addElement('header', 'export', 'Xuất');
+        $mform->addElement('select', 'xls', 'Bảng tính Excel', $choices);
+        $mform->setDefault('xls', (int)$configValue->xls);
+
+
+        $this->add_action_buttons();
+    }
+    //Custom validation should be added here
+    function validation($data, $files) {
+        return array();
+    }
+}
