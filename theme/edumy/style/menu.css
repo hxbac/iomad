@@ -120,7 +120,7 @@ header.stylehome1.home4 a:not(.mobileBrand):not(.ccn-btn-backtocourse) {
 .mobile-menu .header a:not(.mobileBrand):not(.ccn-btn-backtocourse):not(.mk-search-trigger):before {
   content: '';
   display: block;
-  background: #fff;
+  background: #000;
   height: 2px;
 }
 .mobile-menu .header a:not(.mobileBrand):not(.ccn-btn-backtocourse):not(.mk-search-trigger) span {

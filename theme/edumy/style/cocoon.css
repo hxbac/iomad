@@ -1314,7 +1314,7 @@ header.header-nav.menu_style_home_six .ace-responsive-menu>li>a,
 header.header-nav.menu_style_home_seven .ace-responsive-menu>li>a,
 header.header-nav.menu_style_home_eight .ace-responsive-menu>li>a {
   font-family: "[[setting:primary_font]]", sans-serif;
-  padding: 30px 25px 30px 10px;
+  padding: 30px 20px 30px 10px;
   text-transform: uppercase;
 }
 @media (min-width:1600px) {

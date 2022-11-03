@@ -130,7 +130,7 @@
         {{#str}} usernameemail {{/str}}
       {{/canloginbyemail}}
     </label>
-    <input type="text" name="username" id="username" class="form-control" value="{{username}}"
+    <input type="text" name="username" id="username" class="form-control" autofocus value="{{username}}"
       placeholder={{#quote}}{{^canloginbyemail}}{{#str}}username{{/str}}{{/canloginbyemail}}{{#canloginbyemail}}{{#str}}usernameemail{{/str}}{{/canloginbyemail}}{{/quote}} autocomplete="username">
   </div>
   <div class="form-group">
