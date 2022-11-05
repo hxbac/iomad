@@ -415,6 +415,39 @@ function print_graded_users_selector($course, $actionpage, $userid=0, $groupid=0
     return $OUTPUT->render(grade_get_graded_users_select(substr($actionpage, 0, strpos($actionpage, '/')), $course, $userid, $groupid, $includeall));
 }
 
+function lmsCheckTeacherAccess($concourseID, $section) {
+    global $DB, $USER;
+
+    $teacherroleid = $DB->get_field('role', 'id', [
+        'shortname' => 'editingteacher'
+    ]);
+    $isTeacher = $DB->record_exists('role_assignments', [
+        'roleid' => $teacherroleid,
+        'userid' => $USER->id,
+        'contextid' => $concourseID
+    ]);
+
+    if (!is_siteadmin($USER->id) && $isTeacher) {
+        $listIdTabDisableForTeacher = array();
+
+        $confixNavItem = $DB->get_record('config', [
+            'name' => 'lms_config_grade_nav_for_teacher'
+        ]);
+        $configValue = json_decode($confixNavItem->value);
+        foreach ($configValue as $key => $item) {
+            if ($item == '0') {
+                array_push($listIdTabDisableForTeacher, $key);
+            }
+        }
+
+        if (in_array($section, $listIdTabDisableForTeacher)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 function grade_get_graded_users_select($report, $course, $userid, $groupid, $includeall) {
     global $USER, $CFG;
 

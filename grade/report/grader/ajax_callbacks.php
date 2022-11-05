@@ -55,6 +55,12 @@ switch ($action) {
                 print_error('invalidgradeitemid');
             }
 
+            // Total grade editing is not allowed
+            if ($grade_item->itemtype === 'category' || $grade_item->itemtype === 'course') {
+                echo json_encode('Lỗi (/grade/report/grader/ajax_callbacks.php)');
+                exit;
+            }
+
             /**
              * Code copied from grade/report/grader/lib.php line 187+
              */

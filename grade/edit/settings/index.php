@@ -40,6 +40,13 @@ $context = context_course::instance($course->id);
 
 require_capability('moodle/grade:manage', $context);
 
+if (!lmsCheckTeacherAccess($context->id, 'coursesettings')) {
+    $returnurl = new moodle_url('/grade/report/grader/preferences.php', [
+        'id' => $courseid
+    ]);
+    print_error('accessdenied', 'admin', $returnurl);
+}
+
 $gpr = new grade_plugin_return(array('type'=>'edit', 'plugin'=>'settings', 'courseid'=>$courseid));
 
 $strgrades = get_string('grades');

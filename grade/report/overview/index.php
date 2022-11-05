@@ -42,6 +42,13 @@ $context = context_course::instance($course->id);
 $systemcontext = context_system::instance();
 $personalcontext = null;
 
+if (!lmsCheckTeacherAccess($context->id, 'overview')) {
+    $returnurl = new moodle_url('/grade/report/grader/index.php', [
+        'id' => $courseid
+    ]);
+    print_error('accessdenied', 'admin', $returnurl);
+}
+
 // If we are accessing the page from a site context then ignore this check.
 if ($courseid != SITEID) {
     require_capability('gradereport/overview:view', $context);

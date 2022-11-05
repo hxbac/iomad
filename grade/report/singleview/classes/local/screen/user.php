@@ -116,6 +116,9 @@ class user extends tablelike implements selectable_items {
 
         $this->items = array();
         foreach ($seq->items as $itemid => $item) {
+            if ($item->itemtype === 'course' || $item->itemtype === 'category') {
+                continue;
+            }
             if (grade::filter($item)) {
                 $this->items[$itemid] = $item;
             }

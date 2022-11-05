@@ -62,3 +62,4 @@ $string['singleview:view'] = 'View report';
 $string['summarygrade'] = 'A table of users, with columns for range, grade, feedback, and whether to override or exclude a particular grade.';
 $string['summaryuser'] = 'A table of grade items, with columns for grade category, range, grade, feedback, and whether to override or exclude a particular grade.';
 $string['userselect'] = 'Select activity';
+$string['lmsaccessdenied'] = 'Truy cập bị từ chối. Không thể chỉnh sửa điểm tổng được tính từ các hoạt động.';

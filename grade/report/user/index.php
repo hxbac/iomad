@@ -49,6 +49,13 @@ $PAGE->set_pagelayout('report');
 $context = context_course::instance($course->id);
 require_capability('gradereport/user:view', $context);
 
+if (!lmsCheckTeacherAccess($context->id, 'user')) {
+    $returnurl = new moodle_url('/grade/report/grader/index.php', [
+        'id' => $courseid
+    ]);
+    print_error('accessdenied', 'admin', $returnurl);
+}
+
 if (empty($userid)) {
     require_capability('moodle/grade:viewall', $context);
 

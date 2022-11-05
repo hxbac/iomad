@@ -43,6 +43,13 @@ $context = context_course::instance($id);
 require_capability('moodle/grade:import', $context);
 require_capability('gradeimport/direct:view', $context);
 
+if (!lmsCheckTeacherAccess($context->id, 'direct')) {
+    $returnurl = new moodle_url('/grade/report/grader/index.php', [
+        'id' => $courseid
+    ]);
+    print_error('accessdenied', 'admin', $returnurl);
+}
+
 $separatemode = (groups_get_course_groupmode($COURSE) == SEPARATEGROUPS and
         !has_capability('moodle/site:accessallgroups', $context));
 $currentgroup = groups_get_course_group($course);

@@ -44,6 +44,13 @@ $context = context_course::instance($course->id);
 $systemcontext = context_system::instance();
 require_capability('gradereport/grader:view', $context);
 
+if (!lmsCheckTeacherAccess($context->id, 'grader')) {
+    $returnurl = new moodle_url('/grade/report/grader/index.php', [
+        'id' => $courseid
+    ]);
+    print_error('accessdenied', 'admin', $returnurl);
+}
+
 require('preferences_form.php');
 $mform = new grader_report_preferences_form('preferences.php', compact('course'));
 

@@ -47,6 +47,13 @@ require_login($course);
 $context = context_course::instance($course->id);
 require_capability('moodle/grade:manage', $context);
 
+if (!lmsCheckTeacherAccess($context->id, 'setup')) {
+    $returnurl = new moodle_url('/grade/edit/settings/index.php', [
+        'id' => $courseid
+    ]);
+    print_error('accessdenied', 'admin', $returnurl);
+}
+
 $PAGE->requires->js_call_amd('core_grades/edittree_index', 'enhance');
 
 /// return tracking object

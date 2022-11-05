@@ -42,6 +42,10 @@ if (!$edit) {
     }
 } else {//else we're editing
     require_capability('moodle/grade:manageletters', $context);
+    if (!is_siteadmin($USER->id)) {
+        print_error('accessdenied', 'admin');
+        exit;
+    }
 }
 
 $returnurl = null;

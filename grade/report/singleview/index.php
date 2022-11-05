@@ -72,6 +72,13 @@ if (!in_array($itemtype, gradereport_singleview::valid_screens())) {
 
 $context = context_course::instance($course->id);
 
+if (!lmsCheckTeacherAccess($context->id, 'singleview')) {
+    $returnurl = new moodle_url('/grade/report/grader/index.php', [
+        'id' => $courseid
+    ]);
+    print_error('accessdenied', 'admin', $returnurl);
+}
+
 // This is the normal requirements.
 require_capability('gradereport/singleview:view', $context);
 require_capability('moodle/grade:viewall', $context);
@@ -93,6 +100,15 @@ $USER->grade_last_report[$course->id] = 'singleview';
 grade_regrade_final_grades_if_required($course);
 
 $report = new gradereport_singleview($courseid, $gpr, $context, $itemtype, $itemid);
+
+$itemtypeGrade = $report->screen->item->itemtype ?? '';
+if ($itemtypeGrade === 'course' || $itemtypeGrade === 'category') {
+    $returnurl = new moodle_url('/grade/report/grader/index.php', [
+        'id' => $courseid
+    ]);
+    print_error('lmsaccessdenied', 'gradereport_singleview', $returnurl);
+    exit;
+}
 
 $reportname = $report->screen->heading();
 

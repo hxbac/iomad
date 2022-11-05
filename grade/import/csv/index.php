@@ -47,6 +47,13 @@ $context = context_course::instance($id);
 require_capability('moodle/grade:import', $context);
 require_capability('gradeimport/csv:view', $context);
 
+if (!lmsCheckTeacherAccess($context->id, 'csv')) {
+    $returnurl = new moodle_url('/grade/import/direct/index.php', [
+        'id' => $courseid
+    ]);
+    print_error('accessdenied', 'admin', $returnurl);
+}
+
 $separatemode = (groups_get_course_groupmode($COURSE) == SEPARATEGROUPS and
         !has_capability('moodle/site:accessallgroups', $context));
 $currentgroup = groups_get_course_group($course);
