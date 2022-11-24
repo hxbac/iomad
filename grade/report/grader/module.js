@@ -569,6 +569,8 @@ M.gradereport_grader.classes.ajax.prototype.submission_outcome = function(tid, o
         var p = args.properties;
         if (args.type == 'grade') {
             var oldgrade = args.values.oldgrade;
+            alert('Có lỗi. Thay đổi không được lưu lại. Vui lòng tải lại trang!');
+            location.reload();
             p.cell.one('input.text').set('value', oldgrade);
         } else if (args.type == 'feedback') {
             this.report.update_feedback(p.userid, p.itemid, args.values.oldfeedback);
