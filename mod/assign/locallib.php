@@ -4605,6 +4605,20 @@ class assign {
             $gradingtable = new assign_grading_table($this, $perpage, $filter, 0, false);
             $o .= $this->get_renderer()->render($gradingtable);
         }
+        
+        $o .= '<div style="margin: 12px 0; display: flex; justify-content: center;"><a href="/mod/assign/exportreportsubmission.php" class="btn btn-primary ml-1" id="lms-filder-export-submission">Báo cáo nộp file</a></div>
+                    <script>
+                        $(document).ready(function() {
+                            var url_string = window.location.href; 
+                            var url = new URL(url_string);
+                            var id = url.searchParams.get("id");
+                            const filterSelector = document.querySelector(`.gradingoptionsform form[action*="mod/assign/view.php"] select[name="filter"]`)
+                            if (filterSelector) {
+                                document.querySelector(`#lms-filder-export-submission`).href += `?id=${id}&filter=${filterSelector.value}`
+                            }
+                        })
+                    </script>
+            ';
 
         if ($this->can_grade()) {
             // We need to store the order of uses in the table as the person may wish to grade them.

@@ -382,6 +382,12 @@ class mod_assign_renderer extends plugin_renderer_base {
             $url = new moodle_url('/mod/assign/view.php', $urlparams);
             $o .= html_writer::link($url, get_string('gradeverb'),
                 ['class' => 'btn btn-primary ml-1']);
+            
+
+            $url_report_param = array('id' => $summary->coursemoduleid);
+            $url_report_submitted_submission = new moodle_url('/mod/assign/exportreportsubmission.php', $url_report_param);
+            $o .= html_writer::link($url_report_submitted_submission, 'Báo cáo nộp bài tập',
+                ['class' => 'btn btn-primary ml-1']);
         }
         $o .= $this->output->container_end();
 
