@@ -54,16 +54,41 @@ class grade_export_form extends moodleform {
             $needs_multiselect = false;
             $canviewhidden = has_capability('moodle/grade:viewhidden', context_course::instance($COURSE->id));
 
+            $grade_items_new = array();
+            foreach ($grade_items as $key => $grade_item) {
+                if ($grade_item->itemtype === 'course') {
+                    array_push($grade_items_new, $grade_item);
+                    unset($grade_items[$key]);
+                    continue;
+                }
+
+                $array_group_category = array();
+                if ($grade_item->itemtype === 'category') {
+                    array_push($array_group_category, $grade_item);
+                    $current_id = $grade_item->iteminstance;
+                    unset($grade_items[$key]);
+                    foreach ($grade_items as $key_sub => $grade_item_sub) {
+                        if ($grade_item_sub->categoryid == $current_id) {
+                            $grade_item_sub->customClass = 'pl-5';
+                            array_push($array_group_category, $grade_item_sub);
+                            unset($grade_items[$key_sub]);
+                        }
+                    }
+                    $grade_items_new = array_merge($grade_items_new, $array_group_category);
+                }
+            }
+            $grade_items = array_merge($grade_items_new, $grade_items);
+
             foreach ($grade_items as $grade_item) {
                 // Is the grade_item hidden? If so, can the user see hidden grade_items?
                 if ($grade_item->is_hidden() && !$canviewhidden) {
                     continue;
                 }
                 $defaultvaluelms = 0;
-                $typeinputlms = 'hidden';
                 $gradename = $grade_item->get_name();
-                if ($grade_item->itemtype === 'course' || $grade_item->itemtype === 'category') {
-                    $typeinputlms = 'advcheckbox';
+
+                $isItemTypeCourseOrCategory = $grade_item->itemtype === 'course' || $grade_item->itemtype === 'category';
+                if ($isItemTypeCourseOrCategory) {
                     $defaultvaluelms = 1;
                     $gradename = $grade_item->get_name(true);
                 }
@@ -71,7 +96,7 @@ class grade_export_form extends moodleform {
                     $mform->addElement('checkbox', 'itemids['.$grade_item->id.']', $gradename, get_string('noidnumber', 'grades'));
                     $mform->hardFreeze('itemids['.$grade_item->id.']');
                 } else {
-                    $mform->addElement($typeinputlms, 'itemids['.$grade_item->id.']', $gradename, null, array('group' => 1));
+                    $mform->addElement('advcheckbox', 'itemids['.$grade_item->id.']', $gradename, null, array('group' => 1, 'class' => $grade_item->customClass ?? ''));
                     $mform->setDefault('itemids['.$grade_item->id.']', $defaultvaluelms);
                     // $needs_multiselect = true;
                 }
