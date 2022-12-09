@@ -926,21 +926,23 @@ class grade_report_grader extends grade_report {
                     $singleview = '';
 
                     // FIXME: MDL-52678 This is extremely hacky we should have an API for inserting grade column links.
-                    if (get_capability_info('gradereport/singleview:view')) {
-                        if (has_all_capabilities(array('gradereport/singleview:view', 'moodle/grade:viewall',
-                            'moodle/grade:edit'), $this->context)) {
+                    if ($element['object']->itemtype !== 'course' && $element['object']->itemtype !== 'category') {
+                        if (get_capability_info('gradereport/singleview:view')) {
+                            if (has_all_capabilities(array('gradereport/singleview:view', 'moodle/grade:viewall',
+                                'moodle/grade:edit'), $this->context)) {
 
-                            $strsingleview = get_string('singleview', 'grades', $element['object']->get_name());
-                            $url = new moodle_url('/grade/report/singleview/index.php', array(
-                                'id' => $this->course->id,
-                                'item' => 'grade',
-                                'itemid' => $element['object']->id));
-                            $singleview = $OUTPUT->action_icon(
-                                    $url,
-                                    new pix_icon('t/editstring', ''),
-                                    null,
-                                    ['title' => $strsingleview, 'aria-label' => $strsingleview]
-                            );
+                                $strsingleview = get_string('singleview', 'grades', $element['object']->get_name());
+                                $url = new moodle_url('/grade/report/singleview/index.php', array(
+                                    'id' => $this->course->id,
+                                    'item' => 'grade',
+                                    'itemid' => $element['object']->id));
+                                $singleview = $OUTPUT->action_icon(
+                                        $url,
+                                        new pix_icon('t/editstring', ''),
+                                        null,
+                                        ['title' => $strsingleview, 'aria-label' => $strsingleview]
+                                );
+                            }
                         }
                     }
 
