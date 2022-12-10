@@ -39,16 +39,21 @@ if ($configNavGrade = $DB->get_record('config', [
 ])) {
     $configValue = json_decode($configNavGrade->value);
 } else {
+    $configValue->report = '1';
     $configValue->overview = '1';
     $configValue->singleview = '1';
     $configValue->user = '1';
+    $configValue->settings = '1';
     $configValue->setup = '1';
     $configValue->coursesettings = '1';
     $configValue->grader = '1';
+    $configValue->letter = '1';
     $configValue->view = '1';
     $configValue->edit = '1';
+    $configValue->import = '1';
     $configValue->csv = '1';
     $configValue->direct = '1';
+    $configValue->import = '1';
     $configValue->xls = '1';
 }
 

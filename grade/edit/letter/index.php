@@ -37,14 +37,22 @@ $contextid = null;//now we have a context object throw away the $contextid from 
 
 //if viewing
 if (!$edit) {
+    if (!lmsCheckTeacherAccess($context->id, 'view')) {
+        $returnurl = new moodle_url('/grade/import/direct/index.php', [
+            'id' => $courseid
+        ]);
+        print_error('accessdenied', 'admin', $returnurl);
+    }
     if (!has_capability('moodle/grade:manage', $context) and !has_capability('moodle/grade:manageletters', $context)) {
         print_error('nopermissiontoviewletergrade');
     }
 } else {//else we're editing
     require_capability('moodle/grade:manageletters', $context);
-    if (!is_siteadmin($USER->id)) {
-        print_error('accessdenied', 'admin');
-        exit;
+    if (!lmsCheckTeacherAccess($context->id, 'edit')) {
+        $returnurl = new moodle_url('/grade/import/direct/index.php', [
+            'id' => $courseid
+        ]);
+        print_error('accessdenied', 'admin', $returnurl);
     }
 }
 

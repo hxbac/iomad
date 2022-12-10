@@ -887,12 +887,20 @@ function grade_print_tabs($active_type, $active_plugin, $plugin_info, $return=fa
         foreach($tabs as $key => $tab) {
             $tabs[$key] = array_values(array_filter($tabs[$key], function ($item) use ($listIdTabDisableForTeacher) {
                 if (in_array($item->id, $listIdTabDisableForTeacher)) {
+
+                    $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+                    if ($item->id === 'grader' && strpos($url,'grade/report/') !== false) {
+                        return true;
+                    }
+                    
                     return false;
                 } 
                 return true;
             }));
         }
     }
+    // echo json_encode($tabs);
+    // die();
     
     $rv = html_writer::div(print_tabs($tabs, $active_plugin, $inactive, $activated, true), 'grade-navigation');
 
