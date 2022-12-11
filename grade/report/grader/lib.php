@@ -1198,7 +1198,12 @@ class grade_report_grader extends grade_report {
                     if ($enableajax && $grade->is_editable()) {
                         // If a grade item is type text, and we don't have show quick feedback on, it can't be edited.
                         if ($item->gradetype != GRADE_TYPE_TEXT || $showquickfeedback) {
-                            $itemcell->attributes['class'] .= ' clickable';
+                            $lms_grade_type = $grade->grade_item->itemtype;
+                            
+                            // If grade type is course or category, can't click
+                            if ($lms_grade_type !== 'course' && $lms_grade_type !== 'category') {
+                                $itemcell->attributes['class'] .= ' clickable';
+                            }
                         }
                     }
 
