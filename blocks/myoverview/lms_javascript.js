@@ -50,8 +50,9 @@ const awaitBlockMyOverviewLoaded = setInterval(() => {
                         } else {
                             elementNew.innerText = `Chưa có giáo viên`
                         }
-
-                        element.insertBefore(elementNew, element.firstChild);
+                        if (element.querySelector('.lms_info_teacher') === null) {
+                            element.insertBefore(elementNew, element.firstChild);
+                        }
                     }
                 })
                 .catch((error) => {
