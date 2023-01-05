@@ -86,7 +86,8 @@ class mod_assign_grading_batch_operations_form extends moodleform {
 
         $objs = array();
         $objs[] =& $mform->createElement('select', 'operation', get_string('chooseoperation', 'assign'), $options);
-        $objs[] =& $mform->createElement('submit', 'submit', get_string('go'));
+        // $objs[] =& $mform->createElement('submit', 'submit', get_string('go'));
+        $objs[] =& $mform->createElement('submit', 'submit', 'Thực hiện');
         $batchdescription = get_string('batchoperationsdescription', 'assign');
         $mform->addElement('group', 'actionsgrp', $batchdescription, $objs, ' ', false);
     }

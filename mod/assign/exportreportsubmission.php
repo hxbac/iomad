@@ -60,6 +60,26 @@ switch ($filter) {
     }
 }
 
+$role = $DB->get_record('role', array('shortname' => 'student'));
+$contextcourse = context_course::instance($course->id);
+$students = get_role_users($role->id, $contextcourse);
+$submissions_of_cm = [...$submissions_of_cm];
+foreach ($students as $student) {
+    $is_student_in_submission = false;
+    foreach ($submissions_of_cm as $student_submission) {
+        if ($student->id === $student_submission->userid) {
+            $is_student_in_submission = true;
+            break;
+        }
+    }
+    if (!$is_student_in_submission) {
+        $student_submission_new = (object) [
+            'userid' => $student->id
+        ];
+        array_push($submissions_of_cm, $student_submission_new);
+    }
+}
+
 $workbook = new MoodleExcelWorkbook("-");
 $myxls = $workbook->add_worksheet($course->fullname);
 
@@ -70,14 +90,14 @@ $myxls->write_string(0, 0, 'Thống kê nộp bài tập', $format);
 $myxls->write_string(1, 0, 'Lớp: '. $course->fullname, $format);
 $myxls->write_string(2, 0, 'Bài: '. $cm->name, $format);
 
-$colnummerge = 3;
+$colnummerge = 5;
 $myxls->merge_cells(0, 0, 0, $colnummerge);
 $myxls->merge_cells(1, 0, 1, $colnummerge);
 $myxls->merge_cells(2, 0, 2, $colnummerge);
 
 $format->set_border(1);
 
-$headerexport = ['STT', 'Họ', 'Tên', 'Đã nộp'];
+$headerexport = ['STT', 'Họ', 'Tên', 'Tài khoản', 'Đơn vị', 'Đã nộp'];
 // Header 
 foreach ($headerexport as $colnum => $header) {
     $myxls->write_string(5, $colnum, $header, $format);
@@ -88,8 +108,10 @@ $formatWrapText->set_text_wrap();
 
 $myxls->set_column(0, 0, 5);
 $myxls->set_column(1, 1, 22);
-$myxls->set_column(2, 2, 18);
+$myxls->set_column(2, 2, 16);
 $myxls->set_column(3, 3, 18);
+$myxls->set_column(4, 4, 30);
+$myxls->set_column(5, 5, 18);
 
 $format_center = $workbook->add_format();
 $format_center->set_align('center');
@@ -101,20 +123,31 @@ $stt = 1;
 $totalrownum = 6;
 $rownum = 5;
 foreach ($submissions_of_cm as $data) {
-    $user_submitted = $DB->get_record('user', [
+    $is_teacher = $DB->record_exists('role_assignments', [
+        'contextid' => $contextcourse->id,
+        'userid' => $data->userid,
+        'roleid' => 3
+    ]);
+    if ($is_teacher) {
+        continue;
+    }
+
+    $student = $DB->get_record('user', [
         'id' => $data->userid
     ]);
     $rownum++;
     $myxls->write_string($rownum, 0, $stt, $format_center);
-    $myxls->write_string($rownum, 1, $user_submitted->firstname, $format);
-    $myxls->write_string($rownum, 2, $user_submitted->lastname, $format);
+    $myxls->write_string($rownum, 1, $student->firstname, $format);
+    $myxls->write_string($rownum, 2, $student->lastname, $format);
+    $myxls->write_string($rownum, 3, $student->username, $format);
+    $myxls->write_string($rownum, 4, $student->address, $format);
     
     $isSubmitted = '';
     if ($data->status === 'submitted') {
         $isSubmitted = 'X';
     }
 
-    $myxls->write_string($rownum, 3, $isSubmitted, $format_center);
+    $myxls->write_string($rownum, 5, $isSubmitted, $format_center);
 
     $stt++;
     $totalrownum = $rownum;

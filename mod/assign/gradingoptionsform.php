@@ -65,6 +65,31 @@ class mod_assign_grading_options_form extends moodleform {
                          ASSIGN_FILTER_GRANTED_EXTENSION => get_string('filtergrantedextension', 'assign'));
         if ($instance['submissionsenabled']) {
             $mform->addElement('select', 'filter', get_string('filter', 'assign'), $options, $dirtyclass);
+            $mform->addElement('html', '
+                <div class="row form-group">
+                    <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0">
+
+                    </div>
+                    <div class="col-md-9 form-inline align-items-start">
+                        <div style="display: flex; justify-content: center;">
+                            <a href="/mod/assign/exportreportsubmission.php" class="btn btn-primary ml-1" id="lms-field-export-submission">Xuất danh sách</a>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    $(document).ready(function() {
+                        var url_string = window.location.href; 
+                        var url = new URL(url_string);
+                        var id = url.searchParams.get("id");
+                        const filterSelector = document.querySelector(`.gradingoptionsform form[action*="mod/assign/view.php"] select[name="filter"]`)
+                        
+                        if (filterSelector) {
+                            // console.log(document.querySelector(`#lms-field-export-submission`))
+                            document.querySelector(`#lms-field-export-submission`).href += `?id=${id}&filter=${filterSelector.value}`
+                        }
+                    })
+                </script>'
+            );
         }
         if (!empty($instance['markingallocationopt'])) {
             $markingfilter = get_string('markerfilter', 'assign');
