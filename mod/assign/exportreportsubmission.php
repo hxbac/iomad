@@ -14,28 +14,10 @@ $context = context_module::instance($cm->id);
 
 require_capability('mod/assign:viewgrades', $context);
 
-$submissions_of_cm = array();
+$submissions_of_cm = $DB->get_records('assign_submission', [
+    'assignment' => $cm->instance
+]);
 switch ($filter) {
-    case '': {
-        $submissions_of_cm = $DB->get_records('assign_submission', [
-            'assignment' => $cm->instance
-        ]);
-        break;
-    }
-    case 'notsubmitted': {
-        $submissions_of_cm = $DB->get_records('assign_submission', [
-            'assignment' => $cm->instance,
-            'status' => 'new'
-        ]);
-        break;
-    }
-    case 'submitted': {
-        $submissions_of_cm = $DB->get_records('assign_submission', [
-            'assignment' => $cm->instance,
-            'status' => 'submitted'
-        ]);
-        break;
-    }
     case 'requiregrading': {
         $sql = "SELECT asb.* FROM `". $CFG->prefix ."assign_grades` ag JOIN `". $CFG->prefix ."assign_submission` asb ON ag.assignment = asb.assignment AND ag.userid = asb.userid where ag.timemodified < asb.timemodified AND asb.assignment = ". $cm->instance;
         $submissions_of_cm = $DB->get_records_sql($sql);
@@ -51,6 +33,34 @@ switch ($filter) {
         $submissions_of_cm = $DB->get_records_sql($sql);
         break;
     }
+    case '': {
+        
+    }
+    case 'notsubmitted': {
+        
+    }
+    case 'submitted': {
+        $role = $DB->get_record('role', array('shortname' => 'student'));
+        $contextcourse = context_course::instance($course->id);
+        $students = get_role_users($role->id, $contextcourse);
+        $submissions_of_cm = [...$submissions_of_cm];
+        foreach ($students as $student) {
+            $is_student_in_submission = false;
+            foreach ($submissions_of_cm as $student_submission) {
+                if ($student->id === $student_submission->userid) {
+                    $is_student_in_submission = true;
+                    break;
+                }
+            }
+            if (!$is_student_in_submission) {
+                $student_submission_new = (object) [
+                    'userid' => $student->id
+                ];
+                array_push($submissions_of_cm, $student_submission_new);
+            }
+        }
+        break;
+    }
     default: {
         $returnurl = new moodle_url('/mod/assign/view.php', [
             'id' => $id
@@ -60,25 +70,7 @@ switch ($filter) {
     }
 }
 
-$role = $DB->get_record('role', array('shortname' => 'student'));
-$contextcourse = context_course::instance($course->id);
-$students = get_role_users($role->id, $contextcourse);
-$submissions_of_cm = [...$submissions_of_cm];
-foreach ($students as $student) {
-    $is_student_in_submission = false;
-    foreach ($submissions_of_cm as $student_submission) {
-        if ($student->id === $student_submission->userid) {
-            $is_student_in_submission = true;
-            break;
-        }
-    }
-    if (!$is_student_in_submission) {
-        $student_submission_new = (object) [
-            'userid' => $student->id
-        ];
-        array_push($submissions_of_cm, $student_submission_new);
-    }
-}
+
 
 $workbook = new MoodleExcelWorkbook("-");
 $myxls = $workbook->add_worksheet($course->fullname);
@@ -123,6 +115,13 @@ $stt = 1;
 $totalrownum = 6;
 $rownum = 5;
 foreach ($submissions_of_cm as $data) {
+    if ($filter === 'notsubmitted' && $data->status === 'submitted') {
+        continue;
+    }
+    if ($filter === 'submitted' && $data->status !== 'submitted') {
+        continue;
+    }
+
     $is_teacher = $DB->record_exists('role_assignments', [
         'contextid' => $contextcourse->id,
         'userid' => $data->userid,
@@ -135,12 +134,17 @@ foreach ($submissions_of_cm as $data) {
     $student = $DB->get_record('user', [
         'id' => $data->userid
     ]);
+    $address_info_user = $DB->get_field('user_info_data', 'data', [
+        'userid' => $student->id,
+        'fieldid' => 2
+    ]);
+    
     $rownum++;
     $myxls->write_string($rownum, 0, $stt, $format_center);
     $myxls->write_string($rownum, 1, $student->firstname, $format);
     $myxls->write_string($rownum, 2, $student->lastname, $format);
     $myxls->write_string($rownum, 3, $student->username, $format);
-    $myxls->write_string($rownum, 4, $student->address, $format);
+    $myxls->write_string($rownum, 4, $address_info_user, $format);
     
     $isSubmitted = '';
     if ($data->status === 'submitted') {
