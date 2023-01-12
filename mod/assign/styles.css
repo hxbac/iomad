@@ -650,11 +650,50 @@
 
 .path-mod-assign div.fileuploadsubmission {
     float: left;
-    min-width: 300px;
+    /* min-width: 300px; */
+}
+
+.fileuploadsubmission a {
+    display: block;
+    overflow-wrap: break-word;
+    max-width: 100px;
 }
 
 .path-mod-assign div.fileuploadsubmissiontime {
     float: right;
+}
+
+
+.hover-to-show-content {
+    position: relative;
+    text-align: center;
+    cursor: pointer;
+    color: #1f5fa4;
+}
+
+.hover-to-show-content:hover .content-to-show {
+    display: block;
+}
+
+.hover-to-show-content .content-to-show {
+    display: none;
+    position: absolute;
+    padding: 8px 16px;
+    border: 1px solid rgb(229, 223, 223);
+    border-radius: 5px;
+    transition: 0.5s linear;
+    bottom: 100%;
+    left: 0;
+    background-color: #1f5fa4;
+    color: #fff;
+    width: 100%;
+    cursor: unset;
+}
+
+.hover-to-show-content .content-to-show p {
+    text-align: center !important;
+    margin: 0;
+    color: #fff;
 }
 
 /***** End submission status *****/

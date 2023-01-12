@@ -387,8 +387,8 @@ class assign_grading_table extends table_sql implements renderable {
         // User picture.
         if ($this->hasviewblind || !$this->assignment->is_blind_marking()) {
             if (!$this->is_downloading()) {
-                $columns[] = 'picture';
-                $headers[] = get_string('pictureofuser');
+                // $columns[] = 'picture';
+                // $headers[] = get_string('pictureofuser');
             } else {
                 $columns[] = 'recordid';
                 $headers[] = get_string('recordid', 'assign');
@@ -406,10 +406,10 @@ class assign_grading_table extends table_sql implements renderable {
                 }
             }
 
-            foreach ($extrauserfields as $extrafield) {
-                $columns[] = $extrafield;
-                $headers[] = \core_user\fields::get_display_name($extrafield);
-            }
+            // foreach ($extrauserfields as $extrafield) {
+            //     $columns[] = $extrafield;
+            //     $headers[] = \core_user\fields::get_display_name($extrafield);
+            // }
         } else {
             // Record ID.
             $columns[] = 'recordid';
@@ -481,6 +481,7 @@ class assign_grading_table extends table_sql implements renderable {
             $columns[] = 'timesubmitted';
             $headers[] = get_string('lastmodifiedsubmission', 'assign');
 
+            // plugin assignsubmission_comments disabled 
             foreach ($this->assignment->get_submission_plugins() as $plugin) {
                 if ($this->is_downloading()) {
                     if ($plugin->is_visible() && $plugin->is_enabled()) {
@@ -503,10 +504,11 @@ class assign_grading_table extends table_sql implements renderable {
         }
 
         // Time marked.
-        $columns[] = 'timemarked';
-        $headers[] = get_string('lastmodifiedgrade', 'assign');
+        // $columns[] = 'timemarked';
+        // $headers[] = get_string('lastmodifiedgrade', 'assign');
 
         // Feedback plugins.
+        // plugin assignfeedback_file disabled 
         foreach ($this->assignment->get_feedback_plugins() as $plugin) {
             if ($this->is_downloading()) {
                 if ($plugin->is_visible() && $plugin->is_enabled()) {
@@ -1060,9 +1062,9 @@ class assign_grading_table extends table_sql implements renderable {
         $submission = false;
         $this->get_group_and_submission($row->id, $group, $submission, -1);
         if ($submission && $submission->timemodified && $submission->status != ASSIGN_SUBMISSION_STATUS_NEW) {
-            $o = userdate($submission->timemodified);
+            $o = userdate($submission->timemodified, '%d/%m/%Y, %H:%M');
         } else if ($row->timesubmitted && $row->status != ASSIGN_SUBMISSION_STATUS_NEW) {
-            $o = userdate($row->timesubmitted);
+            $o = userdate($row->timesubmitted, '%d/%m/%Y, %H:%M');
         }
 
         return $o;

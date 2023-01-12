@@ -436,8 +436,10 @@ class assign_feedback_comments extends assign_feedback_plugin {
             );
 
             // Show the view all link if the text has been shortened.
-            $short = shorten_text($text, 140);
-            $showviewlink = $short != $text;
+            // $short = shorten_text($text, 140);
+            $short = '<div class="hover-to-show-content">Nhận xét<div class="content-to-show">'. $text .'</div></div>';
+            // $showviewlink = $short != $text;
+            $showviewlink = false;
             return $short;
         }
         return '';
@@ -450,6 +452,7 @@ class assign_feedback_comments extends assign_feedback_plugin {
      * @return string
      */
     public function view(stdClass $grade) {
+        
         $feedbackcomments = $this->get_feedback_comments($grade->id);
         if ($feedbackcomments) {
             $text = $this->rewrite_feedback_comments_urls($feedbackcomments->commenttext, $grade->id);

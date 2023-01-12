@@ -1423,8 +1423,7 @@ class mod_assign_renderer extends plugin_renderer_base {
                     $file->fileurl . ' ' .
                     $plagiarismlinks . ' ' .
                     $file->portfoliobutton . ' ' .
-                    '</div>' .
-                    '<div class="fileuploadsubmissiontime">' . $file->timemodified . '</div>' .
+                    '</div>'  .
                 '</div>' .
             '</li>';
         }
