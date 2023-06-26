@@ -13,13 +13,13 @@ $CFG->dbpass    = '123456789';
 $CFG->prefix    = 'mdl_';
 $CFG->dboptions = array (
   'dbpersist' => 0,
-  'dbport' => '',
+  'dbport' => 3306,
   'dbsocket' => '',
   'dbcollation' => 'utf8mb4_unicode_ci',
 );
 
 $CFG->wwwroot   = 'http://lms311.test';
-$CFG->dataroot  = 'D:\\workspace\\PHP\\laragon\\www\\moodledata';
+$CFG->dataroot  = 'D:\\laragon\\www\\moodledata';
 $CFG->admin     = 'admin';
 
 $CFG->directorypermissions = 0777;

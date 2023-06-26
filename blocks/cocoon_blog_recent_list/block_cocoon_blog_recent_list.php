@@ -115,7 +115,7 @@ class block_cocoon_blog_recent_list extends block_base {
                       <h5 class="mt-0 post_title">'. format_text($entry->subject, FORMAT_HTML, array('filter' => true)).'</h5>
                     </a>';
                     if($PAGE->theme->settings->blog_post_date != 1){
-                      $this->content->text .='<a href="'.$viewblogurl.'">'. userdate($entry->created, '%d %B', 0) .'</a>';
+                      $this->content->text .='<a href="'.$viewblogurl.'">'. userdate($entry->created, '%d/%m/%Y', 0) .'</a>';
                     }
                     $this->content->text .='
                   </div>

@@ -159,6 +159,7 @@ class customreportsblock extends block_base {
             if ($record->coursename != null) {
                 if ($inputSearchStringCategory === '') {
                     $records[$key]->coursename = '<span style="position: absolute; visibility: hidden;">' . $record->pathcategory . '</span><a href="'. $urlViewCourse .'" target="_blank">' . $record->coursename .'</a>';
+                    $records[$key]->coursename = $this->filter_multilang($records[$key]->coursename);
                 } else {
                     // Add column category name when export excel
                     $records[$key]->categoryname = $record->coursecategory;

@@ -1,0 +1,36 @@
+.report_rolessitemap-report {
+    margin-top: 20px;
+    border: 1px solid;
+    padding: 10px;
+    box-shadow: 0 0 20px #aaa;
+}
+
+.report_rolessitemap-categorieslistandrole {
+    margin-bottom: 30px;
+}
+
+.report_rolessitemap-heading {
+    border: solid 0 #aaa;
+    padding: 5px;
+    border-radius: 8px;
+    background-color: #eee;
+}
+
+.report_rolessitemap-roleinformation {
+    border: solid 0 #aaa;
+    width: 340px;
+    padding-left: 10px;
+    border-radius: 5px;
+    padding-top: 5px;
+    background-color: #eee;
+}
+
+.report_rolessitemap-userinformation {
+    border: solid 0;
+    width: 200px;
+    margin-left: 10px;
+}
+
+.report_rolessitemap-report .row {
+    margin-left: 10px;
+}

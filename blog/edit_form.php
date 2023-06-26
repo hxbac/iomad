@@ -40,12 +40,13 @@ class blog_edit_form extends moodleform {
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
-        $mform->addElement('text', 'subject', get_string('entrytitle', 'blog'), array('size' => 60, 'maxlength' => 128));
+        $mform->addElement('text', 'subject', get_string('entrytitle', 'blog'), 
+        array('size' => 60, 'maxlength' => 500));
         $mform->addElement('editor', 'summary_editor', get_string('entrybody', 'blog'), null, $summaryoptions);
 
         $mform->setType('subject', PARAM_TEXT);
         $mform->addRule('subject', get_string('emptytitle', 'blog'), 'required', null, 'client');
-        $mform->addRule('subject', get_string('maximumchars', '', 128), 'maxlength', 128, 'client');
+        $mform->addRule('subject', get_string('maximumchars', '', 500), 'maxlength', 500, 'client');
 
         $mform->setType('summary_editor', PARAM_RAW);
         $mform->addRule('summary_editor', get_string('emptybody', 'blog'), 'required', null, 'client');

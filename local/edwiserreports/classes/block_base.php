@@ -42,11 +42,15 @@ class block_base {
      */
     public $block;
 
+    protected static $parentcache;
+
     /**
      * Constructor to prepate data
      * @param Integer $blockid Block id
      */
     public function __construct($blockid = false) {
+        global $CFG;
+
         $context = context_system::instance();
 
         $this->layout = new stdClass();
@@ -60,6 +64,86 @@ class block_base {
         if ($blockid) {
             $this->blockid = $blockid;
         }
+
+        // $filename_mlang = $CFG->dirroot . '/filter/multilang2/filter.php';
+        // if (file_exists($filename_mlang)) {
+        //     require_once($filename_mlang);
+        // }
+    }
+
+    public function filter_multilang($text, array $options = array()) {
+
+        if (stripos($text, 'mlang') === false) {
+            return $text;
+        }
+
+        if (!isset(self::$parentcache)) {
+            self::$parentcache['other'] = array();
+        }
+
+        $this->replacementdone = false;
+        $currlang = current_language();
+        if (!array_key_exists($currlang, self::$parentcache)) {
+            $parentlangs = get_string_manager()->get_language_dependencies($currlang);
+            self::$parentcache[$currlang] = $parentlangs;
+        }
+
+        $search = '/{\s*mlang\s+(                               # Look for the leading {mlang
+                                    (?:[a-z0-9_-]+)             # At least one language must be present
+                                                                # (but dont capture it individually).
+                                    (?:\s*,\s*[a-z0-9_-]+\s*)*  # More can follow, separated by commas
+                                                                # (again dont capture them individually).
+                                )\s*}                           # Capture the language list as a single capture.
+                   (.*?)                                        # Now capture the text to be filtered.
+                   {\s*mlang\s*}                                # And look for the trailing {mlang}.
+                   /isx';
+
+        $replacelang = $currlang;
+        $result = preg_replace_callback($search,
+                                        function ($matches) use ($replacelang) {
+                                            return $this->replace_callback($replacelang, $matches);
+                                        },
+                                        $text);
+        if (is_null($result)) {
+            return $text; // Error during regex processing, keep original text.
+        }
+        if ($this->replacementdone) {
+            return $result;
+        }
+
+        $replacelang = 'other';
+        $result = preg_replace_callback($search,
+                                        function ($matches) use ($replacelang) {
+                                            return $this->replace_callback($replacelang, $matches);
+                                        },
+                                        $text);
+        if (is_null($result)) {
+            return $text;
+        }
+        return $result;
+    }
+
+    public function replace_callback($replacelang, $langblock) {
+        /* Normalize languages. We can use strtolower instead of
+         * core_text::strtolower() as language short names are ASCII
+         * only, and strtolower is much faster. We have to remove the
+         * white space between language names to be able to match them
+         * to official language names.
+         */
+        $blocklangs = explode(',', str_replace(' ', '', str_replace('-', '_', strtolower($langblock[1]))));
+        $blocktext = $langblock[2];
+        $parentlangs = self::$parentcache[$replacelang];
+        foreach ($blocklangs as $blocklang) {
+            /* We don't check for empty values of $blocklang as they simply don't
+             * match any language and they don't produce any errors or warnings.
+             */
+            if (($blocklang === $replacelang) || in_array($blocklang, $parentlangs)) {
+                $this->replacementdone = true;
+                return $blocktext;
+            }
+        }
+
+        return '';
     }
 
     /**

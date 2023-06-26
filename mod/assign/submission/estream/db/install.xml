@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="mod/assign/submission/estream/db" VERSION="20120423" COMMENT="XMLDB file for Moodle mod/assign/submission/estream"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../../../lib/xmldb/xmldb.xsd">
+  <TABLES>
+    <TABLE NAME="assignsubmission_estream" COMMENT="The Planet eStream Assignment Submission Plugin">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="assignment" />
+        <FIELD NAME="assignment" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="submission" />
+        <FIELD NAME="submission" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="assignment" NEXT="cdid" />
+        <FIELD NAME="cdid" TYPE="char" LENGTH="1333" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="submission" NEXT="embedcode" />
+        <FIELD NAME="embedcode" TYPE="char" LENGTH="1333" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="cdid" />
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Planet eStream submission unique id." NEXT="assignment" />
+        <KEY NAME="assignment" TYPE="foreign" FIELDS="assignment" REFTABLE="assign" REFFIELDS="id" PREVIOUS="primary" NEXT="submission" />
+        <KEY NAME="submission" TYPE="foreign" FIELDS="submission" REFTABLE="assign_submission" REFFIELDS="id" PREVIOUS="assignment" />
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>

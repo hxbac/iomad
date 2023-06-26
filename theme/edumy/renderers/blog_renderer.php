@@ -45,7 +45,7 @@ class theme_edumy_core_blog_renderer extends core_blog_renderer {
       // $o .= $this->output->container(get_string('bynameondate', 'forum', $by), 'author');
 
 
-
+      
       $day = userdate($entry->created, '%d', 0);
       $month = userdate($entry->created, '%B', 0);
       $year = userdate($entry->created);

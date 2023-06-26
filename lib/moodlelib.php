@@ -2274,7 +2274,30 @@ function format_time($totalsecs, $str = null) {
  */
 function userdate($date, $format = '', $timezone = 99, $fixday = true, $fixhour = true) {
     $calendartype = \core_calendar\type_factory::get_calendar_instance();
-    return $calendartype->timestamp_to_date_string($date, $format, $timezone, $fixday, $fixhour);
+    $result = $calendartype->timestamp_to_date_string($date, $format, $timezone, $fixday, $fixhour);
+
+    if ($format === '%B') {
+        $lang = current_language();
+        if ($lang === 'vi') {
+            $vi_month_format = [
+              'January' => 'Tháng Một',
+              'February' => 'Tháng Hai',
+              'March' => 'Tháng Ba',
+              'April' => 'Tháng Tư',
+              'May' => 'Tháng Năm',
+              'June' => 'Tháng Sáu',
+              'July' => 'Tháng Bảy',
+              'August' => 'Tháng Tám',
+              'September' => 'Tháng Chín',
+              'October' => 'Tháng Mười',
+              'November' => 'Tháng Mười Một',
+              'December' => 'Tháng Mười Hai',
+            ];
+
+            $result = $vi_month_format[$result] ?? $result;
+        }
+    }
+    return $result;
 }
 
 /**

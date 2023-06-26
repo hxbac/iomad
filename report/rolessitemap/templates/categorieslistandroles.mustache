@@ -1,0 +1,157 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template report_rolessitemap/categorieslistandroles
+
+    Example context (json):
+    {
+      "categorieslistandroles": [
+        {
+          "categoryid": 2,
+          "categoryname": "F\u00e4cher",
+          "url": {},
+          "roleassignmentsinthiscategory": [
+            {
+              "nextrole": true,
+              "roleid": "1",
+              "roleassignmenteditingurl": "http:\/\/localhost:8000\/admin\/roles\/assign.php?contextid=95&roleid=1",
+              "shortname": "manager",
+              "localname": "Manager\/in",
+              "userid": "3",
+              "userprofileurl": "http:\/\/localhost:8000\/user\/profile.php?userid=3",
+              "username": "lehrer 01"
+            }
+          ]
+        },
+        {
+          "categoryid": 4,
+          "categoryname": "F\u00e4cher \/ Bio",
+          "url": {},
+          "roleassignmentsinthiscategory": [
+            {
+              "nextrole": true,
+              "roleid": "1",
+              "roleassignmenteditingurl": "http:\/\/localhost:8000\/admin\/roles\/assign.php?contextid=97&roleid=1",
+              "shortname": "manager",
+              "localname": "Manager\/in",
+              "userid": "2",
+              "userprofileurl": "http:\/\/localhost:8000\/user\/profile.php?userid=2",
+              "username": "Admin User"
+            },
+            {
+              "nextrole": true,
+              "roleid": "2",
+              "roleassignmenteditingurl": "http:\/\/localhost:8000\/admin\/roles\/assign.php?contextid=97&roleid=2",
+              "shortname": "coursecreator",
+              "localname": "Kursersteller\/in",
+              "userid": "2",
+              "userprofileurl": "http:\/\/localhost:8000\/user\/profile.php?userid=2",
+              "username": "Admin User"
+            },
+            {
+              "nextrole": false,
+              "roleid": "2",
+              "roleassignmenteditingurl": "http:\/\/localhost:8000\/admin\/roles\/assign.php?contextid=97&roleid=2",
+              "shortname": "coursecreator",
+              "localname": "Kursersteller\/in",
+              "userid": "3",
+              "userprofileurl": "http:\/\/localhost:8000\/user\/profile.php?userid=3",
+              "username": "lehrer 01"
+            },
+            {
+              "nextrole": false,
+              "roleid": "2",
+              "roleassignmenteditingurl": "http:\/\/localhost:8000\/admin\/roles\/assign.php?contextid=97&roleid=2",
+              "shortname": "coursecreator",
+              "localname": "Kursersteller\/in",
+              "userid": "4",
+              "userprofileurl": "http:\/\/localhost:8000\/user\/profile.php?userid=4",
+              "username": "schueler 01"
+            },
+            {
+              "nextrole": false,
+              "roleid": "2",
+              "roleassignmenteditingurl": "http:\/\/localhost:8000\/admin\/roles\/assign.php?contextid=97&roleid=2",
+              "shortname": "coursecreator",
+              "localname": "Kursersteller\/in",
+              "userid": "5",
+              "userprofileurl": "http:\/\/localhost:8000\/user\/profile.php?userid=5",
+              "username": "Peter Pan"
+            },
+            {
+              "nextrole": false,
+              "roleid": "2",
+              "roleassignmenteditingurl": "http:\/\/localhost:8000\/admin\/roles\/assign.php?contextid=97&roleid=2",
+              "shortname": "coursecreator",
+              "localname": "Kursersteller\/in",
+              "userid": "6",
+              "userprofileurl": "http:\/\/localhost:8000\/user\/profile.php?userid=6",
+              "username": "Max Mustermann"
+            },
+            {
+              "nextrole": true,
+              "roleid": "5",
+              "roleassignmenteditingurl": "http:\/\/localhost:8000\/admin\/roles\/assign.php?contextid=97&roleid=5",
+              "shortname": "student",
+              "localname": "Teilnehmer\/in",
+              "userid": "4",
+              "userprofileurl": "http:\/\/localhost:8000\/user\/profile.php?userid=4",
+              "username": "schueler 01"
+            }
+          ]
+        },
+        {
+          "categoryid": 3,
+          "categoryname": "F\u00e4cher \/ Mathe",
+          "url": {},
+          "roleassignmentsinthiscategory": []
+        },
+        {
+          "categoryid": 1,
+          "categoryname": "Testbereich",
+          "url": {},
+          "roleassignmentsinthiscategory": []
+        }
+      ],
+      "pageheader": "\u00dcbersicht der zugewiesenen Rolle in Kursbereichen",
+      "maxcounter": "50"
+    }
+
+}}
+
+<h3>{{pageheader}} (max {{maxcounter}} users per role)</h3>
+<div class="report_rolessitemap-report">
+    {{#categorieslistandroles}}
+    <div class="report_rolessitemap-categorieslistandrole">
+        <h3 class="report_rolessitemap-heading">
+            <i class="fa fa-folder-o" aria-hidden="true"></i>
+            <a href="{{url}}">{{categoryname}} - {{categoryid}}</a>
+        </h3>
+        {{#roleassignmentsinthiscategory}}
+            {{#nextrole}}
+                <div class="report_rolessitemap-roleinformation">
+                    <a href="{{roleassignmenteditingurl}}" target="_blank">{{shortname}} - {{localname}}</a>
+                </div>
+            {{/nextrole}}
+            <div class="report_rolessitemap-userinformation">
+                <i class="fa fa-user-o" aria-hidden="true"></i>
+                <a href="{{userprofileurl}}" target="_blank">{{firstname}} {{lastname}} ({{userid}})</a>
+            </div>
+        {{/roleassignmentsinthiscategory}}
+    </div>
+    {{/categorieslistandroles}}
+</div>

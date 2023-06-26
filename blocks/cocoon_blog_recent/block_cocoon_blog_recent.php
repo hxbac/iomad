@@ -143,7 +143,7 @@ $this->content->text .= '
 									<div class="post_meta">
 										<ul>';
                       if($PAGE->theme->settings->blog_post_date != 1){
-                        $this->content->text .='<li class="ccn-white list-inline-item"><i class="flaticon-calendar"></i> '. userdate($entry->created, '%d %B %Y', 0) .'</li>';
+                        $this->content->text .='<li class="ccn-white list-inline-item"><i class="flaticon-calendar"></i> '. userdate($entry->created, '%d/%m/%Y', 0) .'</li>';
                       }
                       if($PAGE->theme->settings->blog_post_author != 1){
                       $this->content->text .='
@@ -185,7 +185,7 @@ $this->content->text .='</div>
                 <a href="'.$viewblogurl.'"><div class="thumb">
                   <img class="img-fluid w100" src="'.$blogattachments[0]->url.'" alt="">';
                   if($PAGE->theme->settings->blog_post_date != 1){
-                    $this->content->text .='<span class="post_date">'. userdate($entry->created, '%d %B %Y', 0) .'</span>';
+                    $this->content->text .='<span class="post_date">'. userdate($entry->created, '%d/%m/%Y', 0) .'</span>';
                   }
                 $this->content->text .='
                 </div></a>
